@@ -11,4 +11,6 @@ Week 0 - Live Streamed Video - [Free AWS Cloud Project Bootcamp - Week 0 - Billi
 Chirag's Week 0 - Spend Considerations - [AWS Bootcamp Week 0 - Pricing Basics and Free tier](https://www.youtube.com/watch?v=OVw3RrlP-sI)
 - Chirag Nayyar [@chiragnayyar](https://twitter.com/chiragnayyar)
 
+Ashish's Week 0 - Security Considerations - [AWS Organizations & AWS IAM Tutorial For Beginners - Cloud BootCamp - Week 0](https://www.youtube.com/watch?v=4EMWBYVggQI)
+- Ashish Rajan [@hashishrajan](https://twitter.com/hashishrajan)
 
