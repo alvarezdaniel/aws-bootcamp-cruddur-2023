@@ -1,6 +1,6 @@
 # Week 0 — Billing and Architecture
 
-Watched videos:
+## Watched videos:
 
 Week 0 - Live Streamed Video - [Free AWS Cloud Project Bootcamp - Week 0 - Billing and Architecture](https://www.youtube.com/watch?v=SG8blanhAOg)
 - Andrew Brown [@andrewbrown](https://twitter.com/andrewbrown)
@@ -16,4 +16,13 @@ Ashish's Week 0 - Security Considerations - [AWS Organizations & AWS IAM Tutoria
 
 Week 0 – Generate Credentials, AWS CLI, Budget and Billing Alarm via CLI - [Week 0 - Generate Credentials, AWS CLI, Budget and Billing Alarm via CLI](https://www.youtube.com/watch?v=OdUnNuKylHg)
 - Andrew Brown [@andrewbrown](https://twitter.com/andrewbrown)
+
+
+## Architecture Designs:
+
+Recreate Conceptual Diagram in Lucid Charts or on a Napkin:
+- [Cruddur Conceptual Design](https://lucid.app/lucidchart/6c79322a-15d5-45f1-b85e-171b0a30c4f3/edit?viewport_loc=160%2C284%2C1664%2C841%2C0_0&invitationId=inv_f43dd37f-191f-4e80-b444-1eadccd61383)
+
+!(assets/Cruddur Conceptual Design.png)
+
 
