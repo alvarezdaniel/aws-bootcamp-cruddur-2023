@@ -23,6 +23,6 @@ Week 0 – Generate Credentials, AWS CLI, Budget and Billing Alarm via CLI - [We
 Recreate Conceptual Diagram in Lucid Charts or on a Napkin:
 - [Cruddur Conceptual Design](https://lucid.app/lucidchart/6c79322a-15d5-45f1-b85e-171b0a30c4f3/edit?viewport_loc=160%2C284%2C1664%2C841%2C0_0&invitationId=inv_f43dd37f-191f-4e80-b444-1eadccd61383)
 
-!(assets/Cruddur Conceptual Design.png)
+![Cruddur Conceptual Design](assets/Cruddur%20Conceptual%20Design.png)
 
 
