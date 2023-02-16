@@ -89,3 +89,8 @@ tasks:
 I've opened gitpod terminal again and checked that AWS CLI was installed, and I can use it:
 
 ![AWS installed](assets/AWS%20installed.png)
+
+I've checked that I don't have AWS access configured in gitpod, by running:
+
+![AWS not configured](assets/AWS%20not%20configured.png)
+
