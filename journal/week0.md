@@ -102,3 +102,8 @@ I've added gitpod environment variables so they are configured in each workspace
 
 ![Gitpod env vars](assets/Gitpod%20env%20vars.png)
 
+I've launched a new Gitpod workspace to verify if AWS CLI credentials are available, but AWS CLI is not configured successfully (must investigate and ask question in Discord):
+
+![AWS not configured 2](assets/AWS%20not%20configured%202.png)
+
+
