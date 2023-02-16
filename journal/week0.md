@@ -40,6 +40,11 @@ I've created another account for not using the management account in AWS.
 
 I've created an IAM admin user for not using the account root user.
 
+- [IAM Console](https://us-east-1.console.aws.amazon.com/iamv2/home?region=us-east-1#/home)
+- Create new user alvarezdaniel inside my account alias
+- Console access enabled
+- Assign user group called Admin with PolicyName=AdministratorAccess
+
 ![IAM Dashboard](assets/IAM%20Dashboard.png)
 
 ![Admin User](assets/Admin%20User.png)
