@@ -151,7 +151,7 @@ I can see the topic and subscription in AWS console:
 
 ![SNS Topic](assets/SNS%20Topic.png)
 
-Now I'm able to create the billing alarm, by using AWS CLI and a configuration json file.
+Now I'm able to create the billing alarm, by using AWS CLI and a configuration json file. I'm replacing with the previously created topic name.
 
 ```json
 {
@@ -195,4 +195,16 @@ Some info:
 https://docs.aws.amazon.com/cli/latest/reference/cloudwatch/put-metric-alarm.html
 https://aws.amazon.com/premiumsupport/knowledge-center/cloudwatch-estimatedcharges-alarm/
 
+
+Run I run this command to create the alarm:
+
+```bash
+aws cloudwatch put-metric-alarm --cli-input-json file://journal/aws/json/alarm_config.json
+```
+
+![Create alarm](assets/Create%20alarm.png)
+
+The alarm was created, so I can check it in AWS console, in CloudWatch:
+
+![Created alarm](assets/Created%20alarm.png)
 
