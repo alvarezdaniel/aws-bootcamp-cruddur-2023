@@ -60,3 +60,10 @@ I've opened AWS Cloudshell, configured cli auto prompt and retrieved current ide
 
 ![Cloud Shell](assets/Cloud%20Shell.png)
 
+### Installed AWS CLI
+
+I've installed Chrome Gitpod extension, and the Gitpod button is showing in my github repo:
+https://chrome.google.com/webstore/detail/gitpod-always-ready-to-co/dodmmooeoklaejobgleioelladacbeki
+
+![Gitpod button](assets/Gitpod%20button.png)
+
