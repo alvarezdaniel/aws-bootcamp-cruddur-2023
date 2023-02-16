@@ -147,4 +147,52 @@ The result is "Pending confirmation", so I've checked my email and confirmed it 
 
 ![Subscription confirmed](assets/Subcription%20confirmed.png)
 
+I can see the topic and subscription in AWS console:
+
+![SNS Topic](assets/SNS%20Topic.png)
+
+Now I'm able to create the billing alarm, by using AWS CLI and a configuration json file.
+
+```json
+{
+  "AlarmName": "DailyEstimatedCharges",
+  "AlarmDescription": "This alarm would be triggered if the daily estimated charges exceeds 1$",
+  "ActionsEnabled": true,
+  "AlarmActions": [
+      "arn:aws:sns:<REGION>:<ACCOUNT_ID>:<SNS_TOPIC_NAME>"
+  ],
+  "EvaluationPeriods": 1,
+  "DatapointsToAlarm": 1,
+  "Threshold": 1,
+  "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+  "TreatMissingData": "breaching",
+  "Metrics": [{
+      "Id": "m1",
+      "MetricStat": {
+          "Metric": {
+              "Namespace": "AWS/Billing",
+              "MetricName": "EstimatedCharges",
+              "Dimensions": [{
+                  "Name": "Currency",
+                  "Value": "USD"
+              }]
+          },
+          "Period": 86400,
+          "Stat": "Maximum"
+      },
+      "ReturnData": false
+  },
+  {
+      "Id": "e1",
+      "Expression": "IF(RATE(m1)>0,RATE(m1)*86400,0)",
+      "Label": "DailyEstimatedCharges",
+      "ReturnData": true
+  }]
+}
+```
+
+Some info:
+https://docs.aws.amazon.com/cli/latest/reference/cloudwatch/put-metric-alarm.html
+https://aws.amazon.com/premiumsupport/knowledge-center/cloudwatch-estimatedcharges-alarm/
+
 
