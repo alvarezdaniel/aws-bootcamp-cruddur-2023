@@ -67,3 +67,7 @@ https://chrome.google.com/webstore/detail/gitpod-always-ready-to-co/dodmmooeokla
 
 ![Gitpod button](assets/Gitpod%20button.png)
 
+I've opened Gitpod terminal and checked that AWS CLI is not installed:
+
+![AWS not found](assets/AWS%20not%20found.png)
+
