@@ -85,3 +85,7 @@ tasks:
       sudo ./aws/install
       cd $THEIA_WORKSPACE_ROOT
 ```
+
+I've opened gitpod terminal again and checked that AWS CLI was installed, and I can use it:
+
+![AWS installed](assets/AWS%20installed.png)
