@@ -113,3 +113,38 @@ https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html
 ![Gitpod env vars 2](assets/Gitpod%20env%20vars%202.png)
 
 ![AWS configured](assets/AWS%20configured.png)
+
+### Create a Billing Alarm
+
+In my root account, I've enabled Billing alerts so as to receive alerts in my email.
+
+![Receive Billing Alerts](assets/Receive%20Billing%20Alerts.png)
+
+Before creating the alarm, an SNS topic is needed:
+
+https://docs.aws.amazon.com/cli/latest/reference/sns/create-topic.html
+
+```bash
+aws sns create-topic --name billing-alarm
+```
+
+![Create SNS Topic](assets/Create%20SNS%20Topic.png)
+
+Then create a subscription, using the returned TopicARN and my email to receive the notification there:
+
+```bash
+aws sns subscribe \
+    --topic-arn TOPIC_ARN \
+    --protocol email \
+    --notification-endpoint EMAIL
+```
+
+![Create Subscription](assets/Create%20Subscription.png)
+
+The result is "Pending confirmation", so I've checked my email and confirmed it so as to complete the process:
+
+![Confirm subscription](assets/Confirm%20subscription.png)
+
+![Subscription confirmed](assets/Subcription%20confirmed.png)
+
+
