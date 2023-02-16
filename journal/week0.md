@@ -106,4 +106,8 @@ I've launched a new Gitpod workspace to verify if AWS CLI credentials are availa
 
 ![AWS not configured 2](assets/AWS%20not%20configured%202.png)
 
+I've found that I've set AWS_ACCESS_KEY_ID env var with a wrong name (AWS_ACCESS_KEY instead of AWS_ACCESS_KEY_ID). I've changed it and now it's working:
 
+![Gitpod env vars 2](assets/Gitpod%20env%20vars%202.png)
+
+![AWS configured](assets/AWS%20configured.png)
