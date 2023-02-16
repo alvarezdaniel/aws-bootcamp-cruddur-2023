@@ -94,3 +94,7 @@ I've checked that I don't have AWS access configured in gitpod, by running:
 
 ![AWS not configured](assets/AWS%20not%20configured.png)
 
+I've configured AWS CLI environment variables in gitpod so it can connect to AWS:
+
+![AWS configure](assets/AWS%20configure.png)
+
