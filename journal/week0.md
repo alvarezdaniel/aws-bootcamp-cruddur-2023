@@ -284,5 +284,12 @@ I've executed the following command to create the budget, after replacing the re
 aws budgets create-budget \
     --account-id AccountID \
     --budget file://journal/aws/json/budget.json \
-    --notifications-with-subscribers file://aws/journal/json/budget-notifications-with-subscribers.json
+    --notifications-with-subscribers file://journal/aws/json/budget-notifications-with-subscribers.json
 ```
+
+![Create budget](assets/Create%20budget.png)
+
+Then, the budget can be inspected from AWS console:
+
+![Budget](assets/Budget.png)
+
