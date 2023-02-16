@@ -18,14 +18,26 @@ Week 0 – Generate Credentials, AWS CLI, Budget and Billing Alarm via CLI - [We
 - Andrew Brown [@andrewbrown](https://twitter.com/andrewbrown)
 
 
-## Architecture Designs:
+## Required Homework
 
-Recreate Conceptual Diagram in Lucid Charts or on a Napkin:
+### Architecture Designs:
+
+#### Recreate Conceptual Diagram in Lucid Charts or on a Napkin:
 
 - [Cruddur Conceptual Design (link LucidChart)](https://lucid.app/lucidchart/6c79322a-15d5-45f1-b85e-171b0a30c4f3/edit?viewport_loc=160%2C284%2C1664%2C841%2C0_0&invitationId=inv_f43dd37f-191f-4e80-b444-1eadccd61383)
 
 ![Cruddur Conceptual Design](assets/Cruddur%20Conceptual%20Design.png)
 
+#### Recreate Logical Architectual Diagram in Lucid Charts:
+
 - [Cruddur Logical Design (link LucidChart)](https://lucid.app/lucidchart/4b0ac743-a6a2-40e0-8863-0a8696174374/edit?viewport_loc=-444%2C91%2C2219%2C1121%2C0_0&invitationId=inv_ccf4c6ac-ff3a-4afd-9685-c37b2a2c7f07)
 
 ![Cruddur Logical Design](assets/Cruddur%20Logical%20Design.png)
+
+### AWS Security
+
+#### Create an Admin User
+
+I've created another account for not using the management account in AWS.
+
+![Management Account](assets/Management%20Account.png)
