@@ -41,3 +41,9 @@ Week 0 – Generate Credentials, AWS CLI, Budget and Billing Alarm via CLI - [We
 I've created another account for not using the management account in AWS.
 
 ![Management Account](assets/Management%20Account.png)
+
+I've created an IAM admin user for not using the account root user.
+
+![IAM Dashboard](assets/IAM%20Dashboard.png)
+
+![Admin User](assets/Admin%20User.png)
