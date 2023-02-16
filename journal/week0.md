@@ -98,3 +98,7 @@ I've configured AWS CLI environment variables in gitpod so it can connect to AWS
 
 ![AWS configure](assets/AWS%20configure.png)
 
+I've added gitpod environment variables so they are configured in each workspace:
+
+![Gitpod env vars](assets/Gitpod%20env%20vars.png)
+
