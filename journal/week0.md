@@ -47,3 +47,7 @@ I've created an IAM admin user for not using the account root user.
 ![IAM Dashboard](assets/IAM%20Dashboard.png)
 
 ![Admin User](assets/Admin%20User.png)
+
+I've configured an access key for using from AWS CLI.
+
+![Access Key](assets/Access%20Key.png)
