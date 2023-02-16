@@ -208,3 +208,81 @@ The alarm was created, so I can check it in AWS console, in CloudWatch:
 
 ![Created alarm](assets/Created%20alarm.png)
 
+### Create a Budget
+
+Info:
+https://docs.aws.amazon.com/cli/latest/reference/budgets/create-budget.html
+
+To create a budget, the Account ID must be retrieved:
+
+```
+aws sts get-caller-identity --query Account --output text
+```
+
+![Get Account ID](assets/Get%20Account%20ID.png)
+
+After that, AWS CLI is called passing some json files that should be configured with required parameters for creating the budget:
+
+budget.json
+```json
+{
+  "BudgetLimit": {
+      "Amount": "100",
+      "Unit": "USD"
+  },
+  "BudgetName": "Example Tag Budget",
+  "BudgetType": "COST",
+  "CostFilters": {
+      "TagKeyValue": [
+          "user:Key$value1",
+          "user:Key$value2"
+      ]
+  },
+  "CostTypes": {
+      "IncludeCredit": true,
+      "IncludeDiscount": true,
+      "IncludeOtherSubscription": true,
+      "IncludeRecurring": true,
+      "IncludeRefund": true,
+      "IncludeSubscription": true,
+      "IncludeSupport": true,
+      "IncludeTax": true,
+      "IncludeUpfront": true,
+      "UseBlended": false
+  },
+  "TimePeriod": {
+      "Start": 1477958399,
+      "End": 3706473600
+  },
+  "TimeUnit": "MONTHLY"
+}
+```
+
+budget-notifications-with-subscribers.json
+```json
+[
+  {
+      "Notification": {
+          "ComparisonOperator": "GREATER_THAN",
+          "NotificationType": "ACTUAL",
+          "Threshold": 80,
+          "ThresholdType": "PERCENTAGE"
+      },
+      "Subscribers": [
+          {
+              "Address": "example@example.com",
+              "SubscriptionType": "EMAIL"
+          }
+      ]
+  }
+]
+```
+
+I've executed the following command to create the budget, after replacing the required params in json file for my email and required amount for the budget:
+
+```bash
+aws budgets create-budget \
+    --account-id AccountID \
+    --budget file://journal/aws/json/budget.json \
+    --notifications-with-subscribers file://aws/journal/json/budget-notifications-with-subscribers.json
+```
