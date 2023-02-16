@@ -71,3 +71,17 @@ I've opened Gitpod terminal and checked that AWS CLI is not installed:
 
 ![AWS not found](assets/AWS%20not%20found.png)
 
+I've configured **.gitpod.yml** file so when it starts, AWS CLI is installed automatically. Also, partial autoprompt mode is set for using autocomplete in AWS CLI commands.
+
+```
+tasks:
+  - name: aws-cli
+    env:
+      AWS_CLI_AUTO_PROMPT: on-partial
+    init: |
+      cd /workspace
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      unzip awscliv2.zip
+      sudo ./aws/install
+      cd $THEIA_WORKSPACE_ROOT
+```
