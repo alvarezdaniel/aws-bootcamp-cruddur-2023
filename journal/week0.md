@@ -33,6 +33,7 @@ Week 0 – Generate Credentials, AWS CLI, Budget and Billing Alarm via CLI - [We
 ![Cruddur Logical Design](assets/Cruddur%20Logical%20Design.png)
 
 ### Create an Admin User
+### Generate AWS Credentials
 
 I've created another account for not using the management account in AWS.
 
