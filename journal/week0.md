@@ -1,5 +1,20 @@
 # Week 0 — Billing and Architecture
 
+## Prerequisite Technologies
+
+According to bootcamp outline, I've registered accounts in the following services:
+
+- GitHub (I already had an account on this, only created the new repo using the template Andrew provided)
+- Gitpod (I've created a free Gitpod account, and installed Chrome extension so I can use the Gitpod button from Github repo)
+- Github Codespaces (I've created a free account so as to use if Gitpod is not enough)
+- AWS (I already had an AWS account, but it was not completely registered, so I entered my credit card and I had to call for support to finish registration process because the automated phone call was not working for me)
+- Momento (I've created a free tier Momento account)
+- Custom domain name (I've already had a domain free for using in this bootcamp, so my idea is to use it)
+- Lucid Charts (I've already had an account opened in Lucid Charts, so I'm using it for the bootcamp)
+- HoneyComb.io (I've created a free-tier account)
+- Rollbar (I've created a free-tier account)
+
+
 ## Watched videos:
 
 Week 0 - Live Streamed Video - [Free AWS Cloud Project Bootcamp - Week 0 - Billing and Architecture](https://www.youtube.com/watch?v=SG8blanhAOg)
