@@ -353,8 +353,36 @@ FLASK_ENV=production PORT=8080 docker run -p 4567:4567 -it backend-flask
 
 > Look at Dockerfile to see how ${PORT} is interpolated
 
+### Containerize Frontend React app
 
+Add Dockerfile to frontend-react-js folder
 
+```Dockerfile
+FROM node:16.18
+
+ENV PORT=3000
+
+COPY . /frontend-react-js
+WORKDIR /frontend-react-js
+RUN npm install
+EXPOSE ${PORT}
+CMD ["npm", "start"]
+```
+
+Build Image
+
+```sh
+docker build -t frontend-react-js ./frontend-react-js
+```
+
+Run Container
+
+```sh
+docker run -p 3000:3000 -d frontend-react-js
+```
+
+Unlock port 3000 and test it in browser:
+https://3000-alvarezdani-awsbootcamp-3kuy02th1gt.ws-us87.gitpod.io/
 
 
 
