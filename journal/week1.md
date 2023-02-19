@@ -190,3 +190,171 @@ Build image
 ```bash
 docker build -t  backend-flask ./backend-flask
 ```
+
+-t = Image name, can include tag or not. If not present = latest
+
+Run container
+
+```bash
+docker run --rm -p 4567:4567 -it backend-flask
+FRONTEND_URL="*" BACKEND_URL="*" docker run --rm -p 4567:4567 -it backend-flask
+export FRONTEND_URL="*"
+export BACKEND_URL="*"
+docker run --rm -p 4567:4567 -it -e FRONTEND_URL='*' -e BACKEND_URL='*' backend-flask
+docker run --rm -p 4567:4567 -it  -e FRONTEND_URL -e BACKEND_URL backend-flask
+unset FRONTEND_URL="*"
+unset BACKEND_URL="*"
+```
+
+Env vars can be set while running container, passing values or using host values
+
+Install VSCODE Docker extension
+Check created image
+
+```bash
+docker run --rm -p 4567:4567 -it -e FRONTEND_URL='*' -e BACKEND_URL='*' backend-flask
+```
+
+Open port and open browser to inspect
+https://4567-alvarezdani-awsbootcamp-3kuy02th1gt.ws-us87.gitpod.io/api/activities/home
+
+Json is returned:
+
+```json
+[
+  {
+    "created_at": "2023-02-17T23:35:55.899073+00:00",
+    "expires_at": "2023-02-24T23:35:55.899073+00:00",
+    "handle": "Andrew Brown",
+    "likes_count": 5,
+    "message": "Cloud is fun!",
+    "replies": [
+      {
+        "created_at": "2023-02-17T23:35:55.899073+00:00",
+        "handle": "Worf",
+        "likes_count": 0,
+        "message": "This post has no honor!",
+        "replies_count": 0,
+        "reply_to_activity_uuid": "68f126b0-1ceb-4a33-88be-d90fa7109eee",
+        "reposts_count": 0,
+        "uuid": "26e12864-1c26-5c3a-9658-97a10f8fea67"
+      }
+    ],
+    "replies_count": 1,
+    "reposts_count": 0,
+    "uuid": "68f126b0-1ceb-4a33-88be-d90fa7109eee"
+  },
+  {
+    "created_at": "2023-02-12T23:35:55.899073+00:00",
+    "expires_at": "2023-02-28T23:35:55.899073+00:00",
+    "handle": "Worf",
+    "likes": 0,
+    "message": "I am out of prune juice",
+    "replies": [],
+    "uuid": "66e12864-8c26-4c3a-9658-95a10f8fea67"
+  },
+  {
+    "created_at": "2023-02-19T22:35:55.899073+00:00",
+    "expires_at": "2023-02-20T11:35:55.899073+00:00",
+    "handle": "Garek",
+    "likes": 0,
+    "message": "My dear doctor, I am just simple tailor",
+    "replies": [],
+    "uuid": "248959df-3079-4947-b847-9e0892d1bab4"
+  }
+]
+```
+
+Inspect logs and attach shell using Docker extension.
+
+To run container in detached mode, add -d flag
+
+```bash
+docker container run --rm -p 4567:4567 -d backend-flask
+```
+
+-rm indicates remove container on exit
+
+To check for running containers, use ps
+
+```bash
+docker ps
+```
+
+CONTAINER ID   IMAGE           COMMAND                  CREATED          STATUS          PORTS                                       NAMES
+c3420db1fc33   backend-flask   "python3 -m flask ru…"   10 seconds ago   Up 10 seconds   0.0.0.0:4567->4567/tcp, :::4567->4567/tcp   fervent_mestorf
+
+For returning already removed images, use docker ps -a
+
+How to return the container id into an env var
+
+```bash
+CONTAINER_ID=$(docker run --rm -p 4567:4567 -d backend-flask)
+```
+
+> docker container run is idiomatic, docker run is legacy syntax but is commonly used.
+
+Get Container Images or Running Container Ids
+
+```bash
+docker ps
+docker images
+```
+
+Send Curl to Test Server
+
+```bash
+curl -X GET http://localhost:4567/api/activities/home -H "Accept: application/json" -H "Content-Type: application/json"
+```
+
+Check Container Logs
+
+```bash
+docker logs CONTAINER_ID -f
+docker logs backend-flask -f
+docker logs $CONTAINER_ID -f
+```
+
+Debugging  adjacent containers with other containers
+
+```sh
+docker run --rm -it curlimages/curl "-X GET http://localhost:4567/api/activities/home -H \"Accept: application/json\" -H \"Content-Type: application/json\""
+```
+
+busybosy is often used for debugging since it install a bunch of thing
+
+```sh
+docker run --rm -it busybosy
+```
+
+Gain Access to a Container
+
+```sh
+docker exec CONTAINER_ID -it /bin/bash
+```
+
+> You can just right click a container and see logs in VSCode with Docker extension
+
+Delete an Image
+
+```sh
+docker image rm backend-flask --force
+```
+
+> docker rmi backend-flask is the legacy syntax, you might see this is old docker tutorials and articles.
+
+> There are some cases where you need to use the --force
+
+Overriding Ports
+
+```sh
+FLASK_ENV=production PORT=8080 docker run -p 4567:4567 -it backend-flask
+```
+
+> Look at Dockerfile to see how ${PORT} is interpolated
+
+
+
+
+
+
