@@ -536,5 +536,34 @@ In backend-flask/app.py, add import to new service
 from services.notifications_activities import *
 ```
 
-Launch Gitpod workspace and test new endpoint:
+Launch Gitpod workspace and test new endpoint by starting compose:
+
+GET https://4567-alvarezdani-awsbootcamp-pw21xgwm0w7.ws-us87.gitpod.io/api/activities/notifications
+
+```json
+[
+  {
+    "created_at": "2023-02-18T23:45:09.638418+00:00",
+    "expires_at": "2023-02-25T23:45:09.638418+00:00",
+    "handle": "coco",
+    "likes_count": 5,
+    "message": "I am white unicorn",
+    "replies": [
+      {
+        "created_at": "2023-02-18T23:45:09.638418+00:00",
+        "handle": "worf",
+        "likes_count": 0,
+        "message": "this post has no honor!",
+        "replies_count": 0,
+        "reply_to_activity_uuid": "68f126b0-1ceb-4a33-88be-d90fa7109eee",
+        "reposts_count": 0,
+        "uuid": "26e12864-1c26-5c3a-9658-97a10f8fea67"
+      }
+    ],
+    "replies_count": 1,
+    "reposts_count": 0,
+    "uuid": "68f126b0-1ceb-4a33-88be-d90fa7109eee"
+  }
+]
+```
 
