@@ -486,3 +486,55 @@ In backend-flask/openapi-3.0.yml file, add the definition for notification endpo
 
 Let's check the definition in OpenAPI VSCode extension.
 
+## Write a Flask Backend Endpoint for Notifications
+
+Change backend app, adding new endpoint for notifications.
+
+In backend-flask/app.py, add route to new endpoint
+
+```py
+@app.route("/api/activities/notifications", methods=['GET'])
+def data_notifications():
+  data = NotificationsActivities.run()
+  return data, 200
+```
+
+Add new service to backend-flask/services/notifications_activities.py
+
+```py
+from datetime import datetime, timedelta, timezone
+class NotificationsActivities:
+  def run():
+    now = datetime.now(timezone.utc).astimezone()
+    results = [{
+      'uuid': '68f126b0-1ceb-4a33-88be-d90fa7109eee',
+      'handle':  'coco',
+      'message': 'I am white unicorn',
+      'created_at': (now - timedelta(days=2)).isoformat(),
+      'expires_at': (now + timedelta(days=5)).isoformat(),
+      'likes_count': 5,
+      'replies_count': 1,
+      'reposts_count': 0,
+      'replies': [{
+        'uuid': '26e12864-1c26-5c3a-9658-97a10f8fea67',
+        'reply_to_activity_uuid': '68f126b0-1ceb-4a33-88be-d90fa7109eee',
+        'handle':  'worf',
+        'message': 'this post has no honor!',
+        'likes_count': 0,
+        'replies_count': 0,
+        'reposts_count': 0,
+        'created_at': (now - timedelta(days=2)).isoformat()
+      }],
+    }
+    ]
+    return results
+```
+
+In backend-flask/app.py, add import to new service
+
+```py
+from services.notifications_activities import *
+```
+
+Launch Gitpod workspace and test new endpoint:
+
