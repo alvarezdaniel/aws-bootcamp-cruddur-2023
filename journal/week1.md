@@ -460,4 +460,29 @@ https://3000-alvarezdani-awsbootcamp-bpzo93rvx4h.ws-us87.gitpod.io/
 > Note on docker compose vs docker-compose, James explained docker plugins or extension works this way, same as kubectl in kubernetes
 
 
+Test a change in FrontEnd code while compose is running, and it refreshes
+
+## Document the Notification Endpoint for the OpenAPI Document
+
+In backend-flask/openapi-3.0.yml file, add the definition for notification endpoint:
+
+```yaml
+  /api/activities/notifications:
+    get:
+      description: 'Return a feed of activity for all of those that I follow'
+      tags:
+        - activities
+      parameters: []
+      responses:
+        '200':
+          description: Returns an array of activities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Activity'
+```
+
+Let's check the definition in OpenAPI VSCode extension.
 
