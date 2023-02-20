@@ -384,5 +384,80 @@ docker run -p 3000:3000 -d frontend-react-js
 Unlock port 3000 and test it in browser:
 https://3000-alvarezdani-awsbootcamp-3kuy02th1gt.ws-us87.gitpod.io/
 
+### Multiple Containers using compose
+
+Create `docker-compose.yml` at the root of your project.
+
+```yaml
+version: "3.8"
+services:
+  backend-flask:
+    environment:
+      FRONTEND_URL: "https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+      BACKEND_URL: "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+    build: ./backend-flask
+    ports:
+      - "4567:4567"
+    volumes:
+      - ./backend-flask:/backend-flask
+  frontend-react-js:
+    environment:
+      REACT_APP_BACKEND_URL: "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+    build: ./frontend-react-js
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend-react-js:/frontend-react-js
+
+# the name flag is a hack to change the default prepend folder
+# name when outputting the image names
+networks: 
+  internal-network:
+    driver: bridge
+    name: cruddur
+```
+
+It includes 2 services and orchestrate them starting multiple containers
+
+Start compose by running
+
+```sh
+docker compose up
+```
+
+or by using VSCode extension, right click and Compose Up
+
+Open browser to test it:
+https://3000-alvarezdani-awsbootcamp-bpzo93rvx4h.ws-us87.gitpod.io/
+Error, Port 3000 Not Found
+
+Inspect logs in frontend container:
+
+```sh
+docker logs --tail 1000 -f 25093c1067d63ddbe707c0ad4b680429b25c59a2bff78f1f5243b827a465101b 
+```
+
+```
+> frontend@0.1.0 start
+> react-scripts start
+
+sh: 1: react-scripts: not found
+
+> frontend@0.1.0 start
+> react-scripts start
+
+sh: 1: react-scripts: not found
+```
+
+Test frontend again using docker build and run
+https://3000-alvarezdani-awsbootcamp-bpzo93rvx4h.ws-us87.gitpod.io/
+It works
+
+I could make it work by manually running npm install on frontend folder before starting compose file
+
+https://3000-alvarezdani-awsbootcamp-bpzo93rvx4h.ws-us87.gitpod.io/
+
+> Note on docker compose vs docker-compose, James explained docker plugins or extension works this way, same as kubectl in kubernetes
+
 
 
