@@ -112,7 +112,7 @@ Let's try to containerize it.
 
 Clean env vars
 
-```bash
+```sh
 env | grep D_URL
 unset FRONTEND_URL
 unset BACKEND_URL
@@ -187,7 +187,7 @@ CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=4567"]
 
 Build image
 
-```bash
+```sh
 docker build -t  backend-flask ./backend-flask
 ```
 
@@ -195,7 +195,7 @@ docker build -t  backend-flask ./backend-flask
 
 Run container
 
-```bash
+```sh
 docker run --rm -p 4567:4567 -it backend-flask
 FRONTEND_URL="*" BACKEND_URL="*" docker run --rm -p 4567:4567 -it backend-flask
 export FRONTEND_URL="*"
@@ -211,7 +211,7 @@ Env vars can be set while running container, passing values or using host values
 Install VSCODE Docker extension
 Check created image
 
-```bash
+```sh
 docker run --rm -p 4567:4567 -it -e FRONTEND_URL='*' -e BACKEND_URL='*' backend-flask
 ```
 
@@ -269,7 +269,7 @@ Inspect logs and attach shell using Docker extension.
 
 To run container in detached mode, add -d flag
 
-```bash
+```sh
 docker container run --rm -p 4567:4567 -d backend-flask
 ```
 
@@ -277,7 +277,7 @@ docker container run --rm -p 4567:4567 -d backend-flask
 
 To check for running containers, use ps
 
-```bash
+```sh
 docker ps
 ```
 
@@ -288,7 +288,7 @@ For returning already removed images, use docker ps -a
 
 How to return the container id into an env var
 
-```bash
+```sh
 CONTAINER_ID=$(docker run --rm -p 4567:4567 -d backend-flask)
 ```
 
@@ -296,20 +296,20 @@ CONTAINER_ID=$(docker run --rm -p 4567:4567 -d backend-flask)
 
 Get Container Images or Running Container Ids
 
-```bash
+```sh
 docker ps
 docker images
 ```
 
 Send Curl to Test Server
 
-```bash
+```sh
 curl -X GET http://localhost:4567/api/activities/home -H "Accept: application/json" -H "Content-Type: application/json"
 ```
 
 Check Container Logs
 
-```bash
+```sh
 docker logs CONTAINER_ID -f
 docker logs backend-flask -f
 docker logs $CONTAINER_ID -f
@@ -680,4 +680,163 @@ import NotificationsFeedPage from './pages/NotificationsFeedPage';
 ```
 
 Test changes by starting Gitpod workspace and running compose file:
+
+Browse https://3000-alvarezdani-awsbootcamp-c3mfar4scx4.ws-us87.gitpod.io/notifications
+
+Returns correct information
+
+## Run DynamoDB Local Container and ensure it works
+
+For checking how to run a local DynamoDB container, I've opened the following page:
+https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html
+
+
+So in docker-compose.yml file, I've added the new service. Also, as shown by Andrew in his example, root user was used to get it working:
+
+```yml
+dynamodb-local:
+    # https://stackoverflow.com/questions/67533058/persist-local-dynamodb-data-in-volumes-lack-permission-unable-to-open-databa
+    # We needed to add user:root to get this working.
+    user: root
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    image: "amazon/dynamodb-local:latest"
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./docker/dynamodb:/home/dynamodblocal/data"
+    working_dir: /home/dynamodblocal
+```
+
+Start compose file, and unlock port 8000.
+
+
+For ensuring it works, I've started the compose file and used some AWS CLI commands to check DynamoDB, extracted from the following repo:
+https://github.com/100DaysOfCloud/challenge-dynamodb-local
+
+
+Create a table
+
+```sh
+aws dynamodb create-table \
+    --endpoint-url http://localhost:8000 \
+    --table-name Music \
+    --attribute-definitions \
+        AttributeName=Artist,AttributeType=S \
+        AttributeName=SongTitle,AttributeType=S \
+    --key-schema AttributeName=Artist,KeyType=HASH AttributeName=SongTitle,KeyType=RANGE \
+    --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 \
+    --table-class STANDARD
+```
+
+returns
+
+```json
+{
+    "TableDescription": {
+        "AttributeDefinitions": [
+            {
+                "AttributeName": "Artist",
+                "AttributeType": "S"
+            },
+            {
+                "AttributeName": "SongTitle",
+                "AttributeType": "S"
+            }
+        ],
+        "TableName": "Music",
+        "KeySchema": [
+            {
+                "AttributeName": "Artist",
+                "KeyType": "HASH"
+            },
+            {
+                "AttributeName": "SongTitle",
+                "KeyType": "RANGE"
+            }
+        ],
+        "TableStatus": "ACTIVE",
+        "CreationDateTime": "2023-02-22T15:24:07.099000+00:00",
+        "ProvisionedThroughput": {
+            "LastIncreaseDateTime": "1970-01-01T00:00:00+00:00",
+            "LastDecreaseDateTime": "1970-01-01T00:00:00+00:00",
+            "NumberOfDecreasesToday": 0,
+            "ReadCapacityUnits": 1,
+            "WriteCapacityUnits": 1
+        },
+        "TableSizeBytes": 0,
+        "ItemCount": 0,
+        "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/Music"
+    }
+}
+```
+
+Create an item
+
+```sh
+aws dynamodb put-item \
+    --endpoint-url http://localhost:8000 \
+    --table-name Music \
+    --item \
+        '{"Artist": {"S": "No One You Know"}, "SongTitle": {"S": "Call Me Today"}, "AlbumTitle": {"S": "Somewhat Famous"}}' \
+    --return-consumed-capacity TOTAL 
+```
+
+return:
+
+```json
+{
+    "ConsumedCapacity": {
+        "TableName": "Music",
+        "CapacityUnits": 1.0
+    }
+}
+```
+
+List tables
+
+```sh
+aws dynamodb list-tables --endpoint-url http://localhost:8000
+```
+
+return
+
+```json
+{
+    "TableNames": [
+        "Music"
+    ]
+}
+```
+
+Get Records
+
+```sh
+aws dynamodb scan --table-name Music --query "Items" --endpoint-url http://localhost:8000
+```
+
+return
+
+```json
+[
+    {
+        "Artist": {
+            "S": "No One You Know"
+        },
+        "SongTitle": {
+            "S": "Call Me Today"
+        },
+        "AlbumTitle": {
+            "S": "Somewhat Famous"
+        }
+    }
+]
+```
+
+References:
+https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html 
+https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Tools.CLI.html
+
+
+
 
