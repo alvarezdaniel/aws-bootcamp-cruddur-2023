@@ -12,9 +12,9 @@ AWS user groups around the world
 
 ## Week 1 hosts
 
-- James Spurin @jamesspurin
-- Edith Puclla @EditPuclla
-- Shala Warner @Gifted Lane
+- James Spurin [@jamesspurin](https://twitter.com/jamesspurin)
+- Edith Puclla [@EdithPuclla](https://twitter.com/EdithPuclla)
+- Shala Warner [@GiftedLane](https://twitter.com/GiftedLane)
 
 ## Spend considerations
 
@@ -34,7 +34,7 @@ Gitpod Billing => monitor credits
 - Create new branch week-1 from week-0
 - Gitpod start with AWS CLI already installed
 - We will containerize apps => more portable, no configuration in environments, easier deployment on multiple environments
-- linuxserver.io = multiple images
+- linuxserver.io = multiple images https://www.linuxserver.io/
 - dockerhub = registry from docker images (host own images free)
 - There are others
 - Open Container Initiative (OCI), docker is part of it
@@ -837,6 +837,92 @@ return
 References:
 https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html 
 https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Tools.CLI.html
+
+## Run Postgres Container and ensure it works
+
+For running a PostgreSQL image, I've added a new service to docker compose file,
+
+```yml
+  db:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+```
+
+Also, as this image references a volume, it should be added as well:
+
+```yml
+volumes:
+  db:
+    driver: local
+```
+
+For insuring that the new image is working, a Postgresql driver must be installed, so I've used a Gitpod task to install it when environment starts.
+
+.gitpod.yml
+```yml
+```
+
+Then start compose file so Postgresql service is running, and check it:
+
+```sh
+psql -h localhost -U postgres
+```
+
+```
+\d
+```
+
+Did not find any relations.
+
+```
+\t
+```
+
+Tuples only is on.
+
+````
+\dl
+```
+
+      Large objects
+ ID | Owner | Description 
+----+-------+-------------
+(0 rows)
+
+```
+\l
+```
+
+ postgres  | postgres | UTF8     | en_US.utf8 | en_US.utf8 | 
+ template0 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
+           |          |          |            |            | postgres=CTc/postgres
+ template1 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
+           |          |          |            |            | postgres=CTc/postgres
+
+```
+\q
+```
+
+This commands indicates that Postgresql is up and running.
+
+Another way to check it can be by installing a VSCode extension to browse the service. That extension is called PostgreSQL, and it can be added also to .gitpod.yaml file.
+
+```yml
+vscode:
+  extensions:
+    - 42Crunch.vscode-openapi
+    - ckolkman.vscode-postgrestasks:
+```
+
+
+
 
 
 
