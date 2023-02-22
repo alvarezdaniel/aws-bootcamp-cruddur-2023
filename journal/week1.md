@@ -10,7 +10,7 @@ Sponsors:
 
 AWS user groups around the world
 
-## Week 1 hosts
+## Week 1 instructors
 
 - James Spurin [@jamesspurin](https://twitter.com/jamesspurin)
 - Edith Puclla [@EdithPuclla](https://twitter.com/EdithPuclla)
@@ -18,9 +18,9 @@ AWS user groups around the world
 
 ## Spend considerations
 
-AWS Bills => check every week
-Free Tier => Services usage tracking
-Gitpod Billing => monitor credits
+- AWS Bills => check every week
+- Free Tier => Services usage tracking
+- Gitpod Billing => monitor credits
 
 ## Last Week
 
@@ -35,12 +35,13 @@ Gitpod Billing => monitor credits
 - Gitpod start with AWS CLI already installed
 - We will containerize apps => more portable, no configuration in environments, easier deployment on multiple environments
 - linuxserver.io = multiple images https://www.linuxserver.io/
-- dockerhub = registry from docker images (host own images free)
+- dockerhub = registry from docker images (host own images free) https://hub.docker.com/
 - There are others
-- Open Container Initiative (OCI), docker is part of it
+- Open Container Initiative (OCI), docker is part of it https://opencontainers.org/
 - Docker Hub ~= github for docker images
-- JFrog Artifactory, more for artifacts
-- Install VSCode docker extension => easy to work in docker
+- JFrog Artifactory, more for artifacts https://jfrog.com/artifactory/
+- Install VSCode docker extension => makes it easy to work with docker from VSCode https://code.visualstudio.com/docs/containers/overview (already preinstalled in Gitpod)
+- Good article for Debugging Connection Refused https://pythonspeed.com/articles/docker-connection-refused/
 
 ## Class Summary
 
@@ -65,7 +66,6 @@ Gitpod Billing => monitor credits
 - [Chirag's Week 1 - Spending Considerations](https://www.youtube.com/watch?v=OAMHu1NiYoI&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=24)
 - [Ashish's Week 1 - Container Security Considerations](https://www.youtube.com/watch?v=OjZz4D0B-cA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=25)
 
-
 ## Containerize Application (Dockerfiles, Docker Compose)
 
 ### Run Backend Flask no container
@@ -83,8 +83,17 @@ python3 -m flask run --host=0.0.0.0 --port=4567
 cd ..
 ```
 
+![Run backend directly](assets/week-1/Run%20backend%20directly.png)
+
 Unlock port 4567 (make it public)
-Open browser: https://4567-alvarezdani-awsbootcamp-3kuy02th1gt.ws-us87.gitpod.io/api/activities/home
+
+![Unlock port 4567](assets/week-1/Unlock%20port%204567.png)
+
+Open browser in backend, getting activities endpoint: 
+https://4567-alvarezdani-awsbootcamp-3kuy02th1gt.ws-us87.gitpod.io/api/activities/home
+
+![Get activities](assets/week-1/Get%20activities.png)
+
 Returns json with activities
 
 ```json
@@ -109,18 +118,17 @@ Close app
 
 ### Containerize Backend Flask app
 
-Let's try to containerize it.
+Let's try to containerize backend application.
 
-Clean env vars
+Clean environment variables.
 
 ```sh
-env | grep D_URL
 unset FRONTEND_URL
 unset BACKEND_URL
 env | grep D_URL
 ```
 
-Add Dockerfile file to /backend-flask folder.
+Create `Dockerfile` file in `/backend-flask` folder.
 
 ```Dockerfile
 FROM python:3.10-slim-buster
@@ -161,6 +169,8 @@ Notes:
 - Every FROM is a new layer (reusable)
 - Uses Union File System (UnionFS)
 
+Explanation:
+
 1. FROM python:3.10-slim-buster
 2. WORKDIR /backend-flask = work directory in guest OS?, ~cd workdir, set context to that folder, make new folder in container
 3. COPY requirements.txt requirements.txt = outside->inside, libs to install
@@ -197,27 +207,26 @@ docker build -t  backend-flask ./backend-flask
 Run container
 
 ```sh
-docker run --rm -p 4567:4567 -it backend-flask
-FRONTEND_URL="*" BACKEND_URL="*" docker run --rm -p 4567:4567 -it backend-flask
-export FRONTEND_URL="*"
-export BACKEND_URL="*"
+#docker run --rm -p 4567:4567 -it backend-flask
+#FRONTEND_URL="*" BACKEND_URL="*" docker run --rm -p 4567:4567 -it backend-flask
+#export FRONTEND_URL="*"
+#export BACKEND_URL="*"
 docker run --rm -p 4567:4567 -it -e FRONTEND_URL='*' -e BACKEND_URL='*' backend-flask
-docker run --rm -p 4567:4567 -it  -e FRONTEND_URL -e BACKEND_URL backend-flask
-unset FRONTEND_URL="*"
-unset BACKEND_URL="*"
+#docker run --rm -p 4567:4567 -it  -e FRONTEND_URL -e BACKEND_URL backend-flask
+#unset FRONTEND_URL="*"
+#unset BACKEND_URL="*"
 ```
 
-Env vars can be set while running container, passing values or using host values
+Environment variables can be set while running container, passing values or using host values
 
-Install VSCODE Docker extension
-Check created image
+In VSCode Docker extension check created image
 
-```sh
-docker run --rm -p 4567:4567 -it -e FRONTEND_URL='*' -e BACKEND_URL='*' backend-flask
-```
+![Check backend container](assets/week-1/Check%20backend%20container.png)
 
-Open port and open browser to inspect
+Open port and open browser to inspect the result
 https://4567-alvarezdani-awsbootcamp-3kuy02th1gt.ws-us87.gitpod.io/api/activities/home
+
+![Get activities container](assets/week-1/Get%20activities%20container.png)
 
 Json is returned:
 
