@@ -918,7 +918,7 @@ Another way to check it can be by installing a VSCode extension to browse the se
 vscode:
   extensions:
     - 42Crunch.vscode-openapi
-    - ckolkman.vscode-postgrestasks:
+    - cweijan.vscode-postgresql-client2
 ```
 
 
