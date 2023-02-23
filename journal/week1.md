@@ -126,6 +126,8 @@ Unlock port 4567 (make it public)
 
 ![Unlock port 4567](assets/week-1/Unlock%20port%204567.png)
 
+![Port 4567 unlocked](assets/week-1/Port%204567%20unlocked.png)
+
 Open browser in backend, getting activities endpoint: 
 https://4567-alvarezdani-awsbootcamp-n9d8o604pch.ws-us87.gitpod.io/api/activities/home
 
@@ -150,6 +152,8 @@ Press CTRL+C to quit
 192.168.64.201 - - [19/Feb/2023 23:21:12] "GET /api/activities HTTP/1.1" 405 -
 192.168.64.201 - - [19/Feb/2023 23:21:16] "GET /api/activities/home HTTP/1.1" 200 -
 ```
+
+![Get backend logs](assets/week-1/Get%20backend%20logs.png)
 
 Close app
 
@@ -338,6 +342,8 @@ Press CTRL+C to quit
  * Debugger PIN: 538-943-984
  ```
 
+![Run backend container](assets/week-1/Run%20backend%20container.png)
+
 Environment variables can be set while running container, passing values or using host values
 
 In VSCode Docker extension check created image
@@ -489,6 +495,8 @@ Returns
 ]
 ```
 
+![Run curl](assets/week-1/Run%20curl.png)
+
 Check Container Logs
 
 ```sh
@@ -619,6 +627,8 @@ Successfully built af97b8e6ad43
 Successfully tagged frontend-react-js:latest
 ```
 
+![Build frontend](assets/week-1/Build%20frontend.png)
+
 Run Container
 
 ```sh
@@ -629,10 +639,12 @@ docker run -p 3000:3000 -d frontend-react-js
 986128c25ef17d0abeca6b2171c80e83907b14251e66f21c35e53456acffb225
 ```
 
+![Run frontend](assets/week-1/Run%20frontend.png)
+
 Unlock port 3000 and test it in browser:
 https://3000-alvarezdani-awsbootcamp-3kuy02th1gt.ws-us87.gitpod.io/
 
-![Browse frontend app](assets/week-1/Browse%20frontend%app.png)
+![Browse frontend](assets/week-1/Browse%20frontend.png)
 
 ### Multiple Containers using compose
 
@@ -1026,6 +1038,8 @@ https://3000-alvarezdani-awsbootcamp-bpzo93rvx4h.ws-us87.gitpod.io/
 
 It works!
 
+![Browse frontend 2](assets/week-1/Browse%20frontend%202.png)
+
 I could make it work by manually running npm install on frontend folder before starting compose file
 
 https://3000-alvarezdani-awsbootcamp-bpzo93rvx4h.ws-us87.gitpod.io/
@@ -1264,11 +1278,11 @@ Browse https://3000-alvarezdani-awsbootcamp-ludvad7g3bm.ws-us87.gitpod.io/notifi
 
 Returns correct information
 
+![Browse notifications page](assets/week-1/Browse%20notifications%20page.png)
+
 or register a Cruddur account and click on notifications option
 
-
-
-![Browse notifications page](assets/week-1/Browse%20notifications%20page.png)
+![Browse notifications page 2](assets/week-1/Browse%20notifications%20page%202.png)
 
 ## Run DynamoDB Local Container and ensure it works
 
@@ -1363,6 +1377,8 @@ returns
 }
 ```
 
+![Create table](assets/week-1/Create%20table.png)
+
 Create an item
 
 ```sh
@@ -1385,6 +1401,8 @@ return:
 }
 ```
 
+![Create item](assets/week-1/Create%20item.png)
+
 List tables
 
 ```sh
@@ -1400,6 +1418,8 @@ return
     ]
 }
 ```
+
+![List tables](assets/week-1/List%20tables.png)
 
 Get Records
 
@@ -1424,6 +1444,8 @@ return
     }
 ]
 ```
+
+![Get records](assets/week-1/Get%20records.png)
 
 References:
 https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html 
@@ -1467,6 +1489,8 @@ Then start compose file so Postgresql service is running, and check it:
 ```sh
 psql -h localhost -U postgres
 ```
+
+![Psql](assets/week-1/Psql.png)
 
 ```
 \d
@@ -1514,6 +1538,8 @@ To exit
 
 These commands indicate that Postgresql is up and running.
 
+![Postgres](assets/week-1/Postgres.png)
+
 Another way to check it can be by installing a VSCode extension to browse the service. That extension is called PostgreSQL, and it can be added also to .gitpod.yaml file.
 
 ```yml
@@ -1523,7 +1549,9 @@ vscode:
     - cweijan.vscode-postgresql-client2
 ```
 
-![Postgres extensions](assets/week-1/Postgres%20extension.png)
+![Postgres extensions](assets/week-1/Postgres%20extensions.png)
+
+![Postgres extensions 2](assets/week-1/Postgres%20extensions%202.png)
 
 
 
