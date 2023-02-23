@@ -1553,9 +1553,111 @@ vscode:
 
 ![Postgres extensions 2](assets/week-1/Postgres%20extensions%202.png)
 
+## Homework Challenges 
 
+### Push and tag a image to DockerHub (they have a free tier)
 
+I have windows 10 system with WSL2 and docker already installed:
 
+```sh
+ developer@N059D5BBC  aws-bootcamp-cruddur-2023  bash  no config    docker --version
+Docker version 20.10.23, build 7155243
+```
 
+So, first step is to try to build the image locally:
 
+```sh
+docker build -t  backend-flask ./backend-flask
+Sending build context to Docker daemon  36.35kB
+Step 1/8 : FROM python:3.10-slim-buster
+ ---> b5d627f77479
+Step 2/8 : WORKDIR /backend-flask
+ ---> Using cache
+ ---> dec27c3e2b93
+Step 3/8 : COPY requirements.txt requirements.txt
+ ---> Using cache
+ ---> da85902f7ee8
+Step 4/8 : RUN pip3 install -r requirements.txt
+ ---> Using cache
+ ---> c8ea9985ae09
+Step 5/8 : COPY . .
+ ---> Using cache
+ ---> 7207314c405a
+Step 6/8 : ENV FLASK_ENV=development
+ ---> Using cache
+ ---> 8a94974b5f9e
+Step 7/8 : EXPOSE ${PORT}
+ ---> Using cache
+ ---> e0946a0add56
+Step 8/8 : CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=4567"]
+ ---> Using cache
+ ---> bd8e097c7bfb
+Successfully built bd8e097c7bfb
+Successfully tagged backend-flask:latest
+```
+![Build backend image](assets/week-1/Build%20backend%20image.png)
+
+Then I can verify if the image is available:
+
+```sh
+docker images | grep flask
+```
+![Docker images backend](assets/week-1/Docker%20images%20backend.png)
+
+Then I'll log into Docker Hub and search for instruction to push a custom image to the repository:
+
+- Create a Docker ID ==> done = alvarezdaniel
+- Create a repository ==> done = alvarezdaniel/aws-bootcamp (https://hub.docker.com/repository/docker/alvarezdaniel/aws-bootcamp/general)
+
+![Docker repository](assets/week-1/Docker%20repository.png)
+
+To be able to push the built image to the new created repository, it must be rebuilt using a different repository:
+
+```sh
+docker build -t  alvarezdaniel/aws-bootcamp/backend-flask:1.0.0 ./backend-flask
+```
+
+Then again, docker images can be called in order to check built image:
+
+```sh
+docker images | grep back
+```
+
+![Docker images backend 2](assets/week-1/Docker%20images%20backend%202.png)
+
+Finally, the image can be pushed to Docker Hub
+
+```sh
+docker push alvarezdaniel/aws-bootcamp/backend-flask:1.0.0
+```
+
+![Docker push failed](assets/week-1/Docker%20push%20failed.png)
+
+Searching for that error throwed that authentication is missing with Docker Hub:
+
+```sh
+docker login -u MY_USER -p MY_PASSWORD
+```
+
+![Docker login](assets/week-1/Docker%20login.png)
+
+I've found that after doing that, docker push still was failing, so I kept investigating, and discovered that repository name has to be the same as the image name locally, so I've run this command to create a new image locally:
+
+```sh
+docker build -t  alvarezdaniel/backend-flask:1.0.0 ./backend-flask
+```
+
+![Docker build 2](assets/week-1/Docker%20build%202.png)
+
+And after that, I could successfully pushed the image to Docker Hub:
+
+```sh
+docker push alvarezdaniel/backend-flask:1.0.0
+```
+
+![Docker push](assets/week-1/Docker%20push.png)
+
+Then I was able to see the pushed image in the online repository:
+
+![Docker repository 2](assets/week-1/Docker%20repository%202.png)
 
