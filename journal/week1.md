@@ -2395,3 +2395,31 @@ GET http://127.0.0.1:4567/api/activities/home
 
 ![Get activities docker multistage](assets/week-1/Get%20activities%20docker%20multistage.png)
 
+## Knowledge Challenges
+
+### Security Quiz
+
+#### What is the security product Snyk used for?
+ Network intrusion detection
+ Code analysis and security vulnerabilities management ==> X
+ Password management
+ Firewall configuration
+
+#### What is AWS Secrets Manager used for?
+ Storing and managing user credentials and secrets, such as database passwords and API keys. ==> X
+ Managing access controls for AWS resources.
+ Detecting and mitigating DDoS attacks.
+ Monitoring system logs for security events.
+
+#### What is the open source software Clair used for?
+ Scanning and analyzing Docker container images for security vulnerabilities. ==> X
+ Implementing network security controls in Kubernetes clusters.
+ Enforcing container isolation using hardware virtualization.
+ Analyzing system logs for container-related security events.
+
+#### Which of the following is NOT a Security best practice for containers?
+ Trusting a Private vs Public Image Registry
+ Separate databases from long term storage ==> X
+ Docker & daemon & container should run in non-root user mode
+ Docker in production should always use the --secure flag when running containers
+
