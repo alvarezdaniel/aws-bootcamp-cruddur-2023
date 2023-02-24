@@ -2423,3 +2423,32 @@ GET http://127.0.0.1:4567/api/activities/home
  Docker & daemon & container should run in non-root user mode
  Docker in production should always use the --secure flag when running containers
 
+### Pricing Quiz
+
+#### How many hours do you get free in Gitpod per month?
+ 30
+ 40
+ 50 ==> X
+ 60
+
+#### How many hours do you get free in Github Codespaces per month for a 4 core environment?
+ 30 ==> X
+ 50
+ 60
+ 120
+
+#### What instance type does Cloud9 use?
+ c1.standard
+ c9.nano
+ c9.standard
+ t2.micro ==> X
+
+#### What feature in CloudTrail can quickly accumulate spend if left unchecked?
+ Management Events
+ Data Events ==> X
+ Log File Validation
+ Using a KMS Key
+
+#### When using Cloud Developer Environments (CDEs) spinning up multiple environments at the same time will accelerate spend
+ TRUE ==> X
+ FALSE
