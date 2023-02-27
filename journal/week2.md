@@ -16,6 +16,10 @@ AWS user groups around the world
 - Shala Warner [@GiftedLane](https://twitter.com/GiftedLane)
 - Jessica Joy Kerr [@jessitron](https://twitter.com/jessitron)
 
+## Watched videos
+
+- []()
+
 ## New week
 
 - Program = instructions (in the past, programs log history of what happened in text files, now they use distributed tracing)
@@ -328,3 +332,13 @@ class HomeActivities:
       
       return results
 ```
+
+- When opening activities endpoint: https://4567-alvarezdani-awsbootcamp-rsrf37dsuxv.ws-us88.gitpod.io/api/activities/home, and executing honeycomb query, now this is the result:
+
+![](assets/week-2/08-honeycomb-trace-multiple-spans.png)
+
+- And the new span contains the defined attributes:
+
+![](assets/week-2/09-honeycomb-trace-attributes.png)
+
+
