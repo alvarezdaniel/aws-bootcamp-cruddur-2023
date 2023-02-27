@@ -16,13 +16,25 @@ AWS user groups around the world
 - Shala Warner [@GiftedLane](https://twitter.com/GiftedLane)
 - Jessica Joy Kerr [@jessitron](https://twitter.com/jessitron)
 
-## Watched videos
-
-- []()
-
 ## New week
 
 - Program = instructions (in the past, programs log history of what happened in text files, now they use distributed tracing)
+
+## Class Summary
+
+- Instrument our backend flask application to use Open Telemetry (OTEL) with
+- Honeycomb.io as the provider
+- Run queries to explore traces within Honeycomb.io
+- Instrument AWS X-Ray into backend flask application
+- Configure and provision X-Ray daemon within docker-compose and send data back to X-Ray API
+- Observe X-Ray traces within the AWS Console
+- Integrate Rollbar for Error Logging
+- Trigger an error an observe an error with Rollbar
+- Install WatchTower and write a custom logger to send application log data to - CloudWatch Log group
+
+## Watched videos
+
+- [Week 2 Live-Stream Video](https://www.youtube.com/watch?v=2GD9xCzRId4&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=30)
 
 ### Honeycomb instrumentation
 
