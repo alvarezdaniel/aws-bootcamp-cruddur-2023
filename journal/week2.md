@@ -22,8 +22,7 @@ AWS user groups around the world
 
 ## Class Summary
 
-- Instrument our backend flask application to use Open Telemetry (OTEL) with
-- Honeycomb.io as the provider
+- Instrument our backend flask application to use Open Telemetry (OTEL) with Honeycomb.io as the provider
 - Run queries to explore traces within Honeycomb.io
 - Instrument AWS X-Ray into backend flask application
 - Configure and provision X-Ray daemon within docker-compose and send data back to X-Ray API
