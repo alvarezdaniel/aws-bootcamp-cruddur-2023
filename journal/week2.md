@@ -341,4 +341,11 @@ class HomeActivities:
 
 ![](assets/week-2/09-honeycomb-trace-attributes.png)
 
+- Useful Honeycomb links:
+
+1. Direct Honeycomb.io Login to bypass the main website = https://ui.honeycomb.io/
+2. Honeycomb.io Docs on Python OpenTelemetry = https://docs.honeycomb.io/getting-data-in/opentelemetry/python/
+3. Honeycomb.io Docs on Getting Data In – Best Practices = https://docs.honeycomb.io/getting-data-in/data-best-practices/
+4. Honeycomb.io Glitch.me page – What Honeycomb.io team is this? = https://honeycomb-whoami.glitch.me/
+
 
