@@ -12,6 +12,7 @@ AWS user groups around the world
 
 ## Week 1 instructors
 
+- Andrew Brown [@andrebrown](https://twitter.com/andrebrown)
 - James Spurin [@jamesspurin](https://twitter.com/jamesspurin)
 - Edith Puclla [@EdithPuclla](https://twitter.com/EdithPuclla)
 - Shala Warner [@GiftedLane](https://twitter.com/GiftedLane)
