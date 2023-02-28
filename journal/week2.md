@@ -362,4 +362,235 @@ class HomeActivities:
 3. Honeycomb.io Docs on Getting Data In – Best Practices = https://docs.honeycomb.io/getting-data-in/data-best-practices/
 4. Honeycomb.io Glitch.me page – What Honeycomb.io team is this? = https://honeycomb-whoami.glitch.me/
 
+### Instrument AWS X-Ray
+
+AWS X-Ray info: https://aws.amazon.com/xray/
+
+AWS X-Ray provides a complete view of requests as they travel through your application and filters visual data across payloads, functions, traces, services, APIs, and more with no-code and low-code motions.
+
+![](assets/week-2/11-xray.png)
+
+What are the best practises for setting up x-ray daemon? https://stackoverflow.com/questions/54236375/what-are-the-best-practises-for-setting-up-x-ray-daemon
+
+To x-ray to work a daemon must be installed and running for collecting and sending traces in batches to x-ray api.
+
+![](assets/week-2/12-xray-best-practices.png)
+
+The first thing to do for add x-ray instrumentation is adding python module to 'requirements.txt' file:
+
+```
+aws-xray-sdk
+```
+
+> AWS Documentation - SDKs and Toolkits: https://docs.aws.amazon.com/index.html#sdks
+> According to Andrew, Ruby docs are the best documented ones
+> AWS SDK for Python (Boto3) https://aws.amazon.com/sdk-for-python/
+> API Reference: https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/index.html
+> XRay: https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html
+> boto3 Github: https://github.com/boto/boto3
+> OpenTelemetry Python with AWS X-Ray: https://github.com/aws/aws-xray-sdk-python
+
+Then the new requirement module has to be installed:
+
+```sh
+pip install -r requirements.txt
+```
+
+Info about how to add xray middleware to flask app: https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-python-middleware.html#xray-sdk-python-adding-middleware-flask
+
+Add imports to `app.py`
+
+```py
+from aws_xray_sdk.core import xray_recorder
+from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
+```
+
+Add also x-ray initialization to `app.py` 
+
+```py
+xray_url = os.getenv("AWS_XRAY_URL")
+xray_recorder.configure(service='backend-flask', dynamic_naming=xray_url)
+```
+
+> https://docs.aws.amazon.com/xray-sdk-for-python/latest/reference/configurations.html#segment-dynamic-naming
+
+And then x-ray middleware (after app initialization)
+```py
+XRayMiddleware(app, xray_recorder)
+```
+
+AWS resources must be created in order to capture traces in AWS X-RAY (sampling rule and xray group)
+
+Create `xray.json` file with this content:
+
+```json
+{
+  "SamplingRule": {
+      "RuleName": "Cruddur",
+      "ResourceARN": "*",
+      "Priority": 9000,
+      "FixedRate": 0.1,
+      "ReservoirSize": 5,
+      "ServiceName": "backend-flask",
+      "ServiceType": "*",
+      "Host": "*",
+      "HTTPMethod": "*",
+      "URLPath": "*",
+      "Version": 1
+  }
+}
+```
+
+Execute this aws cli command to create an xray group:
+
+```sh
+FLASK_ADDRESS="https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+aws xray create-group \
+   --group-name "Cruddur" \
+   --filter-expression "service(\"backend-flask\")"
+```
+
+And then this one to create the sampling rule:
+
+```sh
+aws xray create-sampling-rule --cli-input-json file://journal/aws/json/xray.json
+```
+
+We can check the AWS resources in AWS console (Cloudwatch):
+
+![](assets/week-2/XXX)
+
+> Some info about AWS sampling rules and xray  groups:
+> - https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html
+> - https://docs.aws.amazon.com/xray/latest/devguide/xray-api-sampling.html
+> - https://aws.amazon.com/blogs/developer/deep-dive-into-aws-x-ray-groups-and-use-cases/
+
+> Andrew mentioned why he implements AWS resources creation using api instead of using AWS console, and it's because AWS console UI changes constantly
+
+> My opinion is that using api, resources creation can be documented and it can be automated using scripts
+
+Next, install X-ray daemon
+
+- Install X-ray Daemon https://docs.aws.amazon.com/xray/latest/devguide/xray-daemon.html
+- Github aws-xray-daemon https://github.com/aws/aws-xray-daemon
+- X-Ray Docker Compose example https://github.com/marjamis/xray/blob/master/docker-compose.yml
+
+This script is used to install x-ray daemon, but we are not using it because we need it to run in a container
+
+```sh
+wget https://s3.us-east-2.amazonaws.com/aws-xray-assets.us-east-2/xray-daemon/aws-xray-daemon-3.x.deb
+sudo dpkg -i **.deb
+```
+
+So, we are adding a new service to the `docker-compose.yml` file:
+
+```yml
+ xray-daemon:
+    image: "amazon/aws-xray-daemon"
+    environment:
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      AWS_REGION: "${AWS_DEFAULT_REGION}"
+    command:
+      - "xray -o -b xray-daemon:2000"
+    ports:
+      - 2000:2000/udp
+```
+
+The image this container is using is `amazon/aws-xray-daemon` (managed by Amazon)
+https://hub.docker.com/r/amazon/aws-xray-daemon/#!
+
+The environment variables used in this container are already configured in Gitpod settings.
+
+The variables that should be added to compose file are the ones used in backend-flask:
+
+```yml
+  backend-flask:
+    environment:
+      AWS_XRAY_URL: "*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
+      AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
+```
+
+Now the application can be started, do some requests to backend and check the results:
+
+By using this script, service data for the last 10 minutes can be checked:
+
+```sh
+EPOCH=$(date +%s)
+aws xray get-service-graph --start-time $(($EPOCH-600)) --end-time $EPOCH
+```
+
+Also, AWS console can be used to check it
+
+![](assets/week-2/XXX)
+
+Now let's check how to add custom segments/subsegments
+
+> https://github.com/aws/aws-xray-sdk-python#start-a-custom-segmentsubsegment
+
+Add custom segment and subsegment in another endpoint (UserActivities `backend-flask\services\user_activities.py`)
+
+```py
+from datetime import datetime, timedelta, timezone
+
+# XRAY import
+from aws_xray_sdk.core import xray_recorder
+
+class UserActivities:
+  def run(user_handle):
+
+    # XRAY segment
+    segment = xray_recorder.begin_segment('user_activities')
+    
+    model = {
+      'errors': None,
+      'data': None
+    }
+
+    now = datetime.now(timezone.utc).astimezone()
+
+    if user_handle == None or len(user_handle) < 1:
+      model['errors'] = ['blank_user_handle']
+    else:
+      now = datetime.now()
+      results = [{
+        'uuid': '248959df-3079-4947-b847-9e0892d1bab4',
+        'handle':  'Andrew Brown',
+        'message': 'Cloud is fun!',
+        'created_at': (now - timedelta(days=1)).isoformat(),
+        'expires_at': (now + timedelta(days=31)).isoformat()
+      }]
+      model['data'] = results
+
+    # XRAY subsegment
+    subsegment = xray_recorder.begin_subsegment('mock-data')
+    dict = {
+      "now": now.isoformat(),
+      "results-size": len(model['data'])
+    }
+    subsegment.put_metadata('key', dict, 'namespace')
+
+    return model
+```
+
+Test again using script, by executing the endpoint to generate traces: /api/activities/@andrewbrown
+
+```sh
+EPOCH=$(date +%s)
+aws xray get-service-graph --start-time $(($EPOCH-600)) --end-time $EPOCH
+```
+
+And using AWS console (Cloudwatch)
+
+![](assets/week-2/XXX)
+
+Finally, for not paying X-RAY use in case it is sending too much data, disable x-ray middleware in `app.py`
+
+```py
+# X-RAY middleware
+#XRayMiddleware(app, xray_recorder)
+```
+
+> https://aws.amazon.com/xray/pricing/
+
 
