@@ -35,7 +35,7 @@ AWS user groups around the world
 
 - [Week 2 Live-Stream Video](https://www.youtube.com/watch?v=2GD9xCzRId4&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=30)
 
-### Honeycomb instrumentation
+### Instrument Honeycomb with OTEL
 
 - Implement tracing using honeycomb: https://www.honeycomb.io/
 - Each row in honeycomb is a span (single unit of work, has a duration)
@@ -46,7 +46,7 @@ AWS user groups around the world
 
 #### Instrument backend app
 
-- Create honeycomb account and set it up.
+- Create honeycomb account and set it up
 - Create honeycomb environment called "bootcamp"
 
 ![](assets/week-2/01-honeycomb-environment.png)
@@ -59,26 +59,9 @@ AWS user groups around the world
 
 ![](assets/week-2/03-set-honeycomb-env.png)
 
-- Add environment variables to compose file
-
-```yaml
-services:
-  backend-flask:
-    environment:
-      OTEL_SERVICE_NAME: 'backend-flask'
-      OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io"
-      OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=${HONEYCOMB_API_KEY}"
-```
-
-![](assets/week-2/04-honeycomb-env-gitpod.png)
-
-- OTEL_SERVICE_NAME: Sets the value of the service.name resource attribute (https://opentelemetry.io/docs/concepts/sdk-configuration/otlp-exporter-configuration/#otel_exporter_otlp_headers)
-- OTEL_EXPORTER_OTLP_ENDPOINT: A base endpoint URL for any signal type, with an optionally-specified port number. Helpful for when you’re sending more than one signal to the same endpoint and want one environment variable to control the endpoint (https://opentelemetry.io/docs/concepts/sdk-configuration/otlp-exporter-configuration/#otel_exporter_otlp_headers)
-- OTEL_EXPORTER_OTLP_HEADERS: A list of headers to apply to all outgoing data (traces, metrics, and logs) (https://opentelemetry.io/docs/concepts/sdk-configuration/otlp-exporter-configuration/#otel_exporter_otlp_headers)
-
 - Add requirements to pip for adding honeycomb support
 
-```txt
+```
 opentelemetry-api 
 opentelemetry-sdk 
 opentelemetry-exporter-otlp-proto-http 
@@ -182,23 +165,39 @@ trace.set_tracer_provider(provider)
 tracer = trace.get_tracer(__name__)
 ```
 
-- Add automatic instrumentation
+- Add automatic instrumentation (after app initialization)
 
 ```py
-app = Flask(__name__)
-
 # HoneyComb automatic instrumentation for flask
 FlaskInstrumentor().instrument_app(app)
 RequestsInstrumentor().instrument()
 ```
 
+- Add environment variables to compose file
+
+```yaml
+services:
+  backend-flask:
+    environment:
+      OTEL_SERVICE_NAME: 'backend-flask'
+      OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io"
+      OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=${HONEYCOMB_API_KEY}"
+```
+
+![](assets/week-2/04-honeycomb-env-gitpod.png)
+
+- OTEL_SERVICE_NAME: Sets the value of the service.name resource attribute (https://opentelemetry.io/docs/concepts/sdk-configuration/otlp-exporter-configuration/#otel_exporter_otlp_headers)
+- OTEL_EXPORTER_OTLP_ENDPOINT: A base endpoint URL for any signal type, with an optionally-specified port number. Helpful for when you’re sending more than one signal to the same endpoint and want one environment variable to control the endpoint (https://opentelemetry.io/docs/concepts/sdk-configuration/otlp-exporter-configuration/#otel_exporter_otlp_headers)
+- OTEL_EXPORTER_OTLP_HEADERS: A list of headers to apply to all outgoing data (traces, metrics, and logs) (https://opentelemetry.io/docs/concepts/sdk-configuration/otlp-exporter-configuration/#otel_exporter_otlp_headers)
+
 - Run compose file to test it
 
 ```sh
-docker compose  -f "docker-compose.yml" up -d --build backend-flask 
+docker compose  -f "docker-compose.yml" up -d
 ```
 
-- Browse activities endpoint: https://4567-alvarezdani-awsbootcamp-ismmdqr3qis.ws-us88.gitpod.io/api/activities/home
+- Browse activities endpoint so as to generate tracing activity: 
+https://4567-alvarezdani-awsbootcamp-ismmdqr3qis.ws-us88.gitpod.io/api/activities/home
 
 ```
 [
@@ -351,6 +350,10 @@ class HomeActivities:
 - And the new span contains the defined attributes:
 
 ![](assets/week-2/09-honeycomb-trace-attributes.png)
+
+- Honeycomb is useful for implementing different visualizations that can give a visual indication of application behavior, such as average response time grouped by http route:
+
+![](assets/week-2/10-honeycomb-query.png)
 
 - Useful Honeycomb links:
 
