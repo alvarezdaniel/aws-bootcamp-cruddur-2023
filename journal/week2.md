@@ -799,5 +799,5 @@ When refreshing the endpoint request, an error is shown in Rollbar
 
 ![](assets/week-2/XXX)
 
-
+> Rollbar flask example: https://github.com/rollbar/rollbar-flask-example/blob/master/hello.py
 
