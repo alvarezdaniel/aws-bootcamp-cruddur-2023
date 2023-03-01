@@ -48,7 +48,7 @@ services:
       - '5432:5432'
     volumes: 
       - db:/var/lib/postgresql/data      
- xray-daemon:
+  xray-daemon:
     image: "amazon/aws-xray-daemon"
     environment:
       AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
