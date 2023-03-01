@@ -686,9 +686,6 @@ from aws_xray_sdk.core import xray_recorder
 class UserActivities:
   def run(user_handle):
 
-    # XRAY segment
-    #segment = xray_recorder.begin_segment('user_activities')
-    
     model = {
       'errors': None,
       'data': None
@@ -721,6 +718,8 @@ class UserActivities:
 
     return model
 ```
+
+> Info extracted from: https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-python-subsegments.html
 
 Test again by executing the endpoint to generate traces: /api/activities/@[user]
 
