@@ -675,7 +675,7 @@ Now let's check how to add custom segments/subsegments
 
 > https://github.com/aws/aws-xray-sdk-python#start-a-custom-segmentsubsegment
 
-Add custom segment and subsegment in another endpoint (UserActivities `backend-flask\services\user_activities.py`)
+Add custom subsegment in another endpoint (UserActivities `backend-flask\services\user_activities.py`)
 
 ```py
 from datetime import datetime, timedelta, timezone
@@ -687,7 +687,7 @@ class UserActivities:
   def run(user_handle):
 
     # XRAY segment
-    segment = xray_recorder.begin_segment('user_activities')
+    #segment = xray_recorder.begin_segment('user_activities')
     
     model = {
       'errors': None,
@@ -710,26 +710,47 @@ class UserActivities:
       model['data'] = results
 
     # XRAY subsegment
-    subsegment = xray_recorder.begin_subsegment('mock-data')
+    subsegment = xray_recorder.begin_subsegment('user_activities_subsegment')
     dict = {
       "now": now.isoformat(),
       "results-size": len(model['data'])
     }
-    subsegment.put_metadata('key', dict, 'namespace')
+    subsegment.put_metadata('info', dict, 'namespace')
+    subsegment.put_annotation('id', '12345')
+    xray_recorder.end_subsegment()
 
     return model
 ```
 
-Test again using script, by executing the endpoint to generate traces: /api/activities/@andrewbrown
+Test again by executing the endpoint to generate traces: /api/activities/@[user]
 
-```sh
-EPOCH=$(date +%s)
-aws xray get-service-graph --start-time $(($EPOCH-600)) --end-time $EPOCH
+https://4567-alvarezdani-awsbootcamp-vfl7q5gy1xq.ws-us89.gitpod.io/api/activities/@dd
+
+Result
+
+```json
+[
+  {
+    "created_at": "2023-02-28T18:45:43.422017",
+    "expires_at": "2023-04-01T18:45:43.422017",
+    "handle": "Andrew Brown",
+    "message": "Cloud is fun!",
+    "uuid": "248959df-3079-4947-b847-9e0892d1bab4"
+  }
+]
 ```
 
-And using AWS console (Cloudwatch)
+Using AWS console (Cloudwatch), check the generated traces
 
-![](assets/week-2/XXX)
+![](assets/week-2/17-xray-traces-subsegments.png)
+
+We can inspect the trace details, so in here we can see the subsegment, and the generated metadata and annotation
+
+![](assets/week-2/18-xray-trace-subsegments.png)
+
+![](assets/week-2/19-xray-annotations.png)
+
+![](assets/week-2/20-xray-metadata.png)
 
 Finally, for not paying X-RAY use in case it is sending too much data, disable x-ray middleware in `app.py`
 
