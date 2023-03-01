@@ -659,7 +659,7 @@ https://ca-central-1.console.aws.amazon.com/cloudwatch/home?region=ca-central-1#
 
 ![](assets/week-2/13-xray-traces.png)
 
-![](assets/week-2/13-xray-trace.png)
+![](assets/week-2/14-xray-trace.png)
 
 Now let's check how to add custom segments/subsegments
 
