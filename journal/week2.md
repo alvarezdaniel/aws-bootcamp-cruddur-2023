@@ -502,7 +502,17 @@ Result
 
 We can check the AWS resources in AWS console (Cloudwatch):
 
-![](assets/week-2/XXX)
+X-ray Group
+
+https://ca-central-1.console.aws.amazon.com/cloudwatch/home?region=ca-central-1#xray:settings/groups
+
+![](assets/week-2/15-xray-group.png)
+
+Sampling rule
+
+https://ca-central-1.console.aws.amazon.com/cloudwatch/home?region=ca-central-1#xray:settings/sampling-rules
+
+![](assets/week-2/16-xray-sampling-rules.png)
 
 > Some info about AWS sampling rules and xray  groups:
 > - https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html
