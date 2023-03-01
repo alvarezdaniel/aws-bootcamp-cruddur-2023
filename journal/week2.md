@@ -693,5 +693,111 @@ class HomeActivities:
 
 ### Integrate Rollbar and capture and error
 
+To integrate Rollbar into the application, first of all, a Rollback account must be opened
+
+https://app.rollbar.com/onboarding
+
+![](assets/week-2/XXX)
+
+Search for flask SDK to obtain the instructions to integrate it
+
+![](assets/week-2/XXX)
+
+https://github.com/rollbar/pyrollbar
+
+First of all, we need to add the python modules to `requirements.txt`
+
+```txt
+blinker
+rollbar
+```
+
+And install them
+
+```sh
+pip install -r requirements.txt
+```
+
+Then we need to generate a Rollback access token and add it as an environment variable to docker compose file
+
+![](assets/week-2/XXX)
+
+```sh
+export ROLLBAR_ACCESS_TOKEN=""
+gp env ROLLBAR_ACCESS_TOKEN=""
+```
+
+```yml
+version: "3.8"
+services:
+  backend-flask:
+    environment:
+      ROLLBAR_ACCESS_TOKEN: "${ROLLBAR_ACCESS_TOKEN}"
+```
+
+For instrumenting the backend application, we need to add first the python imports to `app.py` file
+
+```py
+import os
+import rollbar
+import rollbar.contrib.flask
+from flask import got_request_exception
+```
+
+Then we need to add Rollbar initialization, also in `app.py` file (after app declaration)
+
+```py
+rollbar_access_token = os.getenv('ROLLBAR_ACCESS_TOKEN')
+@app.before_first_request
+def init_rollbar():
+    """init rollbar module"""
+    rollbar.init(
+        # access token
+        rollbar_access_token,
+        # environment name
+        'production',
+        # server root directory, makes tracebacks prettier
+        root=os.path.dirname(os.path.realpath(__file__)),
+        # flask already sets up logging
+        allow_logging_basic_config=False)
+
+    # send exceptions from `app` to rollbar, using flask's signal system.
+    got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
+```
+
+For testing Rollbar implementation, we are adding a new endpoint
+
+```py
+@app.route('/rollbar/test')
+def rollbar_test():
+    rollbar.report_message('Hello World!', 'warning')
+    return "Hello World!"
+``` 
+
+So, by starting the application with docker compose up, we can test if it's working
+
+![](assets/week-2/XXX)
+
+We need to use the new endpoint defined to test it, so let's open it: /rollbar/test
+
+![](assets/week-2/XXX)
+
+And check the data in Rollbar (remember to check on all log levels to see the warning message)
+
+![](assets/week-2/XXX)
+
+For an error to occur, we will change some code that should raise an error message in Rollbar
+
+home_activities.py
+
+```py
+#return results
+results
+```
+
+When refreshing the endpoint request, an error is shown in Rollbar
+
+![](assets/week-2/XXX)
+
 
 

@@ -32,6 +32,12 @@ import watchtower
 import logging
 from time import strftime
 
+# Rollbar imports
+import os
+import rollbar
+import rollbar.contrib.flask
+from flask import got_request_exception
+
 # HoneyComb initialization: initialize tracer and an exporter for sending data to Honeycomb
 provider = TracerProvider()
 processor = BatchSpanProcessor(OTLPSpanExporter())
@@ -40,8 +46,8 @@ trace.set_tracer_provider(provider)
 tracer = trace.get_tracer(__name__)
 
 # HoneyComb: show this in the logs within the backend-flask app (STDOUT)
-simple_processor = SimpleSpanProcessor(ConsoleSpanExporter())
-provider.add_span_processor(simple_processor)
+#simple_processor = SimpleSpanProcessor(ConsoleSpanExporter())
+#provider.add_span_processor(simple_processor)
 
 # X-RAY initialization
 xray_url = os.getenv("AWS_XRAY_URL")
@@ -57,6 +63,24 @@ LOGGER.addHandler(cw_handler)
 #LOGGER.info("some message")
 
 app = Flask(__name__)
+
+# Rollbar initialization
+rollbar_access_token = os.getenv('ROLLBAR_ACCESS_TOKEN')
+@app.before_first_request
+def init_rollbar():
+    """init rollbar module"""
+    rollbar.init(
+        # access token
+        rollbar_access_token,
+        # environment name
+        'production',
+        # server root directory, makes tracebacks prettier
+        root=os.path.dirname(os.path.realpath(__file__)),
+        # flask already sets up logging
+        allow_logging_basic_config=False)
+
+    # send exceptions from `app` to rollbar, using flask's signal system.
+    got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
 
 # HoneyComb automatic instrumentation for flask
 FlaskInstrumentor().instrument_app(app)
@@ -170,10 +194,16 @@ def data_activities_reply(activity_uuid):
     return model['data'], 200
   return
 
+# Rollbar test endpoint
 @app.route("/api/activities/notifications", methods=['GET'])
 def data_notifications():
   data = NotificationsActivities.run()
   return data, 200
+
+@app.route('/rollbar/test')
+def rollbar_test():
+    rollbar.report_message('Hello World!', 'warning')
+    return "Hello World!"
 
 if __name__ == "__main__":
   app.run(debug=True)
