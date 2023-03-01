@@ -7,7 +7,7 @@ class UserActivities:
   def run(user_handle):
 
     # XRAY segment
-    segment = xray_recorder.begin_segment('user_activities')
+    #segment = xray_recorder.begin_segment('user_activities')
     
     model = {
       'errors': None,
@@ -30,11 +30,13 @@ class UserActivities:
       model['data'] = results
 
     # XRAY subsegment
-    subsegment = xray_recorder.begin_subsegment('mock-data')
+    subsegment = xray_recorder.begin_subsegment('user_activities_subsegment')
     dict = {
       "now": now.isoformat(),
       "results-size": len(model['data'])
     }
-    subsegment.put_metadata('key', dict, 'namespace')
+    subsegment.put_metadata('info', dict, 'namespace')
+    subsegment.put_annotation('id', '12345')
+    xray_recorder.end_subsegment()
 
     return model
