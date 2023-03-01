@@ -593,4 +593,103 @@ Finally, for not paying X-RAY use in case it is sending too much data, disable x
 
 > https://aws.amazon.com/xray/pricing/
 
+### Configure custom logger to send to CloudWatch Logs
+
+For adding CloudWatch logs implementation to backend service, first of all we need to add required python module to `requirements.txt` file:
+
+```txt
+watchtower
+```
+
+> https://pypi.org/project/watchtower/
+
+Then we need to install it:
+
+```sh
+pip install -r requirements.txt
+```
+
+Required imports must be added to `app.py` file
+
+```py
+import watchtower
+import logging
+from time import strftime
+```
+
+Then CloudWatch Logger must be initialized, again in `app.py` file
+
+```py
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.DEBUG)
+console_handler = logging.StreamHandler()
+cw_handler = watchtower.CloudWatchLogHandler(log_group='cruddur')
+LOGGER.addHandler(console_handler)
+LOGGER.addHandler(cw_handler)
+```
+
+Add code to handle errors to log them, also to `app.py` file
+
+```py
+@app.after_request
+def after_request(response):
+    timestamp = strftime('[%Y-%b-%d %H:%M]')
+    LOGGER.error('%s %s %s %s %s %s', timestamp, request.remote_addr, request.method, request.scheme, request.full_path, response.status)
+    return response
+```
+
+Then, in the service we need to log something, we add a call to the already configured logger
+
+In this case, we'll add logging to `home_activities.py` file
+
+```py
+class HomeActivities:
+  def run(logger):
+    logger.info('Hello Cloudwatch! from  /api/activities/home')
+```
+
+And also pass the logger from `app.py`
+
+```py
+@app.route("/api/activities/home", methods=['GET'])
+def data_home():
+  data = HomeActivities.run(logger=LOGGER)
+  return data, 200
+```
+
+Finally, we need to add the required env vars to docker compose, in backend-flask service
+
+```yml
+version: "3.8"
+services:
+  backend-flask:
+    environment:
+      AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+```
+
+For testing it, we start the compose file
+
+![](assets/week-2/XXX)
+
+And then make a request browsing the endpoint /api/activities/home
+
+For checking the created logs, get into AWS console, in CloudWatch, Logs, Log groups, and click on cruddur log group, and the generated log stream should be there
+
+![](assets/week-2/XXX)
+
+By clicking on one of them, details can be inspected
+
+![](assets/week-2/XXX)
+
+For not worrying about spending in AWS, logging can be left disabled
+
+```py
+class HomeActivities:
+  def run(logger):
+    #logger.info('Hello Cloudwatch! from  /api/activities/home')
+```
+
+
 
