@@ -382,12 +382,20 @@ The first thing to do for add x-ray instrumentation is adding python module to '
 aws-xray-sdk
 ```
 
+Notes 
+
 > AWS Documentation - SDKs and Toolkits: https://docs.aws.amazon.com/index.html#sdks
+
 > According to Andrew, Ruby docs are the best documented ones
+
 > AWS SDK for Python (Boto3) https://aws.amazon.com/sdk-for-python/
+
 > API Reference: https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/index.html
+
 > XRay: https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html
+
 > boto3 Github: https://github.com/boto/boto3
+
 > OpenTelemetry Python with AWS X-Ray: https://github.com/aws/aws-xray-sdk-python
 
 Then the new requirement module has to be installed:
