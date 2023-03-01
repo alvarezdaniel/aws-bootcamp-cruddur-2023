@@ -450,10 +450,54 @@ aws xray create-group \
    --filter-expression "service(\"backend-flask\")"
 ```
 
+Result
+
+```
+>    --group-name "Cruddur" \
+>    --filter-expression "service(\"backend-flask\")"
+{
+    "Group": {
+        "GroupName": "Cruddur",
+        "GroupARN": "arn:aws:xray:ca-central-1:XXXXXXXXXX:group/Cruddur/CGV4VDVHTFM5BTJMX2C6GOANIC46RLEZJ7FVIINO5ZB2TMWL2ZDA",
+        "FilterExpression": "service(\"backend-flask\")",
+        "InsightsConfiguration": {
+            "InsightsEnabled": false,
+            "NotificationsEnabled": false
+        }
+    }
+}
+```
+
 And then this one to create the sampling rule:
 
 ```sh
 aws xray create-sampling-rule --cli-input-json file://journal/aws/json/xray.json
+```
+
+Result
+
+```
+{
+    "SamplingRuleRecord": {
+        "SamplingRule": {
+            "RuleName": "Cruddur",
+            "RuleARN": "arn:aws:xray:ca-central-1:XXXXXXXXXX:sampling-rule/Cruddur",
+            "ResourceARN": "*",
+            "Priority": 9000,
+            "FixedRate": 0.1,
+            "ReservoirSize": 5,
+            "ServiceName": "backend-flask",
+            "ServiceType": "*",
+            "Host": "*",
+            "HTTPMethod": "*",
+            "URLPath": "*",
+            "Version": 1,
+            "Attributes": {}
+        },
+        "CreatedAt": "2023-03-01T17:01:08+00:00",
+        "ModifiedAt": "2023-03-01T17:01:08+00:00"
+    }
+}
 ```
 
 We can check the AWS resources in AWS console (Cloudwatch):
@@ -485,7 +529,7 @@ sudo dpkg -i **.deb
 So, we are adding a new service to the `docker-compose.yml` file:
 
 ```yml
- xray-daemon:
+  xray-daemon:
     image: "amazon/aws-xray-daemon"
     environment:
       AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
@@ -520,9 +564,102 @@ EPOCH=$(date +%s)
 aws xray get-service-graph --start-time $(($EPOCH-600)) --end-time $EPOCH
 ```
 
+Result
+
+```
+{
+    "Services": [
+        {
+            "ReferenceId": 0,
+            "Name": "4567-alvarezdani-awsbootcamp-fzb9yochj8w.ws-us89.gitpod.io",
+            "Names": [
+                "4567-alvarezdani-awsbootcamp-fzb9yochj8w.ws-us89.gitpod.io"
+            ],
+            "Root": true,
+            "State": "active",
+            "StartTime": "2023-03-01T17:07:10+00:00",
+            "EndTime": "2023-03-01T17:07:11+00:00",
+            "Edges": [],
+            "SummaryStatistics": {
+                "OkCount": 0,
+                "ErrorStatistics": {
+                    "ThrottleCount": 0,
+                    "OtherCount": 1,
+                    "TotalCount": 1
+                },
+                "FaultStatistics": {
+                    "OtherCount": 0,
+                    "TotalCount": 0
+                },
+                "TotalCount": 1,
+                "TotalResponseTime": 0.054
+            },
+            "DurationHistogram": [
+                {
+                    "Value": 0.054,
+                    "Count": 1
+                }
+            ],
+            "ResponseTimeHistogram": [
+                {
+                    "Value": 0.054,
+                    "Count": 1
+                }
+            ]
+        },
+        {
+            "ReferenceId": 1,
+            "Name": "4567-alvarezdani-awsbootcamp-fzb9yochj8w.ws-us89.gitpod.io",
+            "Names": [
+                "4567-alvarezdani-awsbootcamp-fzb9yochj8w.ws-us89.gitpod.io"
+            ],
+            "Type": "client",
+            "State": "unknown",
+            "StartTime": "2023-03-01T17:07:10+00:00",
+            "EndTime": "2023-03-01T17:07:11+00:00",
+            "Edges": [
+                {
+                    "ReferenceId": 0,
+                    "StartTime": "2023-03-01T17:07:10+00:00",
+                    "EndTime": "2023-03-01T17:07:11+00:00",
+                    "SummaryStatistics": {
+                        "OkCount": 0,
+                        "ErrorStatistics": {
+                            "ThrottleCount": 0,
+                            "OtherCount": 1,
+                            "TotalCount": 1
+                        },
+                        "FaultStatistics": {
+                            "OtherCount": 0,
+                            "TotalCount": 0
+                        },
+                        "TotalCount": 1,
+                        "TotalResponseTime": 0.054
+                    },
+                    "ResponseTimeHistogram": [
+                        {
+                            "Value": 0.054,
+                            "Count": 1
+                        }
+                    ],
+                    "Aliases": []
+                }
+            ]
+        }
+    ],
+    "StartTime": "2023-03-01T17:07:10+00:00",
+    "EndTime": "2023-03-01T17:07:10+00:00",
+    "ContainsOldGroupVersions": false
+}
+```
+
 Also, AWS console can be used to check it
 
-![](assets/week-2/XXX)
+https://ca-central-1.console.aws.amazon.com/cloudwatch/home?region=ca-central-1#xray:traces/query
+
+![](assets/week-2/13-xray-traces.png)
+
+![](assets/week-2/13-xray-trace.png)
 
 Now let's check how to add custom segments/subsegments
 
