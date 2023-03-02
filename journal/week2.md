@@ -844,19 +844,19 @@ services:
       AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
 ```
 
-For testing it, we start the compose file
+For testing it, we start the compose file and then make a request browsing the endpoint /api/activities/home
 
-![](assets/week-2/XXX)
-
-And then make a request browsing the endpoint /api/activities/home
+https://4567-alvarezdani-awsbootcamp-4d0cyhye98n.ws-us89.gitpod.io/api/activities/home
 
 For checking the created logs, get into AWS console, in CloudWatch, Logs, Log groups, and click on cruddur log group, and the generated log stream should be there
 
-![](assets/week-2/XXX)
+![](assets/week-2/21-cloudwatch-log-groups.png)
+
+![](assets/week-2/22-cloudwatch-log-group-cruddur.png)
 
 By clicking on one of them, details can be inspected
 
-![](assets/week-2/XXX)
+![](assets/week-2/23-cloudwatch-logs.png)
 
 For not worrying about spending in AWS, logging can be left disabled
 
