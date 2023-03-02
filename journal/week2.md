@@ -994,3 +994,36 @@ The error is also shown in Rollbar
 
 > Rollbar flask example: https://github.com/rollbar/rollbar-flask-example/blob/master/hello.py
 
+## Knowledge Challenges
+
+### Security Quiz
+
+What is one effect of implementing observability tools inside your web application?
+- Decreased alert fatigue for security teams (X)
+- Faster code deployments into production
+- Increased operation costs
+- Significantly more complex code base
+
+Which of the following is NOT one of the 3 main pillars of observability?
+- Metrics
+- Traces
+- Logs
+- Analytics (X)
+
+Which AWS service is responsible for logging backend API calls and other activity between the services inside your account?
+- Cloud Watch (X)
+- Cloud Trail
+- Sessions Manager
+- Cloud Advisor
+
+What is the purpose of the Amazon Detective AWS Service?
+- Automatically patch vulnerabilities in your AWS resources
+- Collect and analyze AWS resource logs for security investigations (X)
+- Provisioning AWS Security focused services in your account
+- Prevent overspend on AWS security focused services
+
+Which of the following is an example of a common instrumentation agent?
+- AWS Cloud Trail Agent
+- AWS Systems Manager
+- AWS SQS
+- AWS X-Ray Daemon (X)
