@@ -31,9 +31,11 @@ AWS user groups around the world
 - Trigger an error an observe an error with Rollbar
 - Install WatchTower and write a custom logger to send application log data to CloudWatch Log group
 
-## Watched videos
+## Todo Checklist
 
-- [Week 2 Live-Stream Video](https://www.youtube.com/watch?v=2GD9xCzRId4&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=30)
+### Watch Week 2 Live-Stream Video
+
+- https://www.youtube.com/watch?v=2GD9xCzRId4&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=30
 
 ### Instrument Honeycomb with OTEL
 
