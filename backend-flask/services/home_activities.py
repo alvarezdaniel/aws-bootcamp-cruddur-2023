@@ -5,7 +5,7 @@ tracer = trace.get_tracer("home.activities")
 
 class HomeActivities:
   def run(logger):
-    logger.info('Hello Cloudwatch! from  /api/activities/home')
+    #logger.info('Hello Cloudwatch! from /api/activities/home')
     
     with tracer.start_as_current_span("home-activites-mock-data"):
       span = trace.get_current_span()
