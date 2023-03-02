@@ -872,11 +872,13 @@ To integrate Rollbar into the application, first of all, a Rollback account must
 
 https://app.rollbar.com/onboarding
 
-![](assets/week-2/XXX)
+![](assets/week-2/24-rollbar.png)
 
 Search for flask SDK to obtain the instructions to integrate it
 
-![](assets/week-2/XXX)
+![](assets/week-2/25-rollbar-sdk.png)
+
+Info about pyrollbar package:
 
 https://github.com/rollbar/pyrollbar
 
@@ -895,12 +897,14 @@ pip install -r requirements.txt
 
 Then we need to generate a Rollback access token and add it as an environment variable to docker compose file
 
-![](assets/week-2/XXX)
+![](assets/week-2/26-rollbar-access-token.png)
 
 ```sh
-export ROLLBAR_ACCESS_TOKEN=""
-gp env ROLLBAR_ACCESS_TOKEN=""
+export ROLLBAR_ACCESS_TOKEN="XXXXXX"
+gp env ROLLBAR_ACCESS_TOKEN="XXXXXX"
 ```
+
+![](assets/week-2/27-rollbar-env.png)
 
 ```yml
 version: "3.8"
@@ -951,28 +955,40 @@ def rollbar_test():
 
 So, by starting the application with docker compose up, we can test if it's working
 
-![](assets/week-2/XXX)
+![](assets/week-2/28-rollbar-compose.png)
 
 We need to use the new endpoint defined to test it, so let's open it: /rollbar/test
 
-![](assets/week-2/XXX)
+https://4567-alvarezdani-awsbootcamp-yy4tw88k3ks.ws-us89.gitpod.io/rollbar/test
+
+![](assets/week-2/29-rollbar-test.png)
 
 And check the data in Rollbar (remember to check on all log levels to see the warning message)
 
-![](assets/week-2/XXX)
+https://app.rollbar.com/a/alvarez.daniel
+
+![](assets/week-2/30-rollbar-items.png)
+
+![](assets/week-2/31-rollbar-item1.png)
 
 For an error to occur, we will change some code that should raise an error message in Rollbar
 
-home_activities.py
+In `home_activities.py` introduce an error
 
 ```py
 #return results
 results
 ```
 
-When refreshing the endpoint request, an error is shown in Rollbar
+Open the request api: https://4567-alvarezdani-awsbootcamp-4n2xg6y3x4r.ws-us89.gitpod.io/api/activities/home
 
-![](assets/week-2/XXX)
+![](assets/week-2/32-rollbar-error.png)
+
+The error is also shown in Rollbar
+
+![](assets/week-2/33-rollbar-error.png)
+
+![](assets/week-2/34-rollbar-item2.png)
 
 > Rollbar flask example: https://github.com/rollbar/rollbar-flask-example/blob/master/hello.py
 
