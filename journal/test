@@ -1,0 +1,11 @@
+In week 2, I was able to complete the required assignments.
+
+- First of all, I watched week-2 live stream on Saturday, then I completed watching the other videos (Chirag's pricing recommendations, Ashish's security in observability, and the rest of the complementary videos, including the one Andrew recorded for solving x-day subsegments)
+- I could implement honeycomb instrumentation in backend-flask application, adding spans and attributes.
+- For AWS X-ray, I've implemented instrumentation, had no issues running the x-ray daemon container, I could create an AWS log group and sampling rule, and finally, after some troubleshooting, I could implement x-ray subsegments, before watching Andrew's video and Olga's video. It was a little tricky, but It was a good programming exercise.
+- For CloudWatch, I could be able to implement it by importing watchtower python module and generating some logs that I could see in the AWS CloudWatch console (the typical Hello Cloudwatch! as an example)
+- Finally, for Rollbar, I was able to implement also in the backend-flask app, and tested it by forcing an error in one of the endpoints. I could be able to see the error in Rollbar.
+
+For homework challenges, I wasn't able to complete any of them.
+
+Finally, I've submitted the Knowledge Challenges (security)

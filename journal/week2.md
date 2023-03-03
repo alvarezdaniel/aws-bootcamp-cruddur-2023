@@ -55,7 +55,6 @@ Links from the video:
 - AWS X-Ray pricing: https://aws.amazon.com/xray/pricing/
 - AWS CloudWatch pricing: https://aws.amazon.com/cloudwatch/pricing/
 
-
 ### Watch Ashish's Week 2 - Observability Security Considerations
 
 Observability vs Monitoring Explained in AWS
@@ -1061,3 +1060,34 @@ Which of the following is an example of a common instrumentation agent?
 - AWS Systems Manager
 - AWS SQS
 - AWS X-Ray Daemon (X)
+
+### Pricing Quiz
+
+How many monthly events are included in the Honeycomb free tier?
+- 10M
+- 20M (X)
+- 5M
+- 25M
+
+How many monthly error events are included on the Rollbar free tier?
+- 5000 (X)
+- 500
+- 10000
+- 20000
+
+How many AWS X-Ray traces are allowed per month on the free tier?
+- 1000
+- 10000
+- 100000 (X)
+- 25000
+
+If you created 12 custom cloudwatch metrics on your AWS account, how many would you actually be billed for?
+- 2
+- 10
+- 12 (X)
+- 7
+
+AWS Service billing for X-Ray tracing can vary region to region
+- TRUE (X)
+- FALSE
+
