@@ -37,6 +37,25 @@ AWS user groups around the world
 
 - https://www.youtube.com/watch?v=2GD9xCzRId4&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=30
 
+### Watch Chirag Week 2 - Spending Considerations (Coming Soon)
+
+AWS Bootcamp Week 2 - Honeycomb, Rollbar, AWS X-Ray and AWS Cloudwatch Logs pricing considerations
+
+https://www.youtube.com/watch?v=2W3KeqCjtDY&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=38
+
+In this week's video, let's understand the free tier for honeycomb io, Rollbar, Cloudwatch logs, and AWS Xray.
+
+Links from the video:
+
+- Honeycomb pricing: https://www.honeycomb.io/pricing
+- Honeycomb usage: https://ui.honeycomb.io/teams/alvarez.daniel/usage
+- Rollbar pricing: https://rollbar.com/pricing/
+- AWS X-Ray pricing: https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all&all-free-tier.q=x%2Bray&all-free-tier.q_operator=AND
+- AWS CloudWatch pricing: https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all&all-free-tier.q=cloudwatch&all-free-tier.q_operator=AND
+- AWS X-Ray pricing: https://aws.amazon.com/xray/pricing/
+- AWS CloudWatch pricing: https://aws.amazon.com/cloudwatch/pricing/
+
+
 ### Watch Ashish's Week 2 - Observability Security Considerations
 
 Observability vs Monitoring Explained in AWS
@@ -45,8 +64,8 @@ https://www.youtube.com/watch?v=bOf4ITxAcXc&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgN
 
 Security observability explained with Best practices for SOC teams, DevOps Teams in this week's Cloud Bootcamp with security and speed in mind
 
-Links from the Video:
-- Amazon CloudWatch releasing Services - https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/aws-services-cloudwatch-metrics.html
+Links from the video:
+ - Amazon CloudWatch releasing Services - https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/aws-services-cloudwatch-metrics.html
 
 ### Instrument Honeycomb with OTEL
 
