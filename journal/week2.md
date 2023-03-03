@@ -768,7 +768,11 @@ Finally, for not paying X-RAY use in case it is sending too much data, disable x
 #XRayMiddleware(app, xray_recorder)
 ```
 
-> https://aws.amazon.com/xray/pricing/
+> AWS X-Ray pricing: https://aws.amazon.com/xray/pricing/
+
+> aws-xray-sdk: Basic Usage: https://docs.aws.amazon.com/xray-sdk-for-python/latest/reference/basic.html
+
+> Generating custom subsegments with the X-Ray SDK for Python: https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-python-subsegments.html
 
 ### Configure custom logger to send to CloudWatch Logs
 
