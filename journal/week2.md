@@ -37,6 +37,17 @@ AWS user groups around the world
 
 - https://www.youtube.com/watch?v=2GD9xCzRId4&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=30
 
+### Watch Ashish's Week 2 - Observability Security Considerations
+
+Observability vs Monitoring Explained in AWS
+
+https://www.youtube.com/watch?v=bOf4ITxAcXc&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=31
+
+Security observability explained with Best practices for SOC teams, DevOps Teams in this week's Cloud Bootcamp with security and speed in mind
+
+Links from the Video:
+- Amazon CloudWatch releasing Services - https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/aws-services-cloudwatch-metrics.html
+
 ### Instrument Honeycomb with OTEL
 
 - Implement tracing using honeycomb: https://www.honeycomb.io/
