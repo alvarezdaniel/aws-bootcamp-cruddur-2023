@@ -9,3 +9,5 @@ In week 2, I was able to complete the required assignments.
 For homework challenges, I wasn't able to complete any of them.
 
 Finally, I've submitted the Knowledge Challenges (security and pricing)
+
+As a bonus, following Andrew's video about Codespaces, I've configured my environment for using it to develop and test cruddur, configuring devcontainer file, compose environment and testing frontend and backend integration successfully.

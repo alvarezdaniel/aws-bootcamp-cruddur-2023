@@ -1091,3 +1091,47 @@ AWS Service billing for X-Ray tracing can vary region to region
 - TRUE (X)
 - FALSE
 
+## Extra
+
+### Configure Github Codespaces
+
+Following Andrew's video about Github Codespaces, I've configured a workspace for using Codespaces.
+
+First of all, I've added a devcontainer.json file with the required configuration for vscode extensions and theme.
+
+![](assets/week-2/35-codespaces-devcontainer.png)
+
+Also, I've configured required environment variables as Codespaces secrets
+
+![](assets/week-2/36-codespaces-secrets.png)
+
+I've ensured that environment variables are available by checking them with `env | grep AWS` command
+
+![](assets/week-2/37-codespaces-env-vars.png)
+
+Before starting compose file, I've also changed docker compose env vars, from GitPod to Codespaces ones:
+
+![](assets/week-2/38-codespaces-compose-env.png)
+
+Then, I've tested cruddur by starting compose file (before that I've run npn i in frontend folder)
+
+When container are started, I've made backend port as public, for not getting CORS errors when using the application.
+
+After all of this, I've opened cruddur main page and checked that everything is working as expected
+
+https://alvarezdaniel-friendly-broccoli-6pxppjjv5hqj-3000.preview.app.github.dev/
+
+![](assets/week-2/39-codespaces-cruddur.png)
+
+Finally, for not consuming Codespaces credits, I've stopped the codespaces instance
+
+![](assets/week-2/40-codespaces-stop.png)
+
+
+
+
+
+
+
+
+
