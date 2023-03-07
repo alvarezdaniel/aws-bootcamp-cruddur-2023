@@ -3,15 +3,19 @@ import React from "react";
 import {ReactComponent as Logo} from '../components/svg/logo.svg';
 import { Link } from "react-router-dom";
 
-// [TODO] Authenication
-import Cookies from 'js-cookie'
+// Authentication
+//import Cookies from 'js-cookie'
+import { Auth } from 'aws-amplify';
 
 export default function SigninPage() {
 
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [errors, setErrors] = React.useState('');
+  //const [cognitoErrors, setCognitoErrors] = React.useState('');  we don't need this
 
+  // Authentication
+  /*
   const onsubmit = async (event) => {
     event.preventDefault();
     setErrors('')
@@ -22,6 +26,23 @@ export default function SigninPage() {
     } else {
       setErrors("Email and password is incorrect or account doesn't exist")
     }
+    return false
+  }
+  */
+  const onsubmit = async (event) => {
+    setErrors('')
+    event.preventDefault();
+    Auth.signIn(username, password)
+    .then(user => {
+      localStorage.setItem("access_token", user.signInUserSession.accessToken.jwtToken)
+      window.location.href = "/"
+    })
+    .catch(error => { 
+      if (error.code == 'UserNotConfirmedException') {
+        window.location.href = "/confirm"
+      }
+      setErrors(error.message)
+    });
     return false
   }
 
