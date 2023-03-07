@@ -32,7 +32,7 @@ export default function SigninPage() {
   const onsubmit = async (event) => {
     setErrors('')
     event.preventDefault();
-    Auth.signIn(username, password)
+    Auth.signIn(email, password)
     .then(user => {
       localStorage.setItem("access_token", user.signInUserSession.accessToken.jwtToken)
       window.location.href = "/"
