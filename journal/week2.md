@@ -12,7 +12,7 @@ AWS user groups around the world
 
 ## Week 2 instructors
 
-- Andrew Brown [@andrebrown](https://twitter.com/andrebrown)
+- Andrew Brown [@andrewbrown](https://twitter.com/andrewbrown)
 - Shala Warner [@GiftedLane](https://twitter.com/GiftedLane)
 - Jessica Joy Kerr [@jessitron](https://twitter.com/jessitron)
 
