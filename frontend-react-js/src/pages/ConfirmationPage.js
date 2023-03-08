@@ -3,8 +3,9 @@ import React from "react";
 import { useParams } from 'react-router-dom';
 import {ReactComponent as Logo} from '../components/svg/logo.svg';
 
-// [TODO] Authenication
-import Cookies from 'js-cookie'
+// Authentication
+//import Cookies from 'js-cookie'
+import { Auth } from 'aws-amplify';
 
 export default function ConfirmationPage() {
   const [email, setEmail] = React.useState('');
@@ -21,15 +22,37 @@ export default function ConfirmationPage() {
     setEmail(event.target.value);
   }
 
+  // Authentication
+  /*
   const resend_code = async (event) => {
     console.log('resend_code')
-    // [TODO] Authenication
+  }
+  */
+  const resend_code = async (event) => {
+    console.log('resend_code')
+    setErrors('')
+    try {
+      await Auth.resendSignUp(email);
+      console.log('code resent successfully');
+      setCodeSent(true)
+    } catch (err) {
+      // does not return a code
+      // does cognito always return english
+      // for this to be an okay match?
+      console.log(err)
+      if (err.message == 'Username cannot be empty'){
+        setCognitoErrors("You need to provide an email in order to send Resend Activiation Code")   
+      } else if (err.message == "Username/client id combination not found."){
+        setCognitoErrors("Email is invalid or cannot be found.")   
+      }
+    }    
   }
 
+  // Authentication
+  /*
   const onsubmit = async (event) => {
     event.preventDefault();
     console.log('ConfirmationPage.onsubmit')
-    // [TODO] Authenication
     if (Cookies.get('user.email') === undefined || Cookies.get('user.email') === '' || Cookies.get('user.email') === null){
       setErrors("You need to provide an email in order to send Resend Activiation Code")   
     } else {
@@ -45,6 +68,17 @@ export default function ConfirmationPage() {
       }
     }
     return false
+  }
+  */
+  const onsubmit = async (event) => {
+    event.preventDefault();
+    console.log('ConfirmationPage.onsubmit')
+    setErrors('')
+    try {
+      await Auth.confirmSignUp(email, code);
+      window.location.href = "/"
+    } catch (error) {
+      setErrors(error.message)
   }
 
   let el_errors;

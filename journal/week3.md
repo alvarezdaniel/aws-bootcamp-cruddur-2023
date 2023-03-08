@@ -462,7 +462,7 @@ import { Auth } from 'aws-amplify';
     event.preventDefault();
     Auth.signIn(email, password)
     .then(user => {
-      console.log('user', user)
+      console.log('user', user) // added for debug
       localStorage.setItem("access_token", user.signInUserSession.accessToken.jwtToken)
       window.location.href = "/"
     })
@@ -544,3 +544,76 @@ By signing out and in again, now this information is shown in
 
 ![](assets/week-3/27-user-handle.png)
 
+### Implement Custom Signup Page / Custom Confirmation Page
+
+For implementing user signup, first of all we are going to get rid of the manually created user, so delete it from AWS Cognito console
+
+![](assets/week-3/XXX)
+
+We'll begin implementing changes for SignUp in `SignupPage.js`, replacing cookies auth with cognito
+
+```js
+// Authentication
+//import Cookies from 'js-cookie'
+import { Auth } from 'aws-amplify';
+```
+
+```js
+  // Authentication
+  /*
+  const onsubmit = async (event) => {
+    event.preventDefault();
+    console.log('SignupPage.onsubmit')
+    
+    Cookies.set('user.name', name)
+    Cookies.set('user.username', username)
+    Cookies.set('user.email', email)
+    Cookies.set('user.password', password)
+    Cookies.set('user.confirmation_code',1234)
+    window.location.href = `/confirm?email=${email}`
+    return false
+  }
+  */
+  const onsubmit = async (event) => {
+    event.preventDefault();
+    setErrors('')
+
+    console.log('SignupPage.onsubmit')
+    console.log('username',username)
+    console.log('email',email)
+    console.log('name',name)
+
+    try {
+      const { user } = await Auth.signUp({
+        username: email,
+        password: password,
+        attributes: {
+          name: name,
+          email: username,
+          preferred_username: username,
+        },
+        autoSignIn: { // optional - enables auto sign in after user is confirmed
+          enabled: true,
+        }
+      });
+      console.log(user);
+      window.location.href = `/confirm?email=${email}`
+    } catch (error) {
+        console.log(error);
+        setErrors(error.message)
+    }
+
+    return false
+  }
+```
+
+```js
+  let el_errors;
+  if (errors){
+    el_errors = <div className='errors'>{errors}</div>;
+  }
+```
+
+Also we need to change confirmation page `ConfirmationPage.js`
+
+```js
