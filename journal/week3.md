@@ -530,3 +530,17 @@ I have the same message if I try to use the valid user but with an invalid passw
 
 ![](assets/week-3/23-invalid-password.png)
 
+Now, with the page loaded with a valid login, information for that user should be shown in screen, but it's not
+
+![](assets/week-3/24-user.png)
+
+So we need to edit the user in AWS console and add the required attributes
+
+![](assets/week-3/25-add-attributes.png)
+
+![](assets/week-3/26-user-modified.png)
+
+By signing out and in again, now this information is shown in 
+
+![](assets/week-3/27-user-handle.png)
+
