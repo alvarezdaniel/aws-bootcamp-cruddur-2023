@@ -79,6 +79,7 @@ export default function ConfirmationPage() {
       window.location.href = "/"
     } catch (error) {
       setErrors(error.message)
+    }
   }
 
   let el_errors;
