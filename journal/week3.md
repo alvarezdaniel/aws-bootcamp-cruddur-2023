@@ -777,3 +777,43 @@ On successful operation, a message should indicate that the password has been re
 
 ![](assets/week-3/39-password-reset.png)
 
+
+When signing in the system, an access token is retrieved and then saved into local storage to be used later in backend requests.
+
+`SigninPage.js`
+
+```js
+  const onsubmit = async (event) => {
+    setErrors('')
+    event.preventDefault();
+    Auth.signIn(email, password)
+    .then(user => {
+      console.log('user', user) // added for debug
+      localStorage.setItem("access_token", user.signInUserSession.accessToken.jwtToken)
+      window.location.href = "/"
+    })
+    .catch(error => { 
+      if (error.code == 'UserNotConfirmedException') {
+        window.location.href = "/confirm"
+      }
+      setErrors(error.message)
+    });
+    return false
+  }
+```
+
+However, then signing out of the system, this access token is not cleared, so it should be implemented
+
+`ProfileInfo.js`
+
+```js
+  const signOut = async () => {
+    try {
+        await Auth.signOut({ global: true });
+        localStorage.removeItem("access_token")
+        window.location.href = "/"
+    } catch (error) {
+        console.log('error signing out: ', error);
+    }
+```
+
