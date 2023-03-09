@@ -713,3 +713,67 @@ And now it can be possible to log in to the app using the new created user
 
 ![](assets/week-3/35-logged-in.png)
 
+### Implement Custom Recovery Page
+
+The last page to implement is the recovery page, used to generate a new password in case it is forgotten
+
+`RecoverPage.js`
+
+```js
+// Authentication
+import { Auth } from 'aws-amplify';
+```
+
+```js
+  // Authentication
+  /*
+  const onsubmit_send_code = async (event) => {
+    event.preventDefault();
+    console.log('onsubmit_send_code')
+    return false
+  }
+  */
+  const onsubmit_send_code = async (event) => {
+    event.preventDefault();
+    setErrors('')
+    Auth.forgotPassword(username)
+    .then((data) => setFormState('confirm_code') )
+    .catch((err) => setErrors(err.message) );
+    return false
+  }
+
+  /*
+  const onsubmit_confirm_code = async (event) => {
+    event.preventDefault();
+    console.log('onsubmit_confirm_code')
+    return false
+  }
+  */
+  const onsubmit_confirm_code = async (event) => {
+    event.preventDefault();
+    setErrors('')
+    if (password == passwordAgain){
+      Auth.forgotPasswordSubmit(username, code, password)
+      .then((data) => setFormState('success'))
+      .catch((err) => setErrors(err.message) );
+    } else {
+      setErrors('Passwords do not match')
+    }
+    return false
+  }
+```
+
+For testing the change, we need to use the Forgot Password link in the signin page
+
+![](assets/week-3/36-recover-password.png)
+
+When doing that, an email should be received with a code for generating a new password
+
+![](assets/week-3/37-password-reset-code.png)
+
+![](assets/week-3/38-recover-password.png)
+
+On successful operation, a message should indicate that the password has been reset and it is ready to be used to log in
+
+![](assets/week-3/39-password-reset.png)
+
