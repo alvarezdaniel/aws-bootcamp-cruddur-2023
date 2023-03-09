@@ -548,7 +548,7 @@ By signing out and in again, now this information is shown in
 
 For implementing user signup, first of all we are going to get rid of the manually created user, so delete it from AWS Cognito console
 
-![](assets/week-3/XXX)
+![](assets/week-3/28-delete-user.png)
 
 We'll begin implementing changes for SignUp in `SignupPage.js`, replacing cookies auth with cognito
 
@@ -589,7 +589,7 @@ import { Auth } from 'aws-amplify';
         password: password,
         attributes: {
           name: name,
-          email: username,
+          email: email,
           preferred_username: username,
         },
         autoSignIn: { // optional - enables auto sign in after user is confirmed
@@ -617,3 +617,99 @@ import { Auth } from 'aws-amplify';
 Also we need to change confirmation page `ConfirmationPage.js`
 
 ```js
+// Authentication
+//import Cookies from 'js-cookie'
+import { Auth } from 'aws-amplify';
+```
+
+```js
+  // Authentication
+  /*
+  const resend_code = async (event) => {
+    console.log('resend_code')
+  }
+  */
+  const resend_code = async (event) => {
+    console.log('resend_code')
+    setErrors('')
+    try {
+      await Auth.resendSignUp(email);
+      console.log('code resent successfully');
+      setCodeSent(true)
+    } catch (err) {
+      // does not return a code
+      // does cognito always return english
+      // for this to be an okay match?
+      console.log(err)
+      if (err.message == 'Username cannot be empty'){
+        setErrors("You need to provide an email in order to send Resend Activiation Code")   
+      } else if (err.message == "Username/client id combination not found."){
+        setErrors("Email is invalid or cannot be found.")   
+      }
+    }    
+  }
+
+  // Authentication
+  /*
+  const onsubmit = async (event) => {
+    event.preventDefault();
+    console.log('ConfirmationPage.onsubmit')
+    if (Cookies.get('user.email') === undefined || Cookies.get('user.email') === '' || Cookies.get('user.email') === null){
+      setErrors("You need to provide an email in order to send Resend Activiation Code")   
+    } else {
+      if (Cookies.get('user.email') === email){
+        if (Cookies.get('user.confirmation_code') === code){
+          Cookies.set('user.logged_in',true)
+          window.location.href = "/"
+        } else {
+          setErrors("Code is not valid")
+        }
+      } else {
+        setErrors("Email is invalid or cannot be found.")   
+      }
+    }
+    return false
+  }
+  */
+  const onsubmit = async (event) => {
+    event.preventDefault();
+    console.log('ConfirmationPage.onsubmit')
+    setErrors('')
+    try {
+      await Auth.confirmSignUp(email, code);
+      window.location.href = "/"
+    } catch (error) {
+      setErrors(error.message)
+    }
+  }
+
+  let el_errors;
+  if (errors){
+    el_errors = <div className='errors'>{errors}</div>;
+  }
+```
+
+To test it, I'll run compose file and open frontend app, and then signup creating a new user with the same information that I created before manually
+
+![](assets/week-3/29-signup-user.png)
+
+After completing the new user registration, this user will appear in AWS Cognito console, but it will be Unconfirmed and Not verified.
+
+![](assets/week-3/30-new-user.png)
+
+An email should be received with the verification code to type in confirmation page
+
+![](assets/week-3/31-verification-code.png)
+
+![](assets/week-3/32-confirmation-page.png)
+
+After confirming with the received code, the user will be Confirmed and Verified in AWS Cognito console
+
+![](assets/week-3/33-user-confirmed.png)
+
+And now it can be possible to log in to the app using the new created user
+
+![](assets/week-3/34-signin-new-user.png)
+
+![](assets/week-3/35-logged-in.png)
+
