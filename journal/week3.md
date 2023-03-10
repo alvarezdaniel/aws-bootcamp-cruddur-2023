@@ -1291,6 +1291,27 @@ After implementing the changes by Andrew (exctracted from https://github.com/ome
 
 ![](assets/week-3/46-contrast-improved.png)
 
+### Useful links
+
+- https://www.linuxtek.ca/2023/03/07/aws-cloud-project-bootcamp-week-3-unofficial-homework-guide/
+
+Additional Resources
+
+Videos:
+
+- [YouTube – ExamPro – Introduction to Cognito](https://www.youtube.com/watch?v=pp9ilsKWZho&feature=youtu.be)
+- [YouTube – ExamPro – Cognito User Pools](https://www.youtube.com/watch?v=g2s_hJRI70U&feature=youtu.be)
+- [YouTube – ExamPro – Cognito Follow-Along](https://www.youtube.com/watch?v=X-7dkSIYUrE&feature=youtu.be)
+- [YouTube – ExamPro – Cognito Cheat Sheet](https://www.youtube.com/watch?v=PPdz1JI5iS0&feature=youtu.be)
+
+> Note: These videos are about 3 years old, so some of the information and user interfaces may be out of date.
+
+Documentation:
+
+- [AWS Cognito Documentation](https://docs.aws.amazon.com/cognito/index.html)
+- [OmenKing Github Notes for Week 3](https://github.com/omenking/aws-bootcamp-cruddur-2023/blob/week-3/journal/week3.md)
+- [Frontend Code from Amplify JavaScript](https://docs.amplify.aws/lib/auth/emailpassword/q/platform/js/)
+- [Amplify UI Documentation](https://ui.docs.amplify.aws/)
 
 
 
