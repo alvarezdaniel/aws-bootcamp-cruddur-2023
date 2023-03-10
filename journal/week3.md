@@ -15,7 +15,7 @@
 
 ## Todo Checklist
 
-### Watch Ashish's Week 3 - Decenteralized Authentication
+### Watch Ashish's Week 3 - Decentralized Authentication
 
 https://www.youtube.com/watch?v=tEJIeII66pY&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=39
 
