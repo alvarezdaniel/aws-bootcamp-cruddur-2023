@@ -1040,7 +1040,7 @@ def data_home():
     # unauthenticated request
     app.logger.debug(e)
     app.logger.debug("unauthenticated")
-    data = HomeActivities.run()  
+    data = HomeActivities.run(logger=LOGGER)  
   return data, 200
 ```
 
@@ -1075,6 +1075,32 @@ And in case the user is authenticated, we will return an extra crud for verifica
       
       return results
 ```
+
+For testing this change, we'll start compose file and browse the application
+
+When running unauthenticated, only 4 cruds will appear
+
+![](assets/week-3/40-not-authenticated.png)
+
+And the message `The user is not authenticated` will appear in console
+
+![](assets/week-3/41-user-not-authenticated.png)
+
+And a message will be shown in the log output
+
+![](assets/week-3/45-log-error.png)
+
+However, when sigin in using valid credentials, an extra crud will appear
+
+![](assets/week-3/42-authenticated.png)
+
+And the information for the logged in user will be written to the console
+
+![](assets/week-3/43-user-authenticated.png)
+
+Also, the obtained claims and username will be written to the log output
+
+![](assets/week-3/44-log-claims.png)
 
 
 
