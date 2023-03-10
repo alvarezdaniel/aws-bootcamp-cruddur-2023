@@ -164,6 +164,8 @@ def after_request(response):
 @app.route("/api/activities/home", methods=['GET'])
 @xray_recorder.capture('activities_home')
 def data_home():
+  app.logger.debug("AUTH TOKEN")
+  app.logger.debug(request.headers.get("Authorization"))
   access_token = extract_access_token(request.headers)
   try:
     claims = cognito_jwt_token.verify(access_token)
