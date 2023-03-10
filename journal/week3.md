@@ -1279,6 +1279,20 @@ To use this function, simply call verify_cognito_token with the access token you
 
 Note that this code requires the requests and jwt Python packages to be installed. You can install them with pip install requests and pip install pyjwt, respectively.
 
+### Improving UI contrast
+
+Watching Andrew's video: https://www.youtube.com/watch?v=m9V4SmJWoJU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=44, I've implemented the suggested changes to styles to improve UI contrast
+
+CSS Frameworks
+
+- Tailwind CSS (https://tailwindcss.com/)
+
+After implementing the changes by Andrew (exctracted from https://github.com/omenking/aws-bootcamp-cruddur-2023/commit/d79a2370d142d68a51788a7a5b093b55ea8b4d7c#diff-d35c60b4ef7994ee8b4b4d81b4dff86eae0e85270aff4fc08baaa3c13b33d322), this is the result
+
+![](assets/week-3/46-contrast-improved.png)
+
+
+
 
 
 
