@@ -1,0 +1,53 @@
+I was able to complete the required assignments, completing the todo checklist. I had only one issue while configuring AWS CLI environment variables, that I configured wrong one of them. After fixing it, I was able to start Gitpod from a fresh workspace having AWS CLI installed and configured with my account and credentials.
+For architecture diagrams, I've created both a conceptual and a logical diagrams in Lucid Charts.
+For billing alarms and budget I've used AWS CLI commands with the corresponding json files instead of creating them using AWS Console GUI, because I prefer to have a repeatable way of doing it, and I can have those commands documented in text format instead of having a set of instructions to do that in AWS GUI.
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+In week 1, I was able to complete the required assignments.
+
+- First of all, I've run backend app directly, no containers, to verify it is working
+- Created Dockerfile for backend, running again with no issues (same behavior as before), checked container in VSCode extension
+- Created Dockerfile for frontend, and run with no issues, opening Cruddur page
+- Created Compose file for orchestrating backend and frontend apps, the only issue found is the need to run npm install before starting compose (configured Gitpod workspace to run it on start)
+- Added the new notifications endpoint to OpenAPI doc
+- Added the required code to backend for implementing notifications endpoint
+- Added react page to frontend for implementing notifications
+- Ran DynamoDB container and checked by using AWS CLI commands
+- Ran Postgres container and checked by using psql client (also installed in Gitpod environment on start)
+
+For homework challenges,
+- Used docker locally in my Windows machine with WSL
+- Tagged and pushed backend-flask to a new own repository in Docker Hub
+- Modified backend Dockerfile for using multi-stage images and implemented some best practices, verifying later that container worked as before
+
+Finally, I've submitted both Knowledge Challenges (security and pricing)
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+In week 2, I was able to complete the required assignments.
+
+- First of all, I watched week-2 live stream on Saturday, then I completed watching the other videos (Chirag's pricing recommendations, Ashish's security in observability, and the rest of the complementary videos, including the one Andrew recorded for solving x-day subsegments)
+- I could implement honeycomb instrumentation in backend-flask application, adding spans and attributes.
+- For AWS X-ray, I've implemented instrumentation, had no issues running the x-ray daemon container, I could create an AWS log group and sampling rule, and finally, after some troubleshooting, I could implement x-ray subsegments, before watching Andrew's video and Olga's video. It was a little tricky, but It was a good programming exercise.
+- For CloudWatch, I could be able to implement it by importing watchtower python module and generating some logs that I could see in the AWS CloudWatch console (the typical Hello Cloudwatch! as an example)
+- Finally, for Rollbar, I was able to implement also in the backend-flask app, and tested it by forcing an error in one of the endpoints. I could be able to see the error in Rollbar.
+
+For homework challenges, I wasn't able to complete any of them.
+
+Finally, I've submitted the Knowledge Challenges (security and pricing)
+
+As a bonus, following Andrew's video about Codespaces, I've configured my environment for using it to develop and test cruddur, configuring devcontainer file, compose environment and testing frontend and backend integration successfully.
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+In week 3, I was able to complete the required asignments.
+
+- First of all, I watched week-3 live stream on Saturday, then I continued watching the rest of the videos, that showed how to implement completely Cognito authentication both in frontend and backend. I also watched Ashish video about centralized authentication.
+- For software asignments, I could be able to create the required Amazon Cognito user pool, using ClickOps as specified (although my idea is to investigate later how to create it using AWS CLI).
+- In frontend application, I implemented Amplify library and changed login, signup, recovery and forgot password pages in order to use cognito authentication instead of cookies. Also I made the changes to show or hide corresponding elements based on user login status.
+- Finally, I implemented JWT token validation in backend for protecting api endpoints (I watched Andrew's video about several ways to validate token, client side, using decryption keys to validate authenticity of the token, vs server side, in which the token is validated invoking AWS api that expect a valid token)
+- As an extra, having watched Andrew video about how to improve UI contrast, I've implemented those changes in my repository.
+
+----------------------------------------------------------------------------------------------------------------------------------
+
