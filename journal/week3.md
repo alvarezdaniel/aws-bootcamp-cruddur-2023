@@ -1313,7 +1313,42 @@ Documentation:
 - [Frontend Code from Amplify JavaScript](https://docs.amplify.aws/lib/auth/emailpassword/q/platform/js/)
 - [Amplify UI Documentation](https://ui.docs.amplify.aws/)
 
+## Knowledge Challenges
 
+### Security Quiz
+
+Which additional AWS service should be enabled and monitored alongside Cognito to help detect malicious Cognito user behavior?
+
+- RDS
+- Cloud Trail
+- Cloud Watch (X)
+- DynamoDB
+
+When it comes to single-sign-on, what does the acronym SAML stand for?
+
+- Security Assertion Markup Language (X)
+- Security Assumed Middleware Language
+- Security Assertion Middleware Language
+- Security Assumed Markup Language
+
+Which AWS service should be used with Cognito to enable rate limiting, and setup allow/deny rule lists?
+
+- Cloud Watch
+- EC2 Load balancer
+- WAF (X)
+- Cloud Trail
+
+Which of the following is NOT an industry standard for authentication and authorization?
+
+- YAML (X)
+- OAuth 2.0
+- Open ID Connect
+- SAML
+
+Your Cognito deployment should only be in the AWS region which you are legally allowed to hold user data in
+
+- TRUE (X)
+- FALSE
 
 
 
