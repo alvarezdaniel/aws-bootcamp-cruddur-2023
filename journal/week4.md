@@ -93,7 +93,11 @@ DELETE FROM table_name WHERE condition; -- Delete data from a table
 
 ### Seed our Postgres Database table with data
 
-For creating the database, tables and seed them with initial data we will be writting several scripts, that will be located in a bin folder inside backend-flask. These scripts will be using some sql files that will be located in a sql folder in the same location
+First of all we've been trying manually executing some commands to create and drop a database
+
+
+
+For creating the database, tables and seed them with initial data we will be writting several scripts, that will be located in a bin folder inside backend-flask. These scripts will be using some sql files that will be located in a sql folder in the same root location
 
 `/backend-flask/bin`
 `/backend-flask/sql`
