@@ -7,91 +7,23 @@
 
 ## Class Summary
 
-- Have a lecture about data modelling in (3rd Normal Form) 3NF for SQL
-- Launch Postgres locally via a container
-- Seed our Postgres Database table with data
-- Write a Postgres adapter
-- Write a DDL (for creating schema)
-- Write an SQL read query
-- Write an SQL write query
-- Provision an RDS Postgres instance
-- Configure VPC Security Groups
-- Configure local backend application to use production connection URL
-- Add a caching layer using Momento Serverless Cache
-- Propagate metrics from DDB to an RDS metrics table 
+- Provision an RDS instance
+- Temporarily stop an RDS instance
+- Remotely connect to RDS instance
+- Programmatically update a security group rule
+- Write several bash scripts for database operations
+- Operate common SQL commands
+- Create a schema SQL file by hand
+- Work with UUIDs and PSQL extensions
+- Implement a postgres client for python using a connection pool
+- Troubleshoot common SQL errors
+- Implement a Lambda that runs in a VPC and commits code to RDS
+- Work with PSQL json functions to directly return json from the database
+- Correctly sanitize parameters passed to SQL to execute
 
 ## Todo Checklist
 
-### Launch Postgres locally via a container
-
-First of all we need to ensure that postgres container is configured in `docker-compose.yml` file. I've disabled before, so in this case I'm enabling it again.
-
-```yml
-version: "3.8"
-services:
-  db:
-    image: postgres:13-alpine
-    restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-    ports:
-      - '5432:5432'
-    volumes: 
-      - db:/var/lib/postgresql/data      
-```
-
-> The image we are using is postgres:13-alpine: https://hub.docker.com/_/postgres
-
-Also, we need postgres client installed in workspace, so I've checked it in `.gitpod.yml` file
-
-```yml
-tasks:
-
-  - name: postgres
-    init: |
-      curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
-      echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
-      sudo apt update
-      sudo apt install -y postgresql-client-13 libpq-dev      
-```
-
-> Installed debian packages:
-
-> front-end programs for PostgreSQL 13: https://packages.debian.org/bullseye/postgresql-client-13
-
-> header files for libpq5 (PostgreSQL library): https://packages.debian.org/bullseye/libpq-dev
-
-For testing client and postgres server installed locally, we can use psql cli
-
-```sh
-psql -Upostgres --host localhost
-```
-
-> Remember to use the host flag to specific localhost (only in docker)
-
-Common PSQL commands:
-
-```sql
-\x on -- expanded display when looking at data
-\q -- Quit PSQL
-\l -- List all databases
-\c database_name -- Connect to a specific database
-\dt -- List all tables in the current database
-\d table_name -- Describe a specific table
-\du -- List all users and their roles
-\dn -- List all schemas in the current database
-CREATE DATABASE database_name; -- Create a new database
-DROP DATABASE database_name; -- Delete a database
-CREATE TABLE table_name (column1 datatype1, column2 datatype2, ...); -- Create a new table
-DROP TABLE table_name; -- Delete a table
-SELECT column1, column2, ... FROM table_name WHERE condition; -- Select data from a table
-INSERT INTO table_name (column1, column2, ...) VALUES (value1, value2, ...); -- Insert data into a table
-UPDATE table_name SET column1 = value1, column2 = value2, ... WHERE condition; -- Update data in a table
-DELETE FROM table_name WHERE condition; -- Delete data from a table
-```
-
-### Provision an RDS Postgres instance
+### Provision an RDS instance
 
 This step is done before everything else because we will be needing a cloud Postgres RDS instance in AWS for connecting later.
 
@@ -278,7 +210,11 @@ After executing the script, the database appears as `Creating`
 
 ![](assets/week-4/01-db-creating.png)
 
-After some minutes (in my case the process took about 5 minutes), database instance should be stopped temporally, in order not to consume credits, because it is a VM in AWS
+After some minutes (in my case the process took about 5 minutes)
+
+### Temporarily stop an RDS instance
+
+Database instance should be stopped temporarily, in order not to consume credits, because it is a VM in AWS
 
 ![](assets/week-4/02-db-stop-temp.png)
 
@@ -288,21 +224,275 @@ In this case, the database will be first in `Stopping` status, and then after so
 
 ![](assets/week-4/04-db-stopped.png)
 
+### Remotely connect to RDS instance
+
+
+### Programmatically update a security group rule
 
 
 
+### Write several bash scripts for database operations
 
-### Seed our Postgres Database table with data
+First of all we need to ensure that postgres container is configured in `docker-compose.yml` file. I've disabled before, so in this case I'm enabling it again.
+
+```yml
+version: "3.8"
+services:
+  db:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data      
+```
+
+> The image we are using is postgres:13-alpine: https://hub.docker.com/_/postgres
+
+Also, we need postgres client installed in workspace, so I've checked it in `.gitpod.yml` file
+
+```yml
+tasks:
+
+  - name: postgres
+    init: |
+      curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
+      echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
+      sudo apt update
+      sudo apt install -y postgresql-client-13 libpq-dev      
+```
+
+> Installed debian packages:
+
+> front-end programs for PostgreSQL 13: https://packages.debian.org/bullseye/postgresql-client-13
+
+> header files for libpq5 (PostgreSQL library): https://packages.debian.org/bullseye/libpq-dev
+
+For testing client and postgres server installed locally, we can use psql cli
+
+```sh
+psql -Upostgres --host localhost
+```
+
+> Remember to use the host flag to specific localhost (only in docker)
+
+Common PSQL commands:
+
+```sql
+\x on -- expanded display when looking at data
+\q -- Quit PSQL
+\l -- List all databases
+\c database_name -- Connect to a specific database
+\dt -- List all tables in the current database
+\d table_name -- Describe a specific table
+\du -- List all users and their roles
+\dn -- List all schemas in the current database
+CREATE DATABASE database_name; -- Create a new database
+DROP DATABASE database_name; -- Delete a database
+CREATE TABLE table_name (column1 datatype1, column2 datatype2, ...); -- Create a new table
+DROP TABLE table_name; -- Delete a table
+SELECT column1, column2, ... FROM table_name WHERE condition; -- Select data from a table
+INSERT INTO table_name (column1, column2, ...) VALUES (value1, value2, ...); -- Insert data into a table
+UPDATE table_name SET column1 = value1, column2 = value2, ... WHERE condition; -- Update data in a table
+DELETE FROM table_name WHERE condition; -- Delete data from a table
+```
+
+After successfully checking connection to postgres localhost container, we are going to implement some scripts for executing operations against database
+
+We will need variables for determining connection url to our postgres instance. In this case we are going to generate a connection url to localhost and another to our hosted RDS instance. We need to extact host name by checking endpoint in AWS console for the created RDS instance.
+
+> https://stackoverflow.com/questions/3582552/what-is-the-format-for-the-postgresql-connection-string-url
+
+> https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING
+
+```sh
+export CONNECTION_URL="postgresql://postgres:password@localhost:5432/cruddur"
+gp env CONNECTION_URL="postgresql://postgres:password@localhost:5432/cruddur"
+
+export PROD_CONNECTION_URL="postgresql://***:***@$cruddur-db-instance.***.ca-central-1.rds.amazonaws.com:5432/cruddur"
+gp env PROD_CONNECTION_URL="postgresql://***:***@$cruddur-db-instance.***.ca-central-1.rds.amazonaws.com:5432/cruddur"
+```
+
+These scripts will be located in `/backend-flask/bin` folder (also, some of them requires sql files that will be located in `/backend-flask/sql`)
+
+`bin/db-connect`
+
+```sh
+#! /usr/bin/bash
+
+psql $CONNECTION_URL
+```
+
+`db-create`
+
+```sh
+#! /usr/bin/bash
+
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="db-create"
+printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
+
+NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
+psql $NO_DB_CONNECTION_URL -c "create database cruddur;"
+```
+
+`bin/db-drop`
+
+```sh
+#! /usr/bin/bash
+
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="db-drop"
+printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
+
+NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
+psql $NO_DB_CONNECTION_URL -c "drop database cruddur;"
+```
+
+`bin/db-schema-load`
+
+```sh
+#! /usr/bin/bash
+
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="db-schema-load"
+printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
+
+schema_path="$(realpath .)/db/schema.sql"
+echo $schema_path
+
+if [ "$1" = "prod" ]; then
+  echo "Running in production mode"
+  URL=$PROD_CONNECTION_URL
+else
+  URL=$CONNECTION_URL
+fi
+
+psql $URL cruddur < $schema_path
+```
+
+`sql/schema.sql`
+
+```sql
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+DROP TABLE IF EXISTS public.users;
+DROP TABLE IF EXISTS public.activities;
 
 
-First of all we've been trying manually executing some commands to create and drop a database
+CREATE TABLE public.users (
+  uuid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  display_name text,
+  handle text,
+  cognito_user_id text,
+  created_at TIMESTAMP default current_timestamp NOT NULL
+);
+
+CREATE TABLE public.activities (
+  uuid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_uuid UUID NOT NULL,
+  message text NOT NULL,
+  replies_count integer DEFAULT 0,
+  reposts_count integer DEFAULT 0,
+  likes_count integer DEFAULT 0,
+  reply_to_activity_uuid integer,
+  expires_at TIMESTAMP,
+  created_at TIMESTAMP default current_timestamp NOT NULL
+);
+```
+
+`bin/db-seed`
+
+```sh
+#! /usr/bin/bash
+
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="db-seed"
+printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
+
+seed_path="$(realpath .)/db/seed.sql"
+echo $seed_path
+
+if [ "$1" = "prod" ]; then
+  echo "Running in production mode"
+  URL=$PROD_CONNECTION_URL
+else
+  URL=$CONNECTION_URL
+fi
+
+psql $URL cruddur < $seed_path
+```
+
+`sql/seed.sql`
+
+```sql
+-- this file was manually created
+INSERT INTO public.users (display_name, handle, cognito_user_id)
+VALUES
+  ('Andrew Brown', 'andrewbrown' ,'MOCK'),
+  ('Andrew Bayko', 'bayko' ,'MOCK');
+
+INSERT INTO public.activities (user_uuid, message, expires_at)
+VALUES
+  (
+    (SELECT uuid from public.users WHERE users.handle = 'andrewbrown' LIMIT 1),
+    'This was imported as seed data!',
+    current_timestamp + interval '10 day'
+  )
+```
+
+`bin/db-sessions`
+
+```sh
+#! /usr/bin/bash
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="db-sessions"
+printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
+
+if [ "$1" = "prod" ]; then
+  echo "Running in production mode"
+  URL=$PROD_CONNECTION_URL
+else
+  URL=$CONNECTION_URL
+fi
+
+NO_DB_URL=$(sed 's/\/cruddur//g' <<<"$URL")
+psql $NO_DB_URL -c "select pid as process_id, \
+       usename as user,  \
+       datname as db, \
+       client_addr, \
+       application_name as app,\
+       state \
+from pg_stat_activity;"
+```
+
+`bin/db-setup`
+
+```sh
+#! /usr/bin/bash
+-e # stop if it fails at any point
+
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="db-setup"
+printf "${CYAN}==== ${LABEL}${NO_COLOR}\n"
+
+bin_path="$(realpath .)/bin"
+
+source "$bin_path/db-drop"
+source "$bin_path/db-create"
+source "$bin_path/db-schema-load"
+source "$bin_path/db-seed"
+```
 
 
-
-For creating the database, tables and seed them with initial data we will be writting several scripts, that will be located in a bin folder inside backend-flask. These scripts will be using some sql files that will be located in a sql folder in the same root location
-
-`/backend-flask/bin`
-`/backend-flask/sql`
 
 
 
