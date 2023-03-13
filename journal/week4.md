@@ -91,7 +91,209 @@ UPDATE table_name SET column1 = value1, column2 = value2, ... WHERE condition; -
 DELETE FROM table_name WHERE condition; -- Delete data from a table
 ```
 
+### Provision an RDS Postgres instance
+
+This step is done before everything else because we will be needing a cloud Postgres RDS instance in AWS for connecting later.
+
+We will be creating the RDS instance using CLI, using this script
+
+```sh
+aws rds create-db-instance \
+  --db-instance-identifier cruddur-db-instance \
+  --db-instance-class db.t3.micro \
+  --engine postgres \
+  --engine-version  14.6 \
+  --master-username $MASTER_USERNAME \
+  --master-user-password $MASTER_USER_PASSWORD \
+  --allocated-storage 20 \
+  --availability-zone ca-central-1a \
+  --backup-retention-period 0 \
+  --port 5432 \
+  --no-multi-az \
+  --db-name cruddur \
+  --storage-type gp2 \
+  --publicly-accessible \
+  --storage-encrypted \
+  --enable-performance-insights \
+  --performance-insights-retention-period 7 \
+  --no-deletion-protection
+```
+
+> AWS CLI command reference for create db instance: https://docs.aws.amazon.com/cli/latest/reference/rds/create-db-instance.html
+
+> This will take about 10-15 mins
+
+> This is a lot easier than using the console
+
+> Andrew showed all the options to create a RDS instance using the console
+
+Some links
+
+- https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_GettingStarted.html
+- https://aws.amazon.com/rds
+- https://aws.amazon.com/documentation/rds
+- https://aws.amazon.com/articles/Amazon-RDS
+- https://aws.amazon.com/rds/pricing
+- https://forums.aws.amazon.com/
+
+We should set the corresponding environment variables for not exposing master-username and master-user-password
+
+```sh
+export MASTER_USERNAME="XXXX"
+gp env MASTER_USERNAME="XXXX"
+
+export MASTER_USER_PASSWORD="XXXX"
+gp env MASTER_USER_PASSWORD="XXXX"
+```
+
+After setting the variables we can run the script to create the postgres RDS instance
+
+```sh
+aws rds create-db-instance \
+>   --db-instance-identifier cruddur-db-instance \
+>   --db-instance-class db.t3.micro \
+>   --engine postgres \
+>   --engine-version  14.6 \
+>   --master-username $MASTER_USERNAME \
+>   --master-user-password $MASTER_USER_PASSWORD \
+>   --allocated-storage 20 \
+>   --availability-zone ca-central-1a \
+>   --backup-retention-period 0 \
+>   --port 5432 \
+>   --no-multi-az \
+>   --db-name cruddur \
+>   --storage-type gp2 \
+>   --publicly-accessible \
+>   --storage-encrypted \
+>   --enable-performance-insights \
+>   --performance-insights-retention-period 7 \
+>   --no-deletion-protection
+```
+
+Result
+
+```json
+{
+    "DBInstance": {
+        "DBInstanceIdentifier": "cruddur-db-instance",
+        "DBInstanceClass": "db.t3.micro",
+        "Engine": "postgres",
+        "DBInstanceStatus": "creating",
+        "MasterUsername": "****",
+        "DBName": "cruddur",
+        "AllocatedStorage": 20,
+        "PreferredBackupWindow": "07:26-07:56",
+        "BackupRetentionPeriod": 0,
+        "DBSecurityGroups": [],
+        "VpcSecurityGroups": [
+            {
+                "VpcSecurityGroupId": "sg-0a539dae17942e3b3",
+                "Status": "active"
+            }
+        ],
+        "DBParameterGroups": [
+            {
+                "DBParameterGroupName": "default.postgres14",
+                "ParameterApplyStatus": "in-sync"
+            }
+        ],
+        "AvailabilityZone": "ca-central-1a",
+        "DBSubnetGroup": {
+            "DBSubnetGroupName": "default",
+            "DBSubnetGroupDescription": "default",
+            "VpcId": "vpc-0a387705bb7ef150c",
+            "SubnetGroupStatus": "Complete",
+            "Subnets": [
+                {
+                    "SubnetIdentifier": "subnet-02427f9148364f1d6",
+                    "SubnetAvailabilityZone": {
+                        "Name": "ca-central-1b"
+                    },
+                    "SubnetOutpost": {},
+                    "SubnetStatus": "Active"
+                },
+                {
+                    "SubnetIdentifier": "subnet-0003de2399abffe43",
+                    "SubnetAvailabilityZone": {
+                        "Name": "ca-central-1d"
+                    },
+                    "SubnetOutpost": {},
+                    "SubnetStatus": "Active"
+                },
+                {
+                    "SubnetIdentifier": "subnet-0c960b9a5b03f1803",
+                    "SubnetAvailabilityZone": {
+                        "Name": "ca-central-1a"
+                    },
+                    "SubnetOutpost": {},
+                    "SubnetStatus": "Active"
+                }
+            ]
+        },
+        "PreferredMaintenanceWindow": "mon:08:16-mon:08:46",
+        "PendingModifiedValues": {
+            "MasterUserPassword": "****"
+        },
+        "MultiAZ": false,
+        "EngineVersion": "14.6",
+        "AutoMinorVersionUpgrade": true,
+        "ReadReplicaDBInstanceIdentifiers": [],
+        "LicenseModel": "postgresql-license",
+        "OptionGroupMemberships": [
+            {
+                "OptionGroupName": "default:postgres-14",
+                "Status": "in-sync"
+            }
+        ],
+        "PubliclyAccessible": true,
+        "StorageType": "gp2",
+        "DbInstancePort": 0,
+        "StorageEncrypted": true,
+        "KmsKeyId": "arn:aws:kms:ca-central-1:052985194353:key/45903320-bfda-4a41-9046-d05a49db4ab7",
+        "DbiResourceId": "db-MKM2SG6VRXGS4YTYYSCFCN2Q3A",
+        "CACertificateIdentifier": "rds-ca-2019",
+        "DomainMemberships": [],
+        "CopyTagsToSnapshot": false,
+        "MonitoringInterval": 0,
+        "DBInstanceArn": "arn:aws:rds:ca-central-1:052985194353:db:cruddur-db-instance",
+        "IAMDatabaseAuthenticationEnabled": false,
+        "PerformanceInsightsEnabled": true,
+        "PerformanceInsightsKMSKeyId": "arn:aws:kms:ca-central-1:052985194353:key/45903320-bfda-4a41-9046-d05a49db4ab7",
+        "PerformanceInsightsRetentionPeriod": 7,
+        "DeletionProtection": false,
+        "AssociatedRoles": [],
+        "TagList": [],
+        "CustomerOwnedIpEnabled": false,
+        "BackupTarget": "region",
+        "NetworkType": "IPV4",
+        "StorageThroughput": 0,
+        "CertificateDetails": {
+            "CAIdentifier": "rds-ca-2019"
+        }
+    }
+}
+```
+
+After executing the script, the database appears as `Creating`
+
+![](assets/week-4/01-db-creating.png)
+
+After some minutes (in my case the process took about 5 minutes), database instance should be stopped temporally, in order not to consume credits, because it is a VM in AWS
+
+![](assets/week-4/02-db-stop-temp.png)
+
+![](assets/week-4/03-db-stop-temp.png)
+
+In this case, the database will be first in `Stopping` status, and then after some minutes, when the process completed, in `Stopped temporarily` status
+
+![](assets/week-4/04-db-stopped.png)
+
+
+
+
+
 ### Seed our Postgres Database table with data
+
 
 First of all we've been trying manually executing some commands to create and drop a database
 
