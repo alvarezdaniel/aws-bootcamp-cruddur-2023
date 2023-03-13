@@ -318,7 +318,20 @@ gp env PROD_CONNECTION_URL="postgresql://***:***@$cruddur-db-instance.***.ca-cen
 
 These scripts will be located in `/backend-flask/bin` folder (also, some of them requires sql files that will be located in `/backend-flask/sql`)
 
-`bin/db-connect`
+> All these scripts must be made executable by executing:
+
+```sh
+chmod u+x bin/db-connect
+```
+
+> And for executing them:
+
+```sh
+./bin/db-connect
+```
+
+
+`bin/db-connect`: shell script for connecting to DB
 
 ```sh
 #! /usr/bin/bash
@@ -326,7 +339,10 @@ These scripts will be located in `/backend-flask/bin` folder (also, some of them
 psql $CONNECTION_URL
 ```
 
-`db-create`
+> This script is used for testing database connection. It uses the defined connection url in the environment variable CONNECTION_URL
+
+
+`bin/db-create`: shell script for creating DB
 
 ```sh
 #! /usr/bin/bash
@@ -338,9 +354,26 @@ printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
 
 NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
 psql $NO_DB_CONNECTION_URL -c "create database cruddur;"
+#createdb cruddur $NO_DB_CONNECTION_URL
 ```
 
-`bin/db-drop`
+> This script creates cruddur database in the instance passed in CONNECTION_URL environment variable
+
+> As this variable contains database name, it must be trimmed out from its value, by using `sed` command (https://askubuntu.com/questions/595269/use-sed-on-a-string-variable-rather-than-a-file)
+
+> psql or createdb AWS cli commands can be used
+
+> Shell script output color is changed by using this code (https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux):
+
+```sh
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="db-schema-load"
+printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
+```
+
+
+`bin/db-drop`: shell script for dropping DB
 
 ```sh
 #! /usr/bin/bash
@@ -354,7 +387,8 @@ NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
 psql $NO_DB_CONNECTION_URL -c "drop database cruddur;"
 ```
 
-`bin/db-schema-load`
+
+`bin/db-schema-load`: shell script for loading DB schema
 
 ```sh
 #! /usr/bin/bash
@@ -377,7 +411,8 @@ fi
 psql $URL cruddur < $schema_path
 ```
 
-`sql/schema.sql`
+
+`sql/schema.sql`: sql schema file
 
 ```sql
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -406,7 +441,8 @@ CREATE TABLE public.activities (
 );
 ```
 
-`bin/db-seed`
+
+`bin/db-seed`: shell script for loading seed data into DB
 
 ```sh
 #! /usr/bin/bash
@@ -429,7 +465,7 @@ fi
 psql $URL cruddur < $seed_path
 ```
 
-`sql/seed.sql`
+`sql/seed.sql`: sql seed file
 
 ```sql
 -- this file was manually created
@@ -447,7 +483,8 @@ VALUES
   )
 ```
 
-`bin/db-sessions`
+
+`bin/db-sessions`: shell script for checking used connections to DB
 
 ```sh
 #! /usr/bin/bash
@@ -473,7 +510,10 @@ psql $NO_DB_URL -c "select pid as process_id, \
 from pg_stat_activity;"
 ```
 
-`bin/db-setup`
+> We could have idle connections left open by our Database Explorer extension, try disconnecting and checking again the sessions 
+
+
+`bin/db-setup`: shell script for resetting everything on DB
 
 ```sh
 #! /usr/bin/bash
@@ -491,10 +531,4 @@ source "$bin_path/db-create"
 source "$bin_path/db-schema-load"
 source "$bin_path/db-seed"
 ```
-
-
-
-
-
-
 
