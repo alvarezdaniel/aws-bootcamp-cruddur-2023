@@ -226,10 +226,11 @@ In this case, the database will be first in `Stopping` status, and then after so
 
 ### Remotely connect to RDS instance
 
+Pending
 
 ### Programmatically update a security group rule
 
-
+Pending
 
 ### Write several bash scripts for database operations
 
@@ -321,7 +322,7 @@ These scripts will be located in `/backend-flask/bin` folder (also, some of them
 > All these scripts must be made executable by executing:
 
 ```sh
-chmod u+x bin/db-connect
+chmod u+x bin/*
 ```
 
 > And for executing them:
@@ -412,7 +413,7 @@ psql $URL cruddur < $schema_path
 ```
 
 
-`sql/schema.sql`: sql schema file
+`db/schema.sql`: sql schema file
 
 ```sql
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -465,7 +466,7 @@ fi
 psql $URL cruddur < $seed_path
 ```
 
-`sql/seed.sql`: sql seed file
+`db/seed.sql`: sql seed file
 
 ```sql
 -- this file was manually created
@@ -531,4 +532,5 @@ source "$bin_path/db-create"
 source "$bin_path/db-schema-load"
 source "$bin_path/db-seed"
 ```
+
 
