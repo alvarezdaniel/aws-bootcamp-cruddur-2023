@@ -23,7 +23,13 @@
 
 ## Todo Checklist
 
-### Provision an RDS instance
+### Watched Ashish's Week 4 - Security Considerations
+
+[video](https://www.youtube.com/watch?v=UourWxz7iQg&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=45)
+
+### Create RDS Postgres Instance
+
+[video](https://www.youtube.com/watch?v=EtD7Kv5YCUs&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=46)
 
 This step is done before everything else because we will be needing a cloud Postgres RDS instance in AWS for connecting later.
 
@@ -212,8 +218,6 @@ After executing the script, the database appears as `Creating`
 
 After some minutes (in my case the process took about 5 minutes)
 
-### Temporarily stop an RDS instance
-
 Database instance should be stopped temporarily, in order not to consume credits, because it is a VM in AWS
 
 ![](assets/week-4/02-db-stop-temp.png)
@@ -224,15 +228,10 @@ In this case, the database will be first in `Stopping` status, and then after so
 
 ![](assets/week-4/04-db-stopped.png)
 
-### Remotely connect to RDS instance
 
-Pending
+### Bash scripting for common database actions
 
-### Programmatically update a security group rule
-
-Pending
-
-### Write several bash scripts for database operations
+[video](https://www.youtube.com/watch?v=EtD7Kv5YCUs&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=46)
 
 First of all we need to ensure that postgres container is configured in `docker-compose.yml` file. I've disabled before, so in this case I'm enabling it again.
 
