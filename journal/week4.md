@@ -309,11 +309,11 @@ We will need variables for determining connection url to our postgres instance. 
 > https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING
 
 ```sh
-export CONNECTION_URL="postgresql://postgres:password@localhost:5432/cruddur"
-gp env CONNECTION_URL="postgresql://postgres:password@localhost:5432/cruddur"
+export CONNECTION_URL="postgres://postgres:password@localhost:5432/cruddur"
+gp env CONNECTION_URL="postgres://postgres:password@localhost:5432/cruddur"
 
-export PROD_CONNECTION_URL="postgresql://***:***@cruddur-db-instance.***.ca-central-1.rds.amazonaws.com:5432/cruddur"
-gp env PROD_CONNECTION_URL="postgresql://***:***@cruddur-db-instance.***.ca-central-1.rds.amazonaws.com:5432/cruddur"
+export PROD_CONNECTION_URL="postgres://***:***@cruddur-db-instance.***.ca-central-1.rds.amazonaws.com:5432/cruddur"
+gp env PROD_CONNECTION_URL="postgres://***:***@cruddur-db-instance.***.ca-central-1.rds.amazonaws.com:5432/cruddur"
 ```
 
 These scripts will be located in `/backend-flask/bin` folder (also, some of them requires sql files that will be located in `/backend-flask/sql`)
@@ -735,8 +735,8 @@ services:
 And this references this new env var to be created as well (We cannot use the same CONNECTION_URL already created, because that one references localhost, and in here we need to use db, as the service name defined in compose file)
 
 ```sh
-export COMPOSE_CONNECTION_URL="postgresql://postgres:password@db:5432/cruddur"
-gp env COMPOSE_CONNECTION_URL="postgresql://postgres:password@db:5432/cruddur"
+export COMPOSE_CONNECTION_URL="postgres://postgres:password@db:5432/cruddur"
+gp env COMPOSE_CONNECTION_URL="postgres://postgres:password@db:5432/cruddur"
 ```
 
 Finally, in `home_activities.py`, we need to change the returned information in there and use a call to postgress to retrieve the data (of course, we need to import first from lib.db the classes we need to use in here)
@@ -946,7 +946,7 @@ When executing this script, the ip address for the security group rule is update
 
 ![](./assets/week-4/20-gitpod-ip.png)
 
-We can now test connection from Gitpod to AWS RDS, by executing `db-connect` script
+We can now test connection from Gitpod to AWS RDS, by executing `db-connect prod` script, for connecting to the defined URL for production postgress, in AWS RDS
 
 ```sh
 ./bin/db-connect prod
@@ -955,3 +955,8 @@ We can now test connection from Gitpod to AWS RDS, by executing `db-connect` scr
 
 
 
+export PROD_CONNECTION_URL="postgres://root:MyRootPassword@cruddur-db-instance.cyrffoxr3epn.ca-central-1.rds.amazonaws.com:5432/cruddur"
+
+psql postgresql://root:MyRootPassword@cruddur-db-instance.cyrffoxr3epn.ca-central-1.rds.amazonaws.com:5432/cruddur
+
+psql postgres://root:MyRootPassword@cruddur-db-instance.cyrffoxr3epn.ca-central-1.rds.amazonaws.com:5432/cruddur
