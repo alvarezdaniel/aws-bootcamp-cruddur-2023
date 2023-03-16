@@ -312,8 +312,8 @@ We will need variables for determining connection url to our postgres instance. 
 export CONNECTION_URL="postgresql://postgres:password@localhost:5432/cruddur"
 gp env CONNECTION_URL="postgresql://postgres:password@localhost:5432/cruddur"
 
-export PROD_CONNECTION_URL="postgresql://***:***@$cruddur-db-instance.***.ca-central-1.rds.amazonaws.com:5432/cruddur"
-gp env PROD_CONNECTION_URL="postgresql://***:***@$cruddur-db-instance.***.ca-central-1.rds.amazonaws.com:5432/cruddur"
+export PROD_CONNECTION_URL="postgresql://***:***@cruddur-db-instance.***.ca-central-1.rds.amazonaws.com:5432/cruddur"
+gp env PROD_CONNECTION_URL="postgresql://***:***@cruddur-db-instance.***.ca-central-1.rds.amazonaws.com:5432/cruddur"
 ```
 
 These scripts will be located in `/backend-flask/bin` folder (also, some of them requires sql files that will be located in `/backend-flask/sql`)
@@ -850,5 +850,108 @@ We can test the changes by starting the compose file and browsing cruddur home p
 
 ![](./assets/week-4/12-home-from-db.png)
 
+`db/seed.sql`: sql seed file
+
+```sql
+INSERT INTO public.activities (user_uuid, message, expires_at)
+VALUES
+  (
+    (SELECT uuid from public.users WHERE users.handle = 'andrewbrown' LIMIT 1),
+    'This was imported as seed data!',
+    current_timestamp + interval '10 day'
+  );
+```
+
 > We can see that the returned activities are the ones defined in seed.sql file, and now extracted from postgres db
+
+
+### Connect Gitpod to RDS Instance
+
+[video](https://www.youtube.com/watch?v=Sa2iB33sKFo&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=47)
+
+First of all, we are going to start RDS instance in AWS console
+
+![](./assets/week-4/13-start-rds.png)
+
+After doing that, we need to add Gitpod ip address to RDS VPC to be able to communicate between them
+
+To know the ip address for Gitpod workspace, we can call ifconfig.me
+
+```sh
+curl ifconfig.me
+```
+
+![](./assets/week-4/14-ifconfig.me.png)
+
+We need this ip address available in an environment variable, so we make a change in Gidpod initialization file to set it on workspace start, by adding this command to postgres job
+
+`.gitpod.yml`
+
+```yml
+  - name: postgres
+    init: |
+      curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
+      echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
+      sudo apt update
+      sudo apt install -y postgresql-client-13 libpq-dev      
+    command: |
+      export GITPOD_IP=$(curl ifconfig.me)
+      source  "$THEIA_WORKSPACE_ROOT/backend-flask/rds-update-sg-rule"
+```
+
+So after doing this change we are restarting Gitpod workspace and checking the environment variable
+
+![](./assets/week-4/15-gitpod-ip.png)
+
+Following, we need to whitelist that ip address in RDS security group for inbound traffic on port 5432
+
+We need to create an inbound rule for Postgres (port 5432) and provide the GITPOD ID.
+
+![](./assets/week-4/16-sg-inbound-rule.png)
+
+We need to create environment variables with Security Group ID and Rule ID, for using in AWS CLI and change properties
+
+```sh
+export DB_SG_ID="sg-XXX"
+gp env DB_SG_ID="sg-XXX"
+
+export DB_SG_RULE_ID="sgr-XXX"
+gp env DB_SG_RULE_ID="sgr-XXX"
+```
+
+![](./assets/week-4/17-set-env.png)
+
+Then we can use the following AWS CLI script to set ip configuration on request (we save it in bin folder as `rds-update-sg-rule` and set execute permissions)
+
+```sh
+#! /usr/bin/bash
+
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="rds-update-sg-rule"
+printf "${CYAN}==== ${LABEL}${NO_COLOR}\n"
+
+aws ec2 modify-security-group-rules \
+    --group-id $DB_SG_ID \
+    --security-group-rules "SecurityGroupRuleId=$DB_SG_RULE_ID,SecurityGroupRule={Description=GITPOD,IpProtocol=tcp,FromPort=5432,ToPort=5432,CidrIpv4=$GITPOD_IP/32}"
+```
+
+> https://docs.aws.amazon.com/cli/latest/reference/ec2/modify-security-group-rules.html#examples
+
+When executing this script, the ip address for the security group rule is updated based on the ip address for the Gitpod workspace
+
+![](./assets/week-4/18-set-rule.png)
+
+![](./assets/week-4/19-sg-inbound-rule-modified.png)
+
+![](./assets/week-4/20-gitpod-ip.png)
+
+We can now test connection from Gitpod to AWS RDS, by executing `db-connect` script
+
+```sh
+./bin/db-connect prod
+```
+
+
+
 
