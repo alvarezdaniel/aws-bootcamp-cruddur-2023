@@ -896,7 +896,7 @@ We need this ip address available in an environment variable, so we make a chang
       sudo apt install -y postgresql-client-13 libpq-dev      
     command: |
       export GITPOD_IP=$(curl ifconfig.me)
-      source  "$THEIA_WORKSPACE_ROOT/backend-flask/rds-update-sg-rule"
+      source  "$THEIA_WORKSPACE_ROOT/backend-flask/bin/rds-update-sg-rule"
 ```
 
 So after doing this change we are restarting Gitpod workspace and checking the environment variable
