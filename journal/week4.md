@@ -345,12 +345,12 @@ printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
 if [ "$1" = "prod" ]; then
   echo "Running in production mode"
   URL=$PROD_CONNECTION_URL
+  psql $URL
 else
   URL=$CONNECTION_URL
+  NO_DB_URL=$(sed 's/\/cruddur//g' <<<"$URL")
+  psql $NO_DB_URL
 fi
-
-NO_DB_URL=$(sed 's/\/cruddur//g' <<<"$URL")
-psql $NO_DB_URL
 ```
 
 > This script is used for testing database connection. It uses the defined connection url in the environment variable CONNECTION_URL
