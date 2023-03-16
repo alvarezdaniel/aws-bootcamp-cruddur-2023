@@ -330,19 +330,48 @@ chmod u+x bin/*
 ./bin/db-connect
 ```
 
+#### Shell script for connecting to DB
 
-`bin/db-connect`: shell script for connecting to DB
+`bin/db-connect`: 
 
 ```sh
 #! /usr/bin/bash
 
-psql $CONNECTION_URL
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="db-connect"
+printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
+
+if [ "$1" = "prod" ]; then
+  echo "Running in production mode"
+  URL=$PROD_CONNECTION_URL
+else
+  URL=$CONNECTION_URL
+fi
+
+NO_DB_URL=$(sed 's/\/cruddur//g' <<<"$URL")
+psql $NO_DB_URL
 ```
 
 > This script is used for testing database connection. It uses the defined connection url in the environment variable CONNECTION_URL
 
+> As this variable contains database name, it must be trimmed out from its value, by using `sed` command (https://askubuntu.com/questions/595269/use-sed-on-a-string-variable-rather-than-a-file)
 
-`bin/db-create`: shell script for creating DB
+> Shell script output color is changed by using this code (https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux):
+
+```sh
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="db-schema-load"
+printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
+```
+
+![](./assets/week-4/05-db-connect.png)
+
+
+#### Shell script for creating DB
+
+`bin/db-create`: 
 
 ```sh
 #! /usr/bin/bash
@@ -359,21 +388,14 @@ psql $NO_DB_CONNECTION_URL -c "create database cruddur;"
 
 > This script creates cruddur database in the instance passed in CONNECTION_URL environment variable
 
-> As this variable contains database name, it must be trimmed out from its value, by using `sed` command (https://askubuntu.com/questions/595269/use-sed-on-a-string-variable-rather-than-a-file)
-
 > psql or createdb AWS cli commands can be used
 
-> Shell script output color is changed by using this code (https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux):
-
-```sh
-CYAN='\033[1;36m'
-NO_COLOR='\033[0m'
-LABEL="db-schema-load"
-printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
-```
+![](./assets/week-4/06-db-create.png)
 
 
-`bin/db-drop`: shell script for dropping DB
+#### Shell script for dropping DB
+
+`bin/db-drop`: 
 
 ```sh
 #! /usr/bin/bash
@@ -387,8 +409,12 @@ NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
 psql $NO_DB_CONNECTION_URL -c "drop database cruddur;"
 ```
 
+![](./assets/week-4/07-db-drop.png)
 
-`bin/db-schema-load`: shell script for loading DB schema
+
+#### Shell script for loading DB schema 
+
+`bin/db-schema-load`: 
 
 ```sh
 #! /usr/bin/bash
@@ -410,7 +436,6 @@ fi
 
 psql $URL cruddur < $schema_path
 ```
-
 
 `db/schema.sql`: sql schema file
 
@@ -441,8 +466,13 @@ CREATE TABLE public.activities (
 );
 ```
 
+![](./assets/week-4/08-db-schema-load.png)
 
-`bin/db-seed`: shell script for loading seed data into DB
+
+
+#### Shell script for loading seed data into DB 
+
+`bin/db-seed`: 
 
 ```sh
 #! /usr/bin/bash
@@ -483,8 +513,12 @@ VALUES
   )
 ```
 
+![](./assets/week-4/09-db-seed.png)
 
-`bin/db-sessions`: shell script for checking used connections to DB
+
+#### Shell script for checking used connections to DB 
+
+`bin/db-sessions`: 
 
 ```sh
 #! /usr/bin/bash
@@ -512,12 +546,15 @@ from pg_stat_activity;"
 
 > We could have idle connections left open by our Database Explorer extension, try disconnecting and checking again the sessions 
 
+![](./assets/week-4/10-db-sessions.png)
 
-`bin/db-setup`: shell script for resetting everything on DB
+
+#### Shell script for resetting everything on DB 
+
+`bin/db-setup`: 
 
 ```sh
-#! /usr/bin/bash
--e # stop if it fails at any point
+#! /usr/bin/bash -e # stop if it fails at any point
 
 CYAN='\033[1;36m'
 NO_COLOR='\033[0m'
@@ -531,5 +568,7 @@ source "$bin_path/db-create"
 source "$bin_path/db-schema-load"
 source "$bin_path/db-seed"
 ```
+
+![](./assets/week-4/11-db-setup.png)
 
 
