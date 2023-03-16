@@ -953,10 +953,3 @@ We can now test connection from Gitpod to AWS RDS, by executing `db-connect prod
 ```
 
 
-
-
-export PROD_CONNECTION_URL="postgres://root:MyRootPassword@cruddur-db-instance.cyrffoxr3epn.ca-central-1.rds.amazonaws.com:5432/cruddur"
-
-psql postgresql://root:MyRootPassword@cruddur-db-instance.cyrffoxr3epn.ca-central-1.rds.amazonaws.com:5432/cruddur
-
-psql postgres://root:MyRootPassword@cruddur-db-instance.cyrffoxr3epn.ca-central-1.rds.amazonaws.com:5432/cruddur
