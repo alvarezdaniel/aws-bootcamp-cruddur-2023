@@ -952,4 +952,19 @@ We can now test connection from Gitpod to AWS RDS, by executing `db-connect prod
 ./bin/db-connect prod
 ```
 
+![](./assets/week-4/21-db-connect-prod.png)
+
+After connecting, we can run `db-schema-load` and `db-seed` scripts for initializing structure and data in RDS instance
+
+![](./assets/week-4/22-db-schema-load-seed-prod.png)
+
+Then we are ready for using cruddur using RDS instance, so we need to change environment variable that set is set in compose file to use RDS instance instead of local one
+
+```yml
+version: "3.8"
+services:
+  backend-flask:
+    environment:
+      CONNECTION_URL: "${PROD_CONNECTION_URL}"
+```
 
