@@ -583,6 +583,8 @@ psycopg[binary]
 psycopg[pool]
 ```
 
+> https://www.psycopg.org/psycopg3/
+
 and then execute
 
 ```sh
@@ -737,7 +739,7 @@ export COMPOSE_CONNECTION_URL="postgresql://postgres:password@db:5432/cruddur"
 gp env COMPOSE_CONNECTION_URL="postgresql://postgres:password@db:5432/cruddur"
 ```
 
-Finally, in `home_activities.py`, we need to change the returned information in there and use a call to postgress to retrieve the data
+Finally, in `home_activities.py`, we need to change the returned information in there and use a call to postgress to retrieve the data (of course, we need to import first from lib.db the classes we need to use in here)
 
 ```py
 from datetime import datetime, timedelta, timezone
