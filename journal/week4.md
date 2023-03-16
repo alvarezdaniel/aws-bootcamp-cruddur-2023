@@ -968,3 +968,15 @@ services:
       CONNECTION_URL: "${PROD_CONNECTION_URL}"
 ```
 
+If we start now compose file (without starting local db)
+
+![](./assets/week-4/23-compose-up.png)
+
+And browse cruddur page, now we should see information coming from RDS instance
+
+![](./assets/week-4/24-cruddur-using-rds.png)
+
+The only containers that are running are backend, frontend and xray-daemon, so the data is coming from AWS RDS
+
+![](./assets/week-4/25-containers.png)
+
