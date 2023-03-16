@@ -510,7 +510,7 @@ VALUES
     (SELECT uuid from public.users WHERE users.handle = 'andrewbrown' LIMIT 1),
     'This was imported as seed data!',
     current_timestamp + interval '10 day'
-  )
+  );
 ```
 
 ![](./assets/week-4/09-db-seed.png)
@@ -571,4 +571,282 @@ source "$bin_path/db-seed"
 
 ![](./assets/week-4/11-db-setup.png)
 
+
+### Install Postgres Driver in Backend Application
+
+[video](https://www.youtube.com/watch?v=Sa2iB33sKFo&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=47)
+
+We are going to install some python modules in `requirements.txt` file:
+
+```txt
+psycopg[binary]
+psycopg[pool]
+```
+
+and then execute
+
+```sh
+pip install -r requirements.txt
+```
+
+```
+Collecting flask
+  Downloading Flask-2.2.3-py3-none-any.whl (101 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 101.8/101.8 kB 5.3 MB/s eta 0:00:00
+Collecting flask-cors
+  Downloading Flask_Cors-3.0.10-py2.py3-none-any.whl (14 kB)
+Collecting opentelemetry-api
+  Downloading opentelemetry_api-1.16.0-py3-none-any.whl (57 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 57.3/57.3 kB 14.4 MB/s eta 0:00:00
+Collecting opentelemetry-sdk
+  Downloading opentelemetry_sdk-1.16.0-py3-none-any.whl (94 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 94.6/94.6 kB 13.9 MB/s eta 0:00:00
+Collecting opentelemetry-exporter-otlp-proto-http
+  Downloading opentelemetry_exporter_otlp_proto_http-1.16.0-py3-none-any.whl (21 kB)
+Collecting opentelemetry-instrumentation-flask
+  Downloading opentelemetry_instrumentation_flask-0.37b0-py3-none-any.whl (13 kB)
+Collecting opentelemetry-instrumentation-requests
+  Downloading opentelemetry_instrumentation_requests-0.37b0-py3-none-any.whl (11 kB)
+Collecting aws-xray-sdk
+  Downloading aws_xray_sdk-2.11.0-py2.py3-none-any.whl (102 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 102.0/102.0 kB 25.2 MB/s eta 0:00:00
+Collecting watchtower
+  Downloading watchtower-3.0.1-py3-none-any.whl (17 kB)
+Collecting blinker
+  Downloading blinker-1.5-py2.py3-none-any.whl (12 kB)
+Collecting rollbar
+  Downloading rollbar-0.16.3-py3-none-any.whl (98 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 98.1/98.1 kB 24.8 MB/s eta 0:00:00
+Collecting Flask-AWSCognito
+  Downloading Flask_AWSCognito-1.3-py3-none-any.whl (12 kB)
+Collecting click>=8.0
+  Downloading click-8.1.3-py3-none-any.whl (96 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 96.6/96.6 kB 18.7 MB/s eta 0:00:00
+Requirement already satisfied: importlib-metadata>=3.6.0 in /home/gitpod/.pyenv/versions/3.8.16/lib/python3.8/site-packages (from flask->-r requirements.txt (line 1)) (6.0.0)
+Collecting Werkzeug>=2.2.2
+  Downloading Werkzeug-2.2.3-py3-none-any.whl (233 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 233.6/233.6 kB 18.8 MB/s eta 0:00:00
+Collecting itsdangerous>=2.0
+  Downloading itsdangerous-2.1.2-py3-none-any.whl (15 kB)
+Requirement already satisfied: Jinja2>=3.0 in /home/gitpod/.pyenv/versions/3.8.16/lib/python3.8/site-packages (from flask->-r requirements.txt (line 1)) (3.1.2)
+Requirement already satisfied: Six in /home/gitpod/.pyenv/versions/3.8.16/lib/python3.8/site-packages (from flask-cors->-r requirements.txt (line 2)) (1.16.0)
+Requirement already satisfied: setuptools>=16.0 in /home/gitpod/.pyenv/versions/3.8.16/lib/python3.8/site-packages (from opentelemetry-api->-r requirements.txt (line 4)) (65.6.3)
+Collecting deprecated>=1.2.6
+  Downloading Deprecated-1.2.13-py2.py3-none-any.whl (9.6 kB)
+Requirement already satisfied: typing-extensions>=3.7.4 in /home/gitpod/.pyenv/versions/3.8.16/lib/python3.8/site-packages (from opentelemetry-sdk->-r requirements.txt (line 5)) (4.4.0)
+Collecting opentelemetry-semantic-conventions==0.37b0
+  Downloading opentelemetry_semantic_conventions-0.37b0-py3-none-any.whl (26 kB)
+Collecting opentelemetry-proto==1.16.0
+  Downloading opentelemetry_proto-1.16.0-py3-none-any.whl (52 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 52.6/52.6 kB 13.2 MB/s eta 0:00:00
+Collecting googleapis-common-protos~=1.52
+  Downloading googleapis_common_protos-1.58.0-py2.py3-none-any.whl (223 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 223.0/223.0 kB 32.8 MB/s eta 0:00:00
+Requirement already satisfied: requests~=2.7 in /home/gitpod/.pyenv/versions/3.8.16/lib/python3.8/site-packages (from opentelemetry-exporter-otlp-proto-http->-r requirements.txt (line 6)) (2.28.1)
+Collecting backoff<3.0.0,>=1.10.0
+  Downloading backoff-2.2.1-py3-none-any.whl (15 kB)
+Collecting protobuf<5.0,>=3.19
+  Downloading protobuf-4.22.1-cp37-abi3-manylinux2014_x86_64.whl (302 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 302.4/302.4 kB 26.3 MB/s eta 0:00:00
+Collecting opentelemetry-instrumentation==0.37b0
+  Downloading opentelemetry_instrumentation-0.37b0-py3-none-any.whl (24 kB)
+Collecting opentelemetry-util-http==0.37b0
+  Downloading opentelemetry_util_http-0.37b0-py3-none-any.whl (6.7 kB)
+Collecting opentelemetry-instrumentation-wsgi==0.37b0
+  Downloading opentelemetry_instrumentation_wsgi-0.37b0-py3-none-any.whl (12 kB)
+Requirement already satisfied: wrapt<2.0.0,>=1.0.0 in /home/gitpod/.pyenv/versions/3.8.16/lib/python3.8/site-packages (from opentelemetry-instrumentation==0.37b0->opentelemetry-instrumentation-flask->-r requirements.txt (line 7)) (1.14.1)
+Collecting botocore>=1.11.3
+  Downloading botocore-1.29.92-py3-none-any.whl (10.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.5/10.5 MB 93.5 MB/s eta 0:00:00
+Collecting boto3<2,>=1.9.253
+  Downloading boto3-1.26.92-py3-none-any.whl (134 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.7/134.7 kB 36.4 MB/s eta 0:00:00
+Collecting python-jose
+  Downloading python_jose-3.3.0-py2.py3-none-any.whl (33 kB)
+Collecting s3transfer<0.7.0,>=0.6.0
+  Downloading s3transfer-0.6.0-py3-none-any.whl (79 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 79.6/79.6 kB 16.3 MB/s eta 0:00:00
+Collecting jmespath<2.0.0,>=0.7.1
+  Downloading jmespath-1.0.1-py3-none-any.whl (20 kB)
+Requirement already satisfied: urllib3<1.27,>=1.25.4 in /home/gitpod/.pyenv/versions/3.8.16/lib/python3.8/site-packages (from botocore>=1.11.3->aws-xray-sdk->-r requirements.txt (line 10)) (1.26.13)
+Requirement already satisfied: python-dateutil<3.0.0,>=2.1 in /home/gitpod/.pyenv/versions/3.8.16/lib/python3.8/site-packages (from botocore>=1.11.3->aws-xray-sdk->-r requirements.txt (line 10)) (2.8.2)
+Requirement already satisfied: zipp>=0.5 in /home/gitpod/.pyenv/versions/3.8.16/lib/python3.8/site-packages (from importlib-metadata>=3.6.0->flask->-r requirements.txt (line 1)) (3.11.0)
+Requirement already satisfied: MarkupSafe>=2.0 in /home/gitpod/.pyenv/versions/3.8.16/lib/python3.8/site-packages (from Jinja2>=3.0->flask->-r requirements.txt (line 1)) (2.1.1)
+Requirement already satisfied: charset-normalizer<3,>=2 in /home/gitpod/.pyenv/versions/3.8.16/lib/python3.8/site-packages (from requests~=2.7->opentelemetry-exporter-otlp-proto-http->-r requirements.txt (line 6)) (2.1.1)
+Requirement already satisfied: certifi>=2017.4.17 in /home/gitpod/.pyenv/versions/3.8.16/lib/python3.8/site-packages (from requests~=2.7->opentelemetry-exporter-otlp-proto-http->-r requirements.txt (line 6)) (2022.12.7)
+Requirement already satisfied: idna<4,>=2.5 in /home/gitpod/.pyenv/versions/3.8.16/lib/python3.8/site-packages (from requests~=2.7->opentelemetry-exporter-otlp-proto-http->-r requirements.txt (line 6)) (3.4)
+Collecting ecdsa!=0.15
+  Downloading ecdsa-0.18.0-py2.py3-none-any.whl (142 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 142.9/142.9 kB 38.7 MB/s eta 0:00:00
+Collecting pyasn1
+  Downloading pyasn1-0.4.8-py2.py3-none-any.whl (77 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 77.1/77.1 kB 17.4 MB/s eta 0:00:00
+Collecting rsa
+  Downloading rsa-4.9-py3-none-any.whl (34 kB)
+Installing collected packages: pyasn1, Werkzeug, rsa, protobuf, opentelemetry-util-http, opentelemetry-semantic-conventions, jmespath, itsdangerous, ecdsa, deprecated, click, blinker, backoff, rollbar, python-jose, opentelemetry-proto, opentelemetry-api, googleapis-common-protos, flask, botocore, s3transfer, opentelemetry-sdk, opentelemetry-instrumentation, flask-cors, Flask-AWSCognito, aws-xray-sdk, opentelemetry-instrumentation-wsgi, opentelemetry-instrumentation-requests, opentelemetry-exporter-otlp-proto-http, boto3, watchtower, opentelemetry-instrumentation-flask
+Successfully installed Flask-AWSCognito-1.3 Werkzeug-2.2.3 aws-xray-sdk-2.11.0 backoff-2.2.1 blinker-1.5 boto3-1.26.92 botocore-1.29.92 click-8.1.3 deprecated-1.2.13 ecdsa-0.18.0 flask-2.2.3 flask-cors-3.0.10 googleapis-common-protos-1.58.0 itsdangerous-2.1.2 jmespath-1.0.1 opentelemetry-api-1.16.0 opentelemetry-exporter-otlp-proto-http-1.16.0 opentelemetry-instrumentation-0.37b0 opentelemetry-instrumentation-flask-0.37b0 opentelemetry-instrumentation-requests-0.37b0 opentelemetry-instrumentation-wsgi-0.37b0 opentelemetry-proto-1.16.0 opentelemetry-sdk-1.16.0 opentelemetry-semantic-conventions-0.37b0 opentelemetry-util-http-0.37b0 protobuf-4.22.1 pyasn1-0.4.8 python-jose-3.3.0 rollbar-0.16.3 rsa-4.9 s3transfer-0.6.0 watchtower-3.0.1
+
+[notice] A new release of pip available: 22.3.1 -> 23.0.1
+[notice] To update, run: pip install --upgrade pip
+```
+
+We are going to add a db library to our backend folder in `lib/db.py`
+
+```py
+from psycopg_pool import ConnectionPool
+import os
+
+def query_wrap_object(template):
+  sql = f"""
+  (SELECT COALESCE(row_to_json(object_row),'{{}}'::json) FROM (
+  {template}
+  ) object_row);
+  """
+  return sql
+
+def query_wrap_array(template):
+  sql = f"""
+  (SELECT COALESCE(array_to_json(array_agg(row_to_json(array_row))),'[]'::json) FROM (
+  {template}
+  ) array_row);
+  """
+  return sql
+
+connection_url = os.getenv("CONNECTION_URL")
+pool = ConnectionPool(connection_url)
+```
+
+> This library will be useful for obtaining the connection and the pool for connecting to Postgres. 
+
+> Also, this will provide some functions for converting data returned from db to be shown in json format
+
+A new environment variable is required to be added to backend service in compose file
+
+```yml
+version: "3.8"
+services:
+  backend-flask:
+    environment:
+      CONNECTION_URL: "${COMPOSE_CONNECTION_URL}"
+```
+
+And this references this new env var to be created as well (We cannot use the same CONNECTION_URL already created, because that one references localhost, and in here we need to use db, as the service name defined in compose file)
+
+```sh
+export COMPOSE_CONNECTION_URL="postgresql://postgres:password@db:5432/cruddur"
+gp env COMPOSE_CONNECTION_URL="postgresql://postgres:password@db:5432/cruddur"
+```
+
+Finally, in `home_activities.py`, we need to change the returned information in there and use a call to postgress to retrieve the data
+
+```py
+from datetime import datetime, timedelta, timezone
+from opentelemetry import trace
+from lib.db import pool, query_wrap_array
+
+tracer = trace.get_tracer("home.activities")
+
+# Authentication
+class HomeActivities:
+  #def run(logger):
+  def run(logger, cognito_user_id=None):
+    #logger.info('Hello Cloudwatch! from /api/activities/home')
+    
+    with tracer.start_as_current_span("home-activites-mock-data"):
+      span = trace.get_current_span()
+      now = datetime.now(timezone.utc).astimezone()
+      span.set_attribute("app.now", now.isoformat())
+      
+      """ no more hardcoded data
+      results = [{
+        'uuid': '68f126b0-1ceb-4a33-88be-d90fa7109eee',
+        'handle':  'Andrew Brown',
+        'message': 'Cloud is very fun!',
+        'created_at': (now - timedelta(days=2)).isoformat(),
+        'expires_at': (now + timedelta(days=5)).isoformat(),
+        'likes_count': 5,
+        'replies_count': 1,
+        'reposts_count': 0,
+        'replies': [{
+          'uuid': '26e12864-1c26-5c3a-9658-97a10f8fea67',
+          'reply_to_activity_uuid': '68f126b0-1ceb-4a33-88be-d90fa7109eee',
+          'handle':  'Worf',
+          'message': 'This post has no honor!',
+          'likes_count': 0,
+          'replies_count': 0,
+          'reposts_count': 0,
+          'created_at': (now - timedelta(days=2)).isoformat()
+        }],
+      },
+      {
+        'uuid': '66e12864-8c26-4c3a-9658-95a10f8fea67',
+        'handle':  'Worf',
+        'message': 'I am out of prune juice',
+        'created_at': (now - timedelta(days=7)).isoformat(),
+        'expires_at': (now + timedelta(days=9)).isoformat(),
+        'likes': 0,
+        'replies': []
+      },
+      {
+        'uuid': '248959df-3079-4947-b847-9e0892d1bab4',
+        'handle':  'Garek',
+        'message': 'My dear doctor, I am just simple tailor',
+        'created_at': (now - timedelta(hours=1)).isoformat(),
+        'expires_at': (now + timedelta(hours=12)).isoformat(),
+        'likes': 0,
+        'replies': []
+      }
+      ]
+      
+      # Authentication
+      if cognito_user_id != None:
+        extra_crud = {
+          'uuid': '248959df-3079-4947-b847-9e0892d1bab4',
+          'handle':  'Lore',
+          'message': 'My dear brother, it the humans that are the problem',
+          'created_at': (now - timedelta(hours=1)).isoformat(),
+          'expires_at': (now + timedelta(hours=12)).isoformat(),
+          'likes': 1042,
+          'replies': []
+        }
+        
+        results.insert(0,extra_crud)
+      
+      span.set_attribute("app.result_length", len(results))
+      
+      return results      
+      """
+
+      sql = query_wrap_array("""
+        SELECT
+          activities.uuid,
+          users.display_name,
+          users.handle,
+          activities.message,
+          activities.replies_count,
+          activities.reposts_count,
+          activities.likes_count,
+          activities.reply_to_activity_uuid,
+          activities.expires_at,
+          activities.created_at
+        FROM public.activities
+        LEFT JOIN public.users ON users.uuid = activities.user_uuid
+        ORDER BY activities.created_at DESC
+      """)
+      print("SQL--------------")
+      print(sql)
+      with pool.connection() as conn:
+        with conn.cursor() as cur:
+          cur.execute(sql)
+          # this will return a tuple
+          # the first field being the data
+          json = cur.fetchone()
+      return json[0]
+```
+
+We can test the changes by starting the compose file and browsing cruddur home page
+
+![](./assets/week-4/12-home-from-db.png)
+
+> We can see that the returned activities are the ones defined in seed.sql file, and now extracted from postgres db
 
