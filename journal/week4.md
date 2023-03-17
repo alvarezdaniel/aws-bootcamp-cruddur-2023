@@ -23,9 +23,11 @@
 
 ## Todo Checklist
 
+
 ### Watched Ashish's Week 4 - Security Considerations
 
 [video](https://www.youtube.com/watch?v=UourWxz7iQg&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=45)
+
 
 ### Create RDS Postgres Instance
 
@@ -388,7 +390,13 @@ psql $NO_DB_CONNECTION_URL -c "create database cruddur;"
 
 > This script creates cruddur database in the instance passed in CONNECTION_URL environment variable
 
+> https://www.postgresql.org/docs/current/app-createdb.html
+
 > psql or createdb AWS cli commands can be used
+
+> createdb cruddur -h localhost -U postgres
+
+> psql -U postgres -h localhost -c "CREATE database cruddur;"
 
 ![](./assets/week-4/06-db-create.png)
 
@@ -408,6 +416,8 @@ printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
 NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
 psql $NO_DB_CONNECTION_URL -c "drop database cruddur;"
 ```
+
+> DROP database cruddur;
 
 ![](./assets/week-4/07-db-drop.png)
 
@@ -436,6 +446,8 @@ fi
 
 psql $URL cruddur < $schema_path
 ```
+
+We need to create a sql file called `schema.sql` with the required commands to create the sql objects in db
 
 `db/schema.sql`: sql schema file
 
@@ -466,8 +478,76 @@ CREATE TABLE public.activities (
 );
 ```
 
-![](./assets/week-4/08-db-schema-load.png)
+We are going to have Postgres generate out UUIDs. We'll need to use an extension called:
 
+```sql
+CREATE EXTENSION "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+```
+
+The required tables are also created in the script
+
+```sql
+CREATE TABLE public.users (
+  uuid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  display_name text,
+  handle text
+  cognito_user_id text,
+  created_at TIMESTAMP default current_timestamp NOT NULL
+);
+
+CREATE TABLE public.activities (
+  uuid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_uuid UUID NOT NULL,
+  message text NOT NULL,
+  replies_count integer DEFAULT 0,
+  reposts_count integer DEFAULT 0,
+  likes_count integer DEFAULT 0,
+  reply_to_activity_uuid integer,
+  expires_at TIMESTAMP,
+  created_at TIMESTAMP default current_timestamp NOT NULL
+);
+```
+
+They need to be droppped first if they don't exist
+
+```sql
+DROP TABLE IF EXISTS public.users;
+DROP TABLE IF EXISTS public.activities;
+```
+
+There is the possibility of updating a timestamp column using a trigger, but we are not using it
+
+https://aviyadav231.medium.com/automatically-updating-a-timestamp-column-in-postgresql-using-triggers-98766e3b47a0
+
+```sql
+DROP FUNCTION IF EXISTS func_updated_at();
+CREATE FUNCTION func_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = now();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+```
+
+```sql
+CREATE TRIGGER trig_users_updated_at 
+BEFORE UPDATE ON users 
+FOR EACH ROW EXECUTE PROCEDURE func_updated_at();
+CREATE TRIGGER trig_activities_updated_at 
+BEFORE UPDATE ON activities 
+FOR EACH ROW EXECUTE PROCEDURE func_updated_at();
+```
+
+```sql
+DROP TRIGGER IF EXISTS trig_users_updated_at ON users;
+DROP TRIGGER IF EXISTS trig_activities_updated_at ON activities;
+```
+
+> psql cruddur < db/schema.sql -h localhost -U postgres
+
+![](./assets/week-4/08-db-schema-load.png)
 
 
 #### Shell script for loading seed data into DB 
@@ -568,6 +648,8 @@ source "$bin_path/db-create"
 source "$bin_path/db-schema-load"
 source "$bin_path/db-seed"
 ```
+
+> Easily setup (reset) everything for our database
 
 ![](./assets/week-4/11-db-setup.png)
 
@@ -980,6 +1062,7 @@ The only containers that are running are backend, frontend and xray-daemon, so t
 
 ![](./assets/week-4/25-containers.png)
 
+
 ### Create Congito Trigger to insert user into database
 
 First of all, we need to create a lambda in the same VPC as the RDS instance
@@ -1229,6 +1312,7 @@ The last check is signin in into cruddur using the created user
 ![](./assets/week-4/47-signin-cruddur.png)
 
 ![](./assets/week-4/48-cruddur-ok.png)
+
 
 ### Create new activities with a database insert
 
@@ -1632,6 +1716,7 @@ Then we can verify the created activity in database
 ![](./assets/week-4/53-check-activity-db.png)
 
 ## Knowledge Challenges
+
 
 ### Security Quiz
 
