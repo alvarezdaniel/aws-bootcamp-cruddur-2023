@@ -980,3 +980,256 @@ The only containers that are running are backend, frontend and xray-daemon, so t
 
 ![](./assets/week-4/25-containers.png)
 
+### Create Congito Trigger to insert user into database
+
+First of all, we need to create a lambda in the same VPC as the RDS instance
+
+Create it from scratch
+
+Name: cruddur-post-confirmation
+
+Runtime: Python 3.8
+
+Architecture: x86/x64
+
+Execution role: Create a new role with basic Lambda permissions
+
+![](./assets/week-4/26-lambda-created.png)
+
+Then, in Code Source, we need to paste the next code block in python
+
+```py
+import json
+import psycopg2
+import os
+
+def lambda_handler(event, context):
+    user = event['request']['userAttributes']
+    print('userAttributes')
+    print(user)
+
+    user_display_name  = user['name']
+    user_email         = user['email']
+    user_handle        = user['preferred_username']
+    user_cognito_id    = user['sub']
+    try:
+      print('entered-try')
+      sql = f"""
+         INSERT INTO public.users (
+          display_name, 
+          email,
+          handle, 
+          cognito_user_id
+          ) 
+        VALUES(
+          '{user_display_name}', 
+          '{user_email}', 
+          '{user_handle}', 
+          '{user_cognito_id}'
+        )
+      """
+      print('SQL Statement ----')
+      print(sql)
+      conn = psycopg2.connect(os.getenv('CONNECTION_URL'))
+      cur = conn.cursor()
+      cur.execute(sql)
+      conn.commit() 
+
+    except (Exception, psycopg2.DatabaseError) as error:
+      print(error)
+    finally:
+      if conn is not None:
+          cur.close()
+          conn.close()
+          print('Database connection closed.')
+    return event
+```
+
+> The code for the lambda will be also available in `aws/lambdas/cruddur-post-confirmation.py` file
+
+After pasting the code block we need to click on `Deploy` button to save it in the lambda
+
+We need to change users table, adding a new field to it (email), so we are changing `db/schema.sql` file
+
+```sql
+CREATE TABLE public.users (
+  uuid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  display_name text NOT NULL,
+  handle text NOT NULL,
+  email text NOT NULL,
+  cognito_user_id text NOT NULL,
+  created_at TIMESTAMP default current_timestamp NOT NULL
+);
+```
+
+We need to change also `db/seed.sql` file
+
+```sql
+INSERT INTO public.users (display_name, handle, email, cognito_user_id)
+VALUES
+  ('Andrew Brown', 'andrewbrown', 'andrewbrown@exampro.co', 'MOCK'),
+  ('Andrew Bayko', 'bayko', 'bayko@exampro.co', 'MOCK');
+```
+
+The lambda code uses an environment variable (`CONNECTION_URL`) that should be set
+
+![](./assets/week-4/27-lambda-env-var.png)
+
+Also, in Code section, we need to add a layer to the lambda
+
+![](./assets/week-4/28-add-layer.png)
+
+Development
+
+psycopg2 Python Library for AWS Lambda
+
+https://github.com/AbhimanyuHK/aws-psycopg2
+
+> This is a custom compiled psycopg2 C library for Python. Due to AWS Lambda missing the required PostgreSQL libraries in the AMI image, we needed to compile psycopg2 with the PostgreSQL libpq.so library statically linked libpq library instead of the default dynamic link.
+
+The easiest method is:
+
+Some precompiled versions of this layer are available publicly on AWS freely to add to your function by ARN reference.
+
+https://github.com/jetbridge/psycopg2-lambda-layer
+
+`arn:aws:lambda:ca-central-1:898466741470:layer:psycopg2-py38:1`
+
+Alternatively you can create your own development layer by downloading the psycopg2-binary source files from https://pypi.org/project/psycopg2-binary/#files
+
+Download the package for the lambda runtime environment: psycopg2_binary-2.9.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+
+Extract to a folder, then zip up that folder and upload as a new lambda layer to your AWS account
+
+Production
+
+Follow the instructions on https://github.com/AbhimanyuHK/aws-psycopg2 to compile your own layer from postgres source libraries for the desired version.
+
+
+For this lambda to be executed be need to add a trigger, so in AWS console, in Cognito. So in cruddur-user-pool configuration, in User Pool Properties, we need to add a lambda trigger
+
+Trigger type = Sign-up, Post confirmation trigger
+
+Select cruddur-post-confirmation lambda in assign lambda function
+
+![](./assets/week-4/29-lambda-trigger-added.png)
+
+For the lambda function to be able to communicate with RDS, we need to connect it to the same VPC that RDS is running, so in lambda configuration, in VPC, we add it
+
+But if we try to save it this error should occur
+
+`The provided execution role does not have permissions to call CreateNetworkInterface on EC2`
+
+To be able to configure VPC, we need to assign the corresponding permissions to the lambda
+
+So in lambda configuration, in Permissions, we need to edit the lambda role
+
+![](./assets/week-4/30-edit-lambda-role.png)
+
+In this role, we need to add permissions to attach policies
+
+![](./assets/week-4/31-add-permissions.png)
+
+Inside the app permissions page, we are going to create a new policy with the required actions
+
+![](./assets/week-4/32-create-policy.png)
+
+The service to filter the actions is EC2
+
+And the actions to select are:
+
+- CreateNetworkInterface
+- DescribeInstances
+- DescribeNetworkInterfaces
+- DeleteNetworkInterface
+- AttachNetworkInterface
+
+Finally, the policy should apply to All Resources
+
+The policy name should be `AWSLambdaVPCAccessExecutionRole` and the description `So a lambda can create a network card`
+
+After saving the new policy, it can be inspected and its json extracted 
+
+![](./assets/week-4/33-new-policy.png)
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:CreateNetworkInterface",
+                "ec2:DescribeInstances",
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:DeleteNetworkInterface",
+                "ec2:AttachNetworkInterface"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+Then, in our lambda permissions, we can assign the new created policy
+
+![](./assets/week-4/34-add-policy.png)
+
+![](./assets/week-4/35-policy-added.png)
+
+We can verify the corresponding permissions assignment in the lambda configuration, in Permissions, Resource Summary, by clicking on Amazon EC2 option
+
+![](./assets/week-4/36-lambda-permissions.png)
+
+Now, with the corresponding permissions already assigned, we can add the VPC to the lambda
+
+![](./assets/week-4/37-edit-vpc.png)
+
+![](./assets/week-4/38-lambda-vpc.png)
+
+Now we are ready to test the changes by starting cruddur, but first we need to update db schema, because we've added a new field to users table.
+
+> I've stopped my RDS instance, so I need to start it again before being able to do that
+
+```sh
+./bin/db-schema-load
+```
+
+![](./assets/week-4/39-db-schema-load-prod.png)
+
+After updating schema, we can check if the new field is available (and also that the table is empty)
+
+![](./assets/week-4/40-users.png)
+
+Now it's the time to run compose file and check if sign-up process creates the user in RDS automatically, by executing the lambda
+
+> We are going to delete the manually generated user in Cognito first
+
+![](./assets/week-4/41-signup.png)
+
+![](./assets/week-4/42-confirm-user.png)
+
+If we check in Cognito, we can see that the user has been created
+
+![](./assets/week-4/43-user-created.png)
+
+We can also check lambda logs in CloudWatch
+
+![](./assets/week-4/44-lambda-logs.png)
+
+![](./assets/week-4/45-lambda-cloudwatch.png)
+
+Finally, to be 100% sure the user is created also in RDS, we can connect to the instance and query users table
+
+![](./assets/week-4/46-new-user-db.png)
+
+The last check is signin in into cruddur using the created user
+
+![](./assets/week-4/47-signin-cruddur.png)
+
+![](./assets/week-4/48-cruddur-ok.png)
+
+
+
+
