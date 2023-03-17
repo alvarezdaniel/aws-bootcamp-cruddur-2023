@@ -1230,6 +1230,39 @@ The last check is signin in into cruddur using the created user
 
 ![](./assets/week-4/48-cruddur-ok.png)
 
+### Create new activities with a database insert
 
 
+
+## Knowledge Challenges
+
+### Security Quiz
+
+Which of the following databases would you NOT find available as an option on the AWS RDS service?
+- DynamoDB (X)
+- Postgres
+- MySQL
+- Aurora
+
+Which of the follow CIDR notations means you want to target any/all possible addresses?
+- 0.0.0.0/1000
+- 0.0.0.0/32
+- 127.0.0.1/0
+- 0.0.0.0/0 (X)
+
+Which AWS Service can be used in conjunction with RDS to help rotate access keys regularly?
+- Secrets Manager (X)
+- Parameter Store
+- None is needed. This funtionality is part of RDS already
+- Cloud Trail
+
+When creating security group rules for your RDS instance, which of the following would be considered best practice?
+- Secure all traffic using IP specific rules only
+- Only allow private network access with rules targeting specific security groups (X)
+- Allow public access only on the database service ports
+- Allow public access on all ports
+
+True or False, best practice dictates your RDS instance should never be publicly available on the internet
+- TRUE (X)
+- FALSE
 
