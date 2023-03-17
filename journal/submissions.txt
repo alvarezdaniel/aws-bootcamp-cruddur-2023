@@ -41,7 +41,7 @@ As a bonus, following Andrew's video about Codespaces, I've configured my enviro
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
-In week 3, I was able to complete the required asignments.
+In week 3, I was able to complete the required assignments.
 
 - First of all, I watched week-3 live stream on Saturday, then I continued watching the rest of the videos, that showed how to implement completely Cognito authentication both in frontend and backend. I also watched Ashish video about centralized authentication.
 - For software asignments, I could be able to create the required Amazon Cognito user pool, using ClickOps as specified (although my idea is to investigate later how to create it using AWS CLI).
@@ -51,3 +51,33 @@ In week 3, I was able to complete the required asignments.
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
+In week 4, I was able to complete all the required assignments.
+
+- First, I've created the RDS instance in AWS using the script, creating the corresponding environment variables in Gitpod for not exposing credentials in git repo.
+- I've explored the different options for creating a AWS RDS instance using AWS console, instead of CLI.
+- After RDS instance is created, I've checked different configurations and options in AWS console, and stopped it for not consuming credits (I'll be using it later).
+- For implementing postgres in cruddur, first of all I'm doing locally, so I've enabled postgres container and ran it along the backend and frontend.
+- I've ensured that postgres client is installed during Gitpod workspace initialization.
+- I've configured environment variables for connecting to postgres, both locally and RDS instance.
+- I've created several scripts (and made them executable) for implementing some operations against db (connect, create db, drop db, schema load, seed data, check sessions, db setup). 
+- All these scripts are configured with the possibility to be ran against local db or RDS instance.
+- In backend application, I've imported psycopg modules, and made the changes in the code for retrieving activities from db (removing hardcoded ones).
+- For connecting Gitpod to AWS RDS, a security group rule was created, and in Gitpod initialization the current ip address is retrieved and configured automatically in AWS RDS.
+- I've connected to RDS and executed schema load and seed data for having sql structure ready in RDS.
+- I've tested cruddur using AWS RDS successfully.
+- I've created an AWS lambda for inserting new users in RDS after successful signup. Required environment variable for connection was configured in the lambda.
+- The lambda was also configured with the required layer using python 3.8 and a trigger was added to be executed on post confirmation signup.
+- Created lambda is required to be assigned to the same VPC used by RDS, so I've tried configuring it,
+- I've faced a permissions error while saving, so I've added the required permissions to create network card on lambda execution, by using IAM roles and policies.
+- I've tested signup process successfully, verifying that the created user in Cognito appears also in RDS users table (I've also checked CloudWatch logs).
+- Finally, for completing RDS integration, I've added the required code to save activities to db, by implementing a refactor in db library with the corresponding sql files.
+- I had to implement a changed I've found in Discord, for passing the correct user_handle from frontend to backend and then to db, because I had a null error because the passed user handle was always andrebrown.
+- I've implemented a change in lambda code in order to use sql parameters instead of passing values directly in sql code (more secure)
+- Finally, I was able to test the complete flow, creating a new user and inserting activities from that user, verifying information in the page and also in db by querying RDS.
+- At the moment of writing, there were no homework challenges to do, anyway, I consider this was a hard week to complete the required homework.
+- About knowledge challenge, I've completed security quiz successfully (Having watched Ashish's video was very useful for that)
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------
