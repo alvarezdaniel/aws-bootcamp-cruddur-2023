@@ -64,4 +64,87 @@ boto3
 pip install -r requirements.txt
 ```
 
+The first script we will be adding is the one for creating the table with the corresponding schema, for containing cruddur messages
+
+`./backend-flask/bin/ddb/schema-load`
+
+```py
+#!/usr/bin/env python3
+
+import boto3
+import sys
+
+attrs = {
+  'endpoint_url': 'http://localhost:8000'
+}
+
+if len(sys.argv) == 2:
+  if "prod" in sys.argv[1]:
+    attrs = {}
+
+ddb = boto3.client('dynamodb',**attrs)
+
+table_name = 'cruddur-message'
+
+response = ddb.create_table(
+  TableName=table_name,
+  AttributeDefinitions=[
+    {
+      'AttributeName': 'pk',
+      'AttributeType': 'S'
+    },
+    {
+      'AttributeName': 'sk',
+      'AttributeType': 'S'
+    },
+  ],
+  KeySchema=[
+    {
+      'AttributeName': 'pk',
+      'KeyType': 'HASH'
+    },
+    {
+      'AttributeName': 'sk',
+      'KeyType': 'RANGE'
+    },
+  ],
+  #GlobalSecondaryIndexes=[
+  #],
+  BillingMode='PROVISIONED',
+  ProvisionedThroughput={
+      'ReadCapacityUnits': 5,
+      'WriteCapacityUnits': 5
+  }
+)
+
+print(response)
+```
+
+> Execute permissions should be added to the new script by executing `chmod u+x ./bin/ddb/schema_load` 
+
+> The script will be executed by python, so it should start with `#!/usr/bin/env python3`
+
+> The default endpoint will be a localhost service
+
+> A new table will be created in DynamoDB, using the name `cruddur-message` and with the required characteristics (attributes definitions, key schema, billing mode and provisioned throughput)
+
+> https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.CreateTable.html
+
+When executing the script, it will return information about the created table
+
+```sh
+./bin/ddb/schema_load
+```
+
+Result
+```
+```
+
+
+
+
+
+
+
+
 
