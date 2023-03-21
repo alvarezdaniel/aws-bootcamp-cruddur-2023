@@ -48,4 +48,20 @@ We will be adding scripts for DynamoDB, so for separating them from the ones alr
 
 ### Add DynamoDB bash scripts
 
+We will add a new folder as a container for DynamoDB bash scripts
+
+`./backend-flask/bin/ddb`
+
+For interfacing with DynamoDB, we will be using AWS SDK for python (Boto3), so we will need to add it to `requirements.txt` and install it
+
+https://boto3.amazonaws.com/v1/documentation/api/latest/index.html
+
+```txt
+boto3
+```
+
+```sh
+pip install -r requirements.txt
+```
+
 
