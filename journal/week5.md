@@ -44,4 +44,8 @@ We will be adding scripts for DynamoDB, so for separating them from the ones alr
 
 > In `db/setup` script we need to change the referenced scripts making the same change
 
+![](./assets/week-5/01.png)
+
+### Add DynamoDB bash scripts
+
 
