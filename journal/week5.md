@@ -1634,3 +1634,94 @@ my-uuid: 3a28a20f-964f-42fe-8356-79804e4f753d
 ```
 
 
+### Add Cognito bash scripts
+
+We will need to interact with AWS Cognito, so we will be adding a new folder `backend-flask/bin/cognito`
+
+
+#### list-users
+
+This script will be used for listing Cognito users
+
+`./backend-flask/bin/cognito/list-users`
+
+```py
+#!/usr/bin/env python3
+
+import boto3
+import os
+import json
+
+userpool_id = os.getenv("AWS_COGNITO_USER_POOL_ID")
+client = boto3.client('cognito-idp')
+params = {
+  'UserPoolId': userpool_id,
+  'AttributesToGet': [
+      'preferred_username',
+      'sub'
+  ]
+}
+response = client.list_users(**params)
+users = response['Users']
+
+print(json.dumps(users, sort_keys=True, indent=2, default=str))
+
+dict_users = {}
+for user in users:
+  attrs = user['Attributes']
+  sub    = next((a for a in attrs if a["Name"] == 'sub'), None)
+  handle = next((a for a in attrs if a["Name"] == 'preferred_username'), None)
+  dict_users[handle['Value']] = sub['Value']
+
+print(json.dumps(dict_users, sort_keys=True, indent=2, default=str))
+```
+
+> This script is also using AWS SDK boto3
+
+> https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cognito-idp/client/list_users.html
+
+> We need to give execute permissions also to this script by executing `chmod u+x ./bin/cognito/list-users`
+
+```sh
+./bin/cognito/list-users
+```
+
+Result
+```
+```
+
+
+### Update DB bash scripts
+
+We will need to update some db bash scripts
+
+
+#### drop
+
+
+
+
+#### list-conversation
+
+This script will be used for listing conversations
+
+`./backend-flask/bin/ddb/patterns/list-conversations`
+
+```py
+```
+
+> This script is also using AWS SDK boto3
+
+> https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/dynamodb/client/query.html
+
+> We need to give execute permissions also to this script by executing `chmod u+x ./bin/ddb/patterns/list-conversations`
+
+```sh
+./bin/ddb/patterns/list-conversations
+```
+
+Result
+```
+```
+
+
