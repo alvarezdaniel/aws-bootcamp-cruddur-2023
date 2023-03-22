@@ -30,6 +30,12 @@ tasks:
       npm i
       exit
 
+  - name: pip-install
+    command: |
+      cd backend-flask
+      pip install -r requirements.txt
+      exit
+
 ports:
   - name: frontend
     port: 3000

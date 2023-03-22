@@ -78,7 +78,19 @@ boto3
 pip install -r requirements.txt
 ```
 
-We need to run DynamoDB container
+Also, we will add a init task for Gitpod to execute pip install on workspace initialization
+
+`.gitpod.yml`
+
+```yml
+  - name: pip-install
+    command: |
+      cd backend-flask
+      pip install -r requirements.txt
+      exit
+```
+
+We need to run DynamoDB container and Postgres container for using these scripts
 
 ```sh
 docker compose  -f "docker-compose.yml" up -d --build dynamodb-local 
