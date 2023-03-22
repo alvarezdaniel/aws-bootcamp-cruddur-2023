@@ -1698,6 +1698,13 @@ We will need to update some db bash scripts
 
 #### drop
 
+In drop script, we will need to check first if database exists before trying to drop it
+
+`./backend-flask/bin/db/drop`
+
+```sh
+psql $NO_DB_CONNECTION_URL -c "drop database IF EXISTS cruddur;"
+```
 
 
 
