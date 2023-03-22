@@ -694,7 +694,46 @@ get_user_uuids
 ```
 
 
-#### 
+#### scan
+
+This script will be used for returning messages from DynamoDB table
+
+`./backend-flask/bin/ddb/scan`
+
+```py
+#!/usr/bin/env python3
+
+import boto3
+
+attrs = {
+  'endpoint_url': 'http://localhost:8000'
+}
+ddb = boto3.resource('dynamodb',**attrs)
+table_name = 'cruddur-messages'
+
+table = ddb.Table(table_name)
+response = table.scan()
+
+items = response['Items']
+for item in items:
+  print(item)
+```
+
+> This script is using AWS SDK boto3
+
+> https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/dynamodb/client/scan.html
+
+> We need to give execute permissions also to this script by executing `chmod u+x ./bin/ddb/scan`
+
+```sh
+./bin/ddb/scan
+```
+
+Result
+```
+
+```
+
 
 
 
