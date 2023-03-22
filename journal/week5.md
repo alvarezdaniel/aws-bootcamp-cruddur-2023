@@ -816,6 +816,87 @@ Result
 ```
 
 
+#### list-conversation
+
+This script will be used for listing conversations
+
+`./backend-flask/bin/ddb/patterns/list-conversations`
+
+```py
+#!/usr/bin/env python3
+
+import boto3
+import sys
+import json
+import os
+
+current_path = os.path.dirname(os.path.abspath(__file__))
+parent_path = os.path.abspath(os.path.join(current_path, '..', '..', '..'))
+sys.path.append(parent_path)
+from lib.db import db
+
+attrs = {
+  'endpoint_url': 'http://localhost:8000'
+}
+
+if len(sys.argv) == 2:
+  if "prod" in sys.argv[1]:
+    attrs = {}
+
+dynamodb = boto3.client('dynamodb',**attrs)
+table_name = 'cruddur-messages'
+
+def get_my_user_uuid():
+  sql = """
+    SELECT 
+      users.uuid
+    FROM users
+    WHERE
+      users.handle =%(handle)s
+  """
+  uuid = db.query_value(sql,{
+    'handle':  'andrewbrown'
+  })
+  return uuid
+
+my_user_uuid = get_my_user_uuid()
+print(f"my-uuid: {my_user_uuid}")
+
+# define the query parameters
+query_params = {
+  'TableName': table_name,
+  'KeyConditionExpression': 'pk = :pk',
+  'ExpressionAttributeValues': {
+    ':pk': {'S': f"GRP#{my_user_uuid}"}
+  },
+  'ReturnConsumedCapacity': 'TOTAL'
+}
+
+# query the table
+response = dynamodb.query(**query_params)
+
+# print the items returned by the query
+print(json.dumps(response, sort_keys=True, indent=2))
+```
+
+> This script is also using AWS SDK boto3
+
+> https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/dynamodb/client/query.html
+
+> We need to give execute permissions also to this script by executing `chmod u+x ./bin/ddb/patterns/list-conversations`
+
+```sh
+./bin/ddb/patterns/list-conversations
+```
+
+Result
+```
+
+```
+
+
+
+
 
 
 
