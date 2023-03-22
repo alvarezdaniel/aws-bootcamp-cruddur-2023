@@ -66,7 +66,7 @@ We will add a new folder as a container for DynamoDB bash scripts
 
 `./backend-flask/bin/ddb`
 
-For interfacing with DynamoDB, we will be using AWS SDK for python (Boto3), so we will need to add it to `requirements.txt` and install it
+For interfacing with DynamoDB, in some scripts we will be using AWS SDK for python (Boto3), so we will need to add it to `requirements.txt` and install it
 
 https://boto3.amazonaws.com/v1/documentation/api/latest/index.html
 
@@ -77,6 +77,8 @@ boto3
 ```sh
 pip install -r requirements.txt
 ```
+
+#### schema-load
 
 The first script we will be adding is the one for creating the table with the corresponding schema, for containing cruddur messages
 
@@ -155,11 +157,93 @@ Result
 {'TableDescription': {'AttributeDefinitions': [{'AttributeName': 'pk', 'AttributeType': 'S'}, {'AttributeName': 'sk', 'AttributeType': 'S'}], 'TableName': 'cruddur-message', 'KeySchema': [{'AttributeName': 'pk', 'KeyType': 'HASH'}, {'AttributeName': 'sk', 'KeyType': 'RANGE'}], 'TableStatus': 'ACTIVE', 'CreationDateTime': datetime.datetime(2023, 3, 21, 23, 36, 34, 261000, tzinfo=tzlocal()), 'ProvisionedThroughput': {'LastIncreaseDateTime': datetime.datetime(1970, 1, 1, 0, 0, tzinfo=tzlocal()), 'LastDecreaseDateTime': datetime.datetime(1970, 1, 1, 0, 0, tzinfo=tzlocal()), 'NumberOfDecreasesToday': 0, 'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5}, 'TableSizeBytes': 0, 'ItemCount': 0, 'TableArn': 'arn:aws:dynamodb:ddblocal:000000000000:table/cruddur-message'}, 'ResponseMetadata': {'RequestId': '84448b1c-7840-4998-911e-4347f2b0c3c8', 'HTTPStatusCode': 200, 'HTTPHeaders': {'date': 'Tue, 21 Mar 2023 23:36:33 GMT', 'x-amzn-requestid': '84448b1c-7840-4998-911e-4347f2b0c3c8', 'content-type': 'application/x-amz-json-1.0', 'x-amz-crc32': '2280689091', 'content-length': '578', 'server': 'Jetty(9.4.48.v20220622)'}, 'RetryAttempts': 0}}
 ```
 
+#### list-tables
+
+Now that we have the table created in DynamoDB, we will be building a script for listing the current tables
+
+For this script we will be using AWS CLI directly, using bash interpreter instead of python SDK
+
+`./backend-flask/bin/ddb/list-tables`
+
+```sh
+#! /usr/bin/bash
+set -e # stop if it fails at any point
+
+if [ "$1" = "prod" ]; then
+  ENDPOINT_URL=""
+else
+  ENDPOINT_URL="--endpoint-url=http://localhost:8000"
+fi
+
+aws dynamodb list-tables $ENDPOINT_URL \
+--query TableNames \
+--output table
+```
+
+> https://docs.aws.amazon.com/cli/latest/reference/dynamodb/list-tables.html
+
+> Execute permissions should be added to the new script by executing `chmod u+x ./bin/ddb/list-tables`
+
+```sh
+./bin/ddb/list-tables
+```
+
+Result
+```
+
+```
+
+
+
+
+
+
+#### drop
+
 Another script we will be adding is the one for dropping the created table, so we can recreate it again
 
 `./backend-flask/bin/ddb/drop`
 
-```py
+```sh
+#! /usr/bin/bash
+
+set -e # stop if it fails at any point
+
+if [ -z "$1" ]; then
+  echo "No TABLE_NAME argument supplied eg ./bin/ddb/drop cruddur-messages prod "
+  exit 1
+fi
+TABLE_NAME=$1
+
+if [ "$2" = "prod" ]; then
+  ENDPOINT_URL=""
+else
+  ENDPOINT_URL="--endpoint-url=http://localhost:8000"
+fi
+
+echo "deleting table: $TABLE_NAME"
+
+aws dynamodb delete-table $ENDPOINT_URL \
+  --table-name $TABLE_NAME
+```
+
+> In this case we are using a bash script using AWS CLI commands to delete the DynamoDB table
+
+> https://docs.aws.amazon.com/cli/latest/reference/dynamodb/delete-table.html
+
+> set -e allows to stop executing the script if it fails at any point
+
+> We need to give execute permissions also to this script (and all other ones that will be created later)
+
+```sh
+./bin/ddb/drop
+```
+
+Result
+```
+```
+
+
 
 
 
