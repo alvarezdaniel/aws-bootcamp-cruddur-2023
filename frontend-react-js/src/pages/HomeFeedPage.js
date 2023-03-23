@@ -9,7 +9,9 @@ import ReplyForm from '../components/ReplyForm';
 
 // Authentication
 //import Cookies from 'js-cookie'
-import { Auth } from 'aws-amplify';
+//import { Auth } from 'aws-amplify';
+
+import checkAuth from '../lib/CheckAuth';
 
 export default function HomeFeedPage() {
   const [activities, setActivities] = React.useState([]);
@@ -53,6 +55,7 @@ export default function HomeFeedPage() {
     }
   };
   */
+  /*
   const checkAuth = async () => {
     Auth.currentAuthenticatedUser({
       // Optional, By default is false. 
@@ -71,6 +74,7 @@ export default function HomeFeedPage() {
     })
     .catch((err) => console.log(err));
   };
+  */
   
   React.useEffect(()=>{
     //prevents double call
@@ -78,7 +82,7 @@ export default function HomeFeedPage() {
     dataFetchedRef.current = true;
 
     loadData();
-    checkAuth();
+    checkAuth(setUser);
   }, [])
 
   return (

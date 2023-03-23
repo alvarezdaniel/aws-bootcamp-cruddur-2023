@@ -1907,3 +1907,278 @@ Result
 ```
 ```
 
+
+#### Implement ddb in '/api/message_groups' endpoint
+
+Replace current implementation with the one accessing ddb
+
+`./backend-flask/app.py`
+
+```py
+@app.route("/api/message_groups", methods=['GET'])
+def data_message_groups():
+  #user_handle  = 'andrewbrown'
+  #model = MessageGroups.run(user_handle=user_handle)
+  #if model['errors'] is not None:
+  #  return model['errors'], 422
+  #else:
+  #  return model['data'], 200
+  access_token = extract_access_token(request.headers)
+  try:
+    claims = cognito_jwt_token.verify(access_token)
+    # authenticated request
+    app.logger.debug("authenicated")
+    app.logger.debug(claims)
+    cognito_user_id = claims['sub']
+    model = MessageGroups.run(cognito_user_id=cognito_user_id)
+    if model['errors'] is not None:
+      return model['errors'], 422
+    else:
+      return model['data'], 200
+  except TokenVerifyError as e:
+    # unauthenticated request
+    app.logger.debug(e)
+    return {}, 401
+```
+
+We will need to change also `MessageGroups` implementation, replacing the hardcoded data with information from DynamoDB
+
+`./backend-flask/services/message_groups.py`
+
+```py
+from datetime import datetime, timedelta, timezone
+
+from lib.ddb import Ddb
+from lib.db import db
+
+class MessageGroups:
+  #def run(user_handle):
+  def run(cognito_user_id):
+    model = {
+      'errors': None,
+      'data': None
+    }
+
+    #now = datetime.now(timezone.utc).astimezone()
+    #results = [
+    #  {
+    #    'uuid': '24b95582-9e7b-4e0a-9ad1-639773ab7552',
+    #    'display_name': 'Andrew Brown',
+    #    'handle':  'andrewbrown',
+    #    'created_at': now.isoformat()
+    #  },
+    #  {
+    #    'uuid': '417c360e-c4e6-4fce-873b-d2d71469b4ac',
+    #    'display_name': 'Worf',
+    #    'handle':  'worf',
+    #    'created_at': now.isoformat()
+    #}]
+    #model['data'] = results
+    sql = db.template('users','uuid_from_cognito_user_id')
+    my_user_uuid = db.query_value(sql,{
+      'cognito_user_id': cognito_user_id
+    })
+
+    print(f"UUID: {my_user_uuid}")
+
+    ddb = Ddb.client()
+    data = Ddb.list_message_groups(ddb, my_user_uuid)
+    print("list_message_groups:",data)
+
+    model['data'] = data
+    return model
+```
+
+The new implementation requires a new sql query file to be created as well
+
+`./backend-flask/db/sql/users/uuid_from_cognito_user_id.sql`
+
+```sql
+SELECT
+  users.uuid
+FROM public.users
+WHERE 
+  users.cognito_user_id = %(cognito_user_id)s
+LIMIT 1
+```
+
+Another change we need to implement is in frontend code, in which we need to pass the token to the backend, as we already did in `HomeFeedPage.js`
+
+In this case, we need to add it to `frontend-react-js/src/pages/MessageGroupsPage.js`
+
+```js
+// [TODO] Authenication
+//import Cookies from 'js-cookie'
+
+  const loadData = async () => {
+    try {
+      const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/message_groups`
+      const res = await fetch(backend_url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`
+        },
+        method: "GET"
+      });
+      let resJson = await res.json();
+      if (res.status === 200) {
+        setMessageGroups(resJson)
+      } else {
+        console.log(res)
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };  
+```
+
+> We also comment out `import Cookies from 'js-cookie'` because we are not using cookies authentication any more
+
+We are going to make the same change in `frontend-react-js/src/pages/MessageGroupPage.js`
+
+```js
+// [TODO] Authenication
+//import Cookies from 'js-cookie'
+
+  const loadMessageGroupsData = async () => {
+    try {
+      const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/message_groups`
+      const res = await fetch(backend_url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`
+        },
+        method: "GET"
+      });
+      let resJson = await res.json();
+      if (res.status === 200) {
+        setMessageGroups(resJson)
+      } else {
+        console.log(res)
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };  
+```
+
+Another place we need to make the same change is in `frontend-react-js/src/components/MessageForm.js` (in this case there is already some headers passing to backend)
+
+```js
+  const onsubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/messages`
+      console.log('onsubmit payload', message)
+      const res = await fetch(backend_url, {
+        method: "POST",
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: message,
+          user_receiver_handle: params.handle
+        }),
+      });
+      let data = await res.json();
+      if (res.status === 200) {
+        props.setMessages(current => [...current,data]);
+      } else {
+        console.log(res)
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+```
+
+Now we can check it from the application, trying to retrieve message groups using cruddur
+
+![](./assets/week-5/XXX)
+
+> Remember to run the script to update cognito_user_ids in db
+
+> Some thing I've learned from Andrew: Ctrl-P in Gitpod VS allows to search for a file 
+
+
+Just for simplicity and to make a better code, we will extract the code used for validating the token in a separate file
+
+`frontend-react-js/src/lib/CheckAuth.js`
+
+```js
+import { Auth } from 'aws-amplify';
+
+const checkAuth = async (setUser) => {
+  Auth.currentAuthenticatedUser({
+    // Optional, By default is false. 
+    // If set to true, this call will send a 
+    // request to Cognito to get the latest user data
+    bypassCache: false 
+  })
+  .then((user) => {
+    console.log('user',user);
+    return Auth.currentAuthenticatedUser()
+  }).then((cognito_user) => {
+      setUser({
+        display_name: cognito_user.attributes.name,
+        handle: cognito_user.attributes.preferred_username
+      })
+  })
+  .catch((err) => console.log(err));
+};
+
+export default checkAuth;
+```
+
+So, now we can remove this function (and Auth import) from `HomeFeedPage.js`
+
+`frontend-react-js/src/pages/HomeFeedPage.js`
+
+```js
+// Authentication
+//import Cookies from 'js-cookie'
+//import { Auth } from 'aws-amplify';
+
+  /*
+  const checkAuth = async () => {
+    Auth.currentAuthenticatedUser({
+      // Optional, By default is false. 
+      // If set to true, this call will send a 
+      // request to Cognito to get the latest user data
+      bypassCache: false 
+    })
+    .then((user) => {
+      console.log('user',user);
+      return Auth.currentAuthenticatedUser()
+    }).then((cognito_user) => {
+        setUser({
+          display_name: cognito_user.attributes.name,
+          handle: cognito_user.attributes.preferred_username
+        })
+    })
+    .catch((err) => console.log(err));
+  };
+  */
+```
+
+Now we should add the new implementation in `HomeFeedPage.js`, importing the new library and adding the setUser parameter to checkAuth function
+
+```js
+import checkAuth from '../lib/CheckAuth';
+
+checkAuth(setUser);
+```
+
+It's time to add CheckAuth library to the other pages
+
+
+
+
+
+
+
+
+
+
+
+
