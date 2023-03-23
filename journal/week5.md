@@ -1707,6 +1707,35 @@ class Ddb:
     return results
 ```
 
+> This library will contain the DynamoDB client and a function to list the message groups
+
+> https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/dynamodb/client/query.html
+
+> Table name is hardcoded, but a prefix can be added to separating Production from Staging data
+
+ 
+#### Change in list-conversations pattern
+
+To be synchronized with ddb library, we are going to apply some changes in `list-conversations` script
+
+`./backend-flask/bin/ddb/patterns/
+
+```py
+query_params = {
+  'TableName': table_name,
+  'KeyConditionExpression': 'pk = :pk',
+      'KeyConditionExpression': 'pk = :pk AND begins_with(sk,:year)',
+  'ScanIndexForward': False,
+  'ExpressionAttributeValues': {
+    ':year': {'S': str(current_year) },
+    ':pk': {'S': f"GRP#{my_user_uuid}"}
+  },
+  'ReturnConsumedCapacity': 'TOTAL'
+```
+
+> In here we are adding 'ScanIndexForward': False
+
+
 
 
 
