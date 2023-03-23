@@ -1736,23 +1736,27 @@ query_params = {
 > In here we are adding 'ScanIndexForward': False
 
 
+#### Implement DynamoDB in app.py
+
+In `app.py` file we have some methods using 'andrewbrown' as the user handle
+
+```py
+@app.route("/api/message_groups", methods=['GET'])
+def data_message_groups():
+  user_handle  = 'andrewbrown'
+  model = MessageGroups.run(user_handle=user_handle)
+  if model['errors'] is not None:
+    return model['errors'], 422
+  else:
+    return model['data'], 200
+```
+
+We are going to grab the corresponding user handle for the logged user in Cognito, so first we need to implement a way to retrieve current users in Cognito
 
 
+#### Implement bash script to list users
 
-
-
-
-
-
-
-### Add Cognito bash scripts
-
-We will need to interact with AWS Cognito, so we will be adding a new folder `backend-flask/bin/cognito`
-
-
-#### list-users
-
-This script will be used for listing Cognito users
+We will implement a script for listing users in Cognito, using boto3 SDK
 
 `./backend-flask/bin/cognito/list-users`
 
@@ -1787,25 +1791,29 @@ for user in users:
 print(json.dumps(dict_users, sort_keys=True, indent=2, default=str))
 ```
 
-> This script is also using AWS SDK boto3
-
 > https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cognito-idp/client/list_users.html
 
 > We need to give execute permissions also to this script by executing `chmod u+x ./bin/cognito/list-users`
 
+> For this script to run, we need to add a new environment variable, passing the corresponding User Pool ID in Cognito (this pool ID is already set in REACT_APP_AWS_USER_POOLS_ID env variable)
+
+```sh
+export AWS_COGNITO_USER_POOL_ID="XXX"
+gp env AWS_COGNITO_USER_POOL_ID="XXX"
+```
+
 ```sh
 ./bin/cognito/list-users
-```
+ ```
 
 Result
 ```
 ```
 
 
+#### Implement bash script to update Cognito UserIDs
 
-#### update_cognito_user_ids
-
-This script is used to update cognito user ids in db based on cognito users
+We need to build a new bash script for updating current users in postgres, and updating the UserID from AWS Cognito
 
 `./backend-flask/bin/db/update_cognito_user_ids`
 
@@ -1881,44 +1889,21 @@ Result
 ```
 
 
-#### setup
+#### Add update_cognito_user_ids to setup script
 
-We need to add the previous script to setup script initialization
+We need to add the previous script to setup script initialization, so it can be called while initializing db
 
 `./backend-flask/bin/db/setup`
 
 ```sh
-
-
-
-
-
-
-
-
-
-
-#### list-conversation
-
-This script will be used for listing conversations
-
-`./backend-flask/bin/ddb/patterns/list-conversations`
-
-```py
+source "$bin_path/db/update_cognito_user_ids"
 ```
 
-> This script is also using AWS SDK boto3
-
-> https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/dynamodb/client/query.html
-
-> We need to give execute permissions also to this script by executing `chmod u+x ./bin/ddb/patterns/list-conversations`
-
 ```sh
-./bin/ddb/patterns/list-conversations
+./bin/db/setup
 ```
 
 Result
 ```
 ```
-
 
