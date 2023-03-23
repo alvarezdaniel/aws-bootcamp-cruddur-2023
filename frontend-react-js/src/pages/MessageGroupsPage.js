@@ -7,6 +7,8 @@ import MessageGroupFeed from '../components/MessageGroupFeed';
 // [TODO] Authenication
 //import Cookies from 'js-cookie'
 
+import checkAuth from '../lib/CheckAuth';
+
 export default function MessageGroupsPage() {
   const [messageGroups, setMessageGroups] = React.useState([]);
   const [popped, setPopped] = React.useState([]);
@@ -33,6 +35,7 @@ export default function MessageGroupsPage() {
     }
   };  
 
+  /*
   const checkAuth = async () => {
     console.log('checkAuth')
     // [TODO] Authenication
@@ -43,6 +46,7 @@ export default function MessageGroupsPage() {
       })
     }
   };
+  */
 
   React.useEffect(()=>{
     //prevents double call
@@ -50,7 +54,7 @@ export default function MessageGroupsPage() {
     dataFetchedRef.current = true;
 
     loadData();
-    checkAuth();
+    checkAuth(setUser);
   }, [])
   return (
     <article>

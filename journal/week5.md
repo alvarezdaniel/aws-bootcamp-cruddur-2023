@@ -2171,6 +2171,231 @@ checkAuth(setUser);
 
 It's time to add CheckAuth library to the other pages
 
+`MessageGroupsPage.js`
+
+```js
+import checkAuth from '../lib/CheckAuth';
+
+  /*
+  const checkAuth = async () => {
+    console.log('checkAuth')
+    // [TODO] Authenication
+    if (Cookies.get('user.logged_in')) {
+      setUser({
+        display_name: Cookies.get('user.name'),
+        handle: Cookies.get('user.username')
+      })
+    }
+  };
+  */
+
+checkAuth(setUser);
+```
+
+`MessageGroupPage.js`
+
+```js
+import checkAuth from '../lib/CheckAuth';
+
+  /*
+  const checkAuth = async () => {
+    console.log('checkAuth')
+    // [TODO] Authenication
+    if (Cookies.get('user.logged_in')) {
+      setUser({
+        display_name: Cookies.get('user.name'),
+        handle: Cookies.get('user.username')
+      })
+    }
+  };
+  */
+
+checkAuth(setUser);
+```
+
+Another change we need to implement in `MessageGroupPage.js` is in loadMessageGroupData function:
+
+```js
+  const loadMessageGroupData = async () => {
+    try {
+      const handle = `@${params.handle}`;
+      //const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/messages/${handle}`
+      const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/messages/${params.message_group_uuid}`
+      const res = await fetch(backend_url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`
+        },
+        method: "GET"
+      });
+      let resJson = await res.json();
+      if (res.status === 200) {
+        setMessages(resJson)
+      } else {
+        console.log(res)
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };  
+```
+
+> We need to add Authorization header and change the backend_url, using the message_group_uuid instead of handle
+
+Also, in `ddb.py` we will add the filter for current year
+
+```py
+  def list_message_groups(client,my_user_uuid):
+    year = str(datetime.now().year)
+    table_name = 'cruddur-messages'
+    query_params = {
+      'TableName': table_name,
+      'KeyConditionExpression': 'pk = :pk AND begins_with(sk,:year)',
+      'ScanIndexForward': False,
+      'Limit': 20,
+      'ExpressionAttributeValues': {
+        ':year': {'S': year },
+        ':pk': {'S': f"GRP#{my_user_uuid}"}
+      }
+    }
+```
+
+In `frontend-react-js/src/components/MessageGroupItem.js` we need to change param name
+
+```py
+  const classes = () => {
+    let classes = ["message_group_item"];
+    if (params.message_group_uuid == props.message_group.uuid){
+      classes.push('active')
+    }
+    return classes.join(' ');
+  }
+
+  return (
+    <Link className={classes()} to={`/messages/`+props.message_group.uuid}>
+```
+
+Now we need to change implementation for "/api/messages/@<string:handle>" endpoint in `app.py`, adding authentication and the correct parameters
+
+```py
+#@app.route("/api/messages/@<string:handle>", methods=['GET'])
+#def data_messages(handle):
+#  user_sender_handle = 'andrewbrown'
+#  user_receiver_handle = request.args.get('user_reciever_handle')
+
+#  model = Messages.run(user_sender_handle=user_sender_handle, user_receiver_handle=user_receiver_handle)
+#  if model['errors'] is not None:
+#    return model['errors'], 422
+#  else:
+#    return model['data'], 200
+#  return
+@app.route("/api/messages/<string:message_group_uuid>", methods=['GET'])
+def data_messages(message_group_uuid):
+  access_token = extract_access_token(request.headers)
+  try:
+    claims = cognito_jwt_token.verify(access_token)
+    # authenticated request
+    app.logger.debug("authenicated")
+    app.logger.debug(claims)
+    cognito_user_id = claims['sub']
+    model = Messages.run(
+        cognito_user_id=cognito_user_id,
+        message_group_uuid=message_group_uuid
+      )
+    if model['errors'] is not None:
+      return model['errors'], 422
+    else:
+      return model['data'], 200
+  except TokenVerifyError as e:
+    # unauthenticated request
+    app.logger.debug(e)
+    return {}, 401
+```
+
+This change requires changing also the implementation in `messages.py`, for using DynamoDB and not returning hardcoded data
+
+```py
+from datetime import datetime, timedelta, timezone
+from lib.ddb import Ddb
+from lib.db import db
+
+class Messages:
+  #def run(user_sender_handle, user_receiver_handle):
+  def run(message_group_uuid, cognito_user_id):
+    model = {
+      'errors': None,
+      'data': None
+    }
+
+    #now = datetime.now(timezone.utc).astimezone()
+
+    #results = [
+    #  {
+    #    'uuid': '4e81c06a-db0f-4281-b4cc-98208537772a' ,
+    #    'display_name': 'Andrew Brown',
+    #    'handle':  'andrewbrown',
+    #    'message': 'Cloud is fun!',
+    #    'created_at': now.isoformat()
+    #  },
+    #  {
+    #    'uuid': '66e12864-8c26-4c3a-9658-95a10f8fea67',
+    #    'display_name': 'Andrew Brown',
+    #    'handle':  'andrewbrown',
+    #    'message': 'This platform is great!',
+    #    'created_at': now.isoformat()
+    #}]
+    #model['data'] = results
+    
+    sql = db.template('users', 'uuid_from_cognito_user_id')
+    my_user_uuid = db.query_value(sql,{
+      'cognito_user_id': cognito_user_id
+    })
+
+    print(f"UUID: {my_user_uuid}")
+
+    ddb = Ddb.client()
+    data = Ddb.list_messages(ddb, message_group_uuid)
+    print("list_messages")
+    print(data)
+    model['data'] = data
+
+    return model
+```
+
+A new function should be implemented in `ddb.py` for listing the messages for a given message_group_uuid
+
+```py
+  def list_messages(client,message_group_uuid):
+    year = str(datetime.now().year)
+    table_name = 'cruddur-messages'
+    query_params = {
+      'TableName': table_name,
+      'KeyConditionExpression': 'pk = :pk AND begins_with(sk,:year)',
+      'ScanIndexForward': False,
+      'Limit': 20,
+      'ExpressionAttributeValues': {
+        ':year': {'S': year },
+        ':pk': {'S': f"MSG#{message_group_uuid}"}
+      }
+    }
+
+    response = client.query(**query_params)
+    items = response['Items']
+    items.reverse()
+    results = []
+    for item in items:
+      created_at = item['sk']['S']
+      results.append({
+        'uuid': item['message_uuid']['S'],
+        'display_name': item['user_display_name']['S'],
+        'handle': item['user_handle']['S'],
+        'message': item['message']['S'],
+        'created_at': created_at
+      })
+    return results
+```
+
+
+
 
 
 
