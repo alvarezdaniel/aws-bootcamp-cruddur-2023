@@ -1634,6 +1634,88 @@ my-uuid: 3a28a20f-964f-42fe-8356-79804e4f753d
 ```
 
 
+### Update DB bash scripts
+
+In drop script, we will need to check first if database exists before trying to drop it
+
+`./backend-flask/bin/db/drop`
+
+```sh
+psql $NO_DB_CONNECTION_URL -c "drop database IF EXISTS cruddur;"
+```
+
+
+
+### Implement DynamoDB in cruddur
+
+
+#### Python library for accessing DynamoDB
+
+As we did with postgres, we are going to implement a python library for interacting with DynamoDB using AWS SDK for python (boto3)
+
+`./backend-flask/lib/ddb.py`
+
+```py
+import boto3
+import sys
+from datetime import datetime, timedelta, timezone
+import uuid
+import os
+
+class Ddb:
+  def client():
+    endpoint_url = os.getenv("AWS_ENDPOINT_URL")
+    if endpoint_url:
+      attrs = { 'endpoint_url': endpoint_url }
+    else:
+      attrs = {}
+    dynamodb = boto3.client('dynamodb',**attrs)
+    return dynamodb  
+  
+  def list_message_groups(client,my_user_uuid):
+    current_year = datetime.datetime.now().year
+    table_name = 'cruddur-messages'
+    query_params = {
+      'TableName': table_name,
+      'KeyConditionExpression': 'pk = :pk AND begins_with(sk,:year)',
+      'ScanIndexForward': False,
+      'Limit': 20,
+      'ExpressionAttributeValues': {
+        ':year': {'S': str(current_year) },
+        ':pkey': {'S': f"GRP#{my_user_uuid}"}
+      }
+    }
+    print('query-params')
+    print(query_params)
+    print('client')
+    print(client)
+
+    # query the table
+    response = client.query(**query_params)
+    items = response['Items']
+
+    results = []
+    for item in items:
+      last_sent_at = item['sk']['S']
+      results.append({
+        'uuid': item['message_group_uuid']['S'],
+        'display_name': item['user_display_name']['S'],
+        'handle': item['user_handle']['S'],
+        'message': item['message']['S'],
+        'created_at': last_sent_at
+      })
+    return results
+```
+
+
+
+
+
+
+
+
+
+
 ### Add Cognito bash scripts
 
 We will need to interact with AWS Cognito, so we will be adding a new folder `backend-flask/bin/cognito`
@@ -1690,21 +1772,6 @@ Result
 ```
 ```
 
-
-### Update DB bash scripts
-
-We will need to update some db bash scripts
-
-
-#### drop
-
-In drop script, we will need to check first if database exists before trying to drop it
-
-`./backend-flask/bin/db/drop`
-
-```sh
-psql $NO_DB_CONNECTION_URL -c "drop database IF EXISTS cruddur;"
-```
 
 
 #### update_cognito_user_ids
@@ -1783,6 +1850,15 @@ for handle, sub in users.items():
 Result
 ```
 ```
+
+
+#### setup
+
+We need to add the previous script to setup script initialization
+
+`./backend-flask/bin/db/setup`
+
+```sh
 
 
 
