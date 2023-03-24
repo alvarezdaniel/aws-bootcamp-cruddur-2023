@@ -8,14 +8,70 @@
 
 ## Class Summary
 
-- 
+- Data Modelling a Direct Messaging System using Single Table Design
+- Implementing DynamoDB query using Single Table Design
+- Provisioning DynamoDB tables with Provisioned Capacity
+- Utilizing a Global Secondary Index (GSI) with DynamoDB
+- Rapid data modelling and implementation of DynamoDB with DynamoDB Local
+- Writing utility scripts to easily setup and teardown and debug DynamoDB data
+
 
 ## Todo Checklist
 
+### Watched Week 5 - Data Modelling (Live Stream)
 
-### Watch lecture
+https://www.youtube.com/watch?v=5oZHNOaL8Og&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=50
+
+### Watched Ashish's Week 5 - DynamoDB Considerations
+
+https://www.youtube.com/watch?v=gFPljPNnK2Q&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
+
+### Implement Schema Load Script
+
+https://www.youtube.com/watch?v=pIGi_9E_GwA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
+
+### Implement Seed Script
+
+https://www.youtube.com/watch?v=pIGi_9E_GwA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
+
+### Implement Scan Script
+
+https://www.youtube.com/watch?v=pIGi_9E_GwA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
+
+### Implement Pattern Scripts for Read and List Conversations
+
+https://www.youtube.com/watch?v=pIGi_9E_GwA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
+
+### Implement Update Cognito ID Script for Postgres Database
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+### Implement (Pattern A) Listing Messages in Message Group into Application
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+### Implement (Pattern B) Listing Messages Group into Application
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+### Implement (Pattern B) Listing Messages Group into Application
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+### Implement (Pattern C) Creating a Message for an existing Message Group into Application
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+### Implement (Pattern D) Creating a Message for a new Message Group into Application
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+### Implement (Pattern E) Updating a Message Group using DynamoDB Streams
+
+https://www.youtube.com/watch?v=zGnzM_YdMJU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=55
 
 
+## Walkthrough
 
 ### Enable local DynamoDB container
 
@@ -3046,10 +3102,54 @@ import botocore.exceptions
 
 After this, we can successfully create a direct message to a user
 
+### Setting DynamoDB stream to update message
+
+We are going to execute `./bin/ddb/schema-load prod` to create table in AWS DynamoDB
+
+```sh
+./bin/ddb/schema-load prod`
+```
+
+After doing that we are going to turn on DynamoDB stream, by using AWS console
+
+![](./assets/week-5/XXX)
+
+> View type = New image
 
 
 
 
+## Knowledge Challenges
+
+### Security Quiz
+
+Which additional DynamoDB feature can be enabled to improve the response times of your tables?
+- DynamoDB Accelerator (DAX) (X)
+- DynamoDB Optimizer (DAO)
+- NoSQL Accelerator (NAX)
+- Mega Accelerator (MAX)
+
+What should you use to ensure any DynamoDB traffic from your web app hosted on AWS is not routed over the internet?
+- DynamoDB Proxy
+- VPN Gateway
+- VPC Gateway
+- VPC Endpoint (X)
+
+Which is the best way to secure and manage user access permissions to DynamoDB
+- IAM Roles (X)
+- Individual IAM User Accounts
+- Open all access
+- Security Groups
+
+What type of access should be granted to the DynamoDB Accelerator (DAX) IAM role?
+- Read Only (X)
+- Read and Write
+- Full Access
+- No Access is required
+
+True or False, best practice dictates using Client side encryption with DynamoDB
+- TRUE (X)
+- FALSE
 
 
 
