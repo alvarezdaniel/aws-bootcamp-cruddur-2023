@@ -20,6 +20,8 @@ export default function ActivityForm(props) {
     try {
       const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/messages`
       console.log('onsubmit payload', message)
+      
+      //add
       let json = { 'message': message }
       if (params.handle) {
         json.handle = params.handle
@@ -43,6 +45,8 @@ export default function ActivityForm(props) {
       let data = await res.json();
       if (res.status === 200) {
         //props.setMessages(current => [...current,data]);
+        
+        // add
         console.log('data:',data)
         if (data.message_group_uuid) {
           console.log('redirect to message group')

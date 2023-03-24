@@ -3,6 +3,7 @@ from lib.ddb import Ddb
 from lib.db import db
 
 class Messages:
+
   #def run(user_sender_handle, user_receiver_handle):
   def run(message_group_uuid, cognito_user_id):
     model = {

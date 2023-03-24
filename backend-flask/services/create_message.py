@@ -5,6 +5,7 @@ from lib.db import db
 from lib.ddb import Ddb
 
 class CreateMessage:
+
   #def run(message, user_sender_handle, user_receiver_handle):
   # mode indicates if we want to create a new message_group or using an existing one
   def run(mode, message, cognito_user_id, message_group_uuid=None, user_receiver_handle=None):  
@@ -98,4 +99,3 @@ class CreateMessage:
       model['data'] = data    
     
     return model
-
