@@ -5,6 +5,7 @@ import os
 # Authentication
 import sys
 
+from services.users_short import *
 from services.home_activities import *
 from services.user_activities import *
 from services.create_activity import *
@@ -311,6 +312,11 @@ def data_notifications():
 def rollbar_test():
     rollbar.report_message('Hello World!', 'warning')
     return "Hello World!"
+
+@app.route("/api/users/@<string:handle>/short", methods=['GET'])
+def data_users_short(handle):
+  data = UsersShort.run(handle)
+  return data, 200
 
 if __name__ == "__main__":
   app.run(debug=True)
