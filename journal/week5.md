@@ -2394,16 +2394,332 @@ A new function should be implemented in `ddb.py` for listing the messages for a 
     return results
 ```
 
+In `MessageForm.js` we need to change the way of passing parameters to backend (depending if we need to create a new message group or update an existing one)
+
+```py
+//import { useParams } from 'react-router-dom';
+import { json, useParams } from 'react-router-dom';
+
+  const onsubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/messages`
+      console.log('onsubmit payload', message)
+      let json = { 'message': message }
+      if (params.handle) {
+        json.handle = params.handle
+      } else {
+        json.message_group_uuid = params.message_group_uuid
+      }
+
+      const res = await fetch(backend_url, {
+        method: "POST",
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        //body: JSON.stringify({
+        //  message: message,
+        //  user_receiver_handle: params.handle
+        //}),
+        body: JSON.stringify(json)
+      });
+      let data = await res.json();
+      if (res.status === 200) {
+        //props.setMessages(current => [...current,data]);
+        console.log('data:',data)
+        if (data.message_group_uuid) {
+          console.log('redirect to message group')
+          window.location.href = `/messages/${data.message_group_uuid}`
+        } else {
+          props.setMessages(current => [...current,data]);
+        }        
+      } else {
+        console.log(res)
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+```
+
+This change makes us review the backend endpoint "/api/messages" in `app.py` for creating messages
+
+```py
+@app.route("/api/messages", methods=['POST','OPTIONS'])
+@cross_origin()
+def data_create_message():
+  #user_sender_handle = 'andrewbrown'
+  #user_receiver_handle = request.json['user_receiver_handle']
+  message_group_uuid   = request.json.get('message_group_uuid',None)
+  user_receiver_handle = request.json.get('handle',None)  
+  message = request.json['message']
+
+  #model = CreateMessage.run(message=message,user_sender_handle=user_sender_handle,user_receiver_handle=user_receiver_handle)
+  #if model['errors'] is not None:
+  #  return model['errors'], 422
+  #else:
+  #  return model['data'], 200
+  #return
+
+  access_token = extract_access_token(request.headers)
+  try:
+    claims = cognito_jwt_token.verify(access_token)
+    # authenticated request
+    app.logger.debug("authenticated")
+    app.logger.debug(claims)
+    cognito_user_id = claims['sub']
+    if message_group_uuid == None:
+      # Create for the first time
+      model = CreateMessage.run(
+        mode="create",
+        message=message,
+        cognito_user_id=cognito_user_id,
+        user_receiver_handle=user_receiver_handle
+      )
+    else:
+      # Push onto existing Message Group
+      model = CreateMessage.run(
+        mode="update",
+        message=message,
+        message_group_uuid=message_group_uuid,
+        cognito_user_id=cognito_user_id
+      )
+    if model['errors'] is not None:
+      return model['errors'], 422
+    else:
+      return model['data'], 200
+  except TokenVerifyError as e:
+    # unauthenticated request
+    app.logger.debug(e)
+    return {}, 401
+```
+
+Then we need to check `create_message.py`, for adding DynamoDB implementation instead of hardcoded one
+
+```py
+#import uuid
+from datetime import datetime, timedelta, timezone
+
+from lib.db import db
+from lib.ddb import Ddb
+
+class CreateMessage:
+  #def run(message, user_sender_handle, user_receiver_handle):
+  # mode indicates if we want to create a new message_group or using an existing one
+  def run(mode, message, cognito_user_id, message_group_uuid=None, user_receiver_handle=None):  
+    model = {
+      'errors': None,
+      'data': None
+    }
+    #if user_sender_handle == None or len(user_sender_handle) < 1:
+    #  model['errors'] = ['user_sender_handle_blank']
+
+    #if user_receiver_handle == None or len(user_receiver_handle) < 1:
+    #  model['errors'] = ['user_reciever_handle_blank']
+
+    if (mode == "update"):
+      if message_group_uuid == None or len(message_group_uuid) < 1:
+        model['errors'] = ['message_group_uuid_blank']
 
 
+    if cognito_user_id == None or len(cognito_user_id) < 1:
+      model['errors'] = ['cognito_user_id_blank']
 
+    if (mode == "create"):
+      if user_receiver_handle == None or len(user_receiver_handle) < 1:
+        model['errors'] = ['user_reciever_handle_blank']
 
+    if message == None or len(message) < 1:
+      model['errors'] = ['message_blank'] 
+    elif len(message) > 1024:
+      model['errors'] = ['message_exceed_max_chars'] 
 
+    if model['errors']:
+      # return what we provided
+      model['data'] = {
+        'display_name': 'Andrew Brown',
+        'handle':  user_sender_handle,
+        'message': message
+      }
+    else:
+      #now = datetime.now(timezone.utc).astimezone()
+      #model['data'] = {
+      #  'uuid': uuid.uuid4(),
+      #  'display_name': 'Andrew Brown',
+      #  'handle':  user_sender_handle,
+      #  'message': message,
+      #  'created_at': now.isoformat()
+      #}
+    
+      sql = db.template('users','create_message_users')
 
+      if user_receiver_handle == None:
+        rev_handle = ''
+      else:
+        rev_handle = user_receiver_handle
+      users = db.query_array_json(sql,{
+        'cognito_user_id': cognito_user_id,
+        'user_receiver_handle': rev_handle
+      })
+      print("USERS =-=-=-=-==")
+      print(users)
 
+      my_user    = next((item for item in users if item["kind"] == 'sender'), None)
+      other_user = next((item for item in users if item["kind"] == 'recv')  , None)
 
+      print("USERS=[my-user]==")
+      print(my_user)
+      print("USERS=[other-user]==")
+      print(other_user)
 
+      ddb = Ddb.client()
 
+      if (mode == "update"):
+        data = Ddb.create_message(
+          client=ddb,
+          message_group_uuid=message_group_uuid,
+          message=message,
+          my_user_uuid=my_user['uuid'],
+          my_user_display_name=my_user['display_name'],
+          my_user_handle=my_user['handle']
+        )
+      elif (mode == "create"):
+        data = Ddb.create_message_group(
+          client=ddb,
+          message=message,
+          my_user_uuid=my_user['uuid'],
+          my_user_display_name=my_user['display_name'],
+          my_user_handle=my_user['handle'],
+          other_user_uuid=other_user['uuid'],
+          other_user_display_name=other_user['display_name'],
+          other_user_handle=other_user['handle']
+        )
+      model['data'] = data    
+    
+    return model
+```
 
+These changes references a new template sql script file that we should be adding as well `create_message_users.sql`
 
+```sql
+SELECT 
+  users.uuid,
+  users.display_name,
+  users.handle,
+  CASE users.cognito_user_id = %(cognito_user_id)s
+  WHEN TRUE THEN
+    'sender'
+  WHEN FALSE THEN
+    'recv'
+  ELSE
+    'other'
+  END as kind
+FROM public.users
+WHERE
+  users.cognito_user_id = %(cognito_user_id)s
+  OR 
+  users.handle = %(user_receiver_handle)s
+```
 
+Also we need some new functions in `ddb.py` for creating new message groups and new messages
+
+```py
+  def create_message(client,message_group_uuid, message, my_user_uuid, my_user_display_name, my_user_handle):
+    now = datetime.now(timezone.utc).astimezone().isoformat()
+    created_at = now
+    message_uuid = str(uuid.uuid4())
+
+    record = {
+      'pk':   {'S': f"MSG#{message_group_uuid}"},
+      'sk':   {'S': created_at },
+      'message': {'S': message},
+      'message_uuid': {'S': message_uuid},
+      'user_uuid': {'S': my_user_uuid},
+      'user_display_name': {'S': my_user_display_name},
+      'user_handle': {'S': my_user_handle}
+    }
+    # insert the record into the table
+    table_name = 'cruddur-messages'
+    response = client.put_item(
+      TableName=table_name,
+      Item=record
+    )
+    # print the response
+    print(response)
+    return {
+      'message_group_uuid': message_group_uuid,
+      'uuid': my_user_uuid,
+      'display_name': my_user_display_name,
+      'handle':  my_user_handle,
+      'message': message,
+      'created_at': created_at
+    }
+```
+
+```py
+  def create_message_group(client, message,my_user_uuid, my_user_display_name, my_user_handle, other_user_uuid, other_user_display_name, other_user_handle):
+    print('== create_message_group.1')
+    table_name = 'cruddur-messages'
+
+    message_group_uuid = str(uuid.uuid4())
+    message_uuid = str(uuid.uuid4())
+    now = datetime.now(timezone.utc).astimezone().isoformat()
+    last_message_at = now
+    created_at = now
+    print('== create_message_group.2')
+
+    my_message_group = {
+      'pk': {'S': f"GRP#{my_user_uuid}"},
+      'sk': {'S': last_message_at},
+      'message_group_uuid': {'S': message_group_uuid},
+      'message': {'S': message},
+      'user_uuid': {'S': other_user_uuid},
+      'user_display_name': {'S': other_user_display_name},
+      'user_handle':  {'S': other_user_handle}
+    }
+
+    print('== create_message_group.3')
+    other_message_group = {
+      'pk': {'S': f"GRP#{other_user_uuid}"},
+      'sk': {'S': last_message_at},
+      'message_group_uuid': {'S': message_group_uuid},
+      'message': {'S': message},
+      'user_uuid': {'S': my_user_uuid},
+      'user_display_name': {'S': my_user_display_name},
+      'user_handle':  {'S': my_user_handle}
+    }
+
+    print('== create_message_group.4')
+    message = {
+      'pk':   {'S': f"MSG#{message_group_uuid}"},
+      'sk':   {'S': created_at },
+      'message': {'S': message},
+      'message_uuid': {'S': message_uuid},
+      'user_uuid': {'S': my_user_uuid},
+      'user_display_name': {'S': my_user_display_name},
+      'user_handle': {'S': my_user_handle}
+    }
+
+    items = {
+      table_name: [
+        {'PutRequest': {'Item': my_message_group}},
+        {'PutRequest': {'Item': other_message_group}},
+        {'PutRequest': {'Item': message}}
+      ]
+    }
+
+    try:
+      print('== create_message_group.try')
+      # Begin the transaction
+      response = client.batch_write_item(RequestItems=items)
+      return {
+        'message_group_uuid': message_group_uuid
+      }
+    except botocore.exceptions.ClientError as e:
+      print('== create_message_group.error')
+      print(e)
+```
+
+ 
