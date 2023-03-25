@@ -3116,6 +3116,94 @@ After doing that we are going to turn on DynamoDB stream, by using AWS console
 
 > View type = New image
 
+We are going to create a Gateway endpoint, and there is no additional charge for using that
+
+Let's go into AWS console, VPC, Endpoints, Create endpoint
+
+- Name tag = ddb-cruddur
+
+- Service category = AWS services
+
+- Services = DynamoDB (com.amazonaws.ca-central-1.dynamodb)
+
+- VPC = select the existing default VPC
+
+- Route tables = check the existing one
+
+- Policy = Full access
+
+Once the endpoint is created, let's create the lambda in AWS console (save the code also in `journal/aws/lambdas/cruddur-messaging-stream.py`)
+
+- Function name = cruddur-messaging-stream
+
+- Runtime = Python 3.9
+
+- Architecture  = x86_64
+
+> We need to grant the lambda IAM role permission to read the DynamoDB stream event
+
+> AWSLambdaInvocation-DynamoDB
+
+
+
+
+
+```py
+import json
+import boto3
+from boto3.dynamodb.conditions import Key, Attr
+
+dynamodb = boto3.resource(
+ 'dynamodb',
+ region_name='ca-central-1',
+ endpoint_url="http://dynamodb.ca-central-1.amazonaws.com"
+)
+
+def lambda_handler(event, context):
+  print('event-data',event)
+
+  eventName = event['Records'][0]['eventName']
+  if (eventName == 'REMOVE'):
+    print("skip REMOVE event")
+    return
+  pk = event['Records'][0]['dynamodb']['Keys']['pk']['S']
+  sk = event['Records'][0]['dynamodb']['Keys']['sk']['S']
+  if pk.startswith('MSG#'):
+    group_uuid = pk.replace("MSG#","")
+    message = event['Records'][0]['dynamodb']['NewImage']['message']['S']
+    print("GRUP ===>",group_uuid,message)
+
+    table_name = 'cruddur-messages'
+    index_name = 'message-group-sk-index'
+    table = dynamodb.Table(table_name)
+    data = table.query(
+      IndexName=index_name,
+      KeyConditionExpression=Key('message_group_uuid').eq(group_uuid)
+    )
+    print("RESP ===>",data['Items'])
+
+    # recreate the message group rows with new SK value
+    for i in data['Items']:
+      delete_item = table.delete_item(Key={'pk': i['pk'], 'sk': i['sk']})
+      print("DELETE ===>",delete_item)
+
+      response = table.put_item(
+        Item={
+          'pk': i['pk'],
+          'sk': sk,
+          'message_group_uuid':i['message_group_uuid'],
+          'message':message,
+          'user_display_name': i['user_display_name'],
+          'user_handle': i['user_handle'],
+          'user_uuid': i['user_uuid']
+        }
+      )
+      print("CREATE ===>",response)
+```
+
+
+
+
 
 
 
