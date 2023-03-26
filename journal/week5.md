@@ -57,6 +57,14 @@ https://docs.google.com/spreadsheets/d/1LrTC_y2X_YBEthFNlnwbo8TgxGlpHV3TCpM6XeVy
 
 > GSI = Global Secondary Index
 
+The Boundaries of DynamoDB
+
+> When you write a query you have provide a Primary Key (equality) eg. pk = 'andrew'
+> Are you allowed to "update" the Hash and Range?
+> No, whenever you change a key (simple or composite) eg. pk or sk you have to create a new item.
+> you have to delete the old one
+> Key condition expressions for query only for RANGE, HASH is only equality
+> Don't create UUID for entity if you don't have an access pattern for it
 
 ### Watched Ashish's Week 5 - DynamoDB Considerations
 
