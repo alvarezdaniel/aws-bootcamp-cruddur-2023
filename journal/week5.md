@@ -3,8 +3,8 @@
 ## Week 5 instructors
 
 - Andrew Brown [@andrewbrown](https://twitter.com/andrewbrown)
-- Shala Warner [@GiftedLane](https://twitter.com/GiftedLane)
-- Kirk Kirk? []()
+- Shala Warner [@GiftedLane](https://twitter.com/GiftedLane) (Student Advocate)
+- Kirk Kirkconnell [@NoSQLKnowHow](https://twitter.com/NoSQLKnowHow) (DynamoDB and Serverless caching)
 
 ## Class Summary
 
@@ -15,12 +15,48 @@
 - Rapid data modelling and implementation of DynamoDB with DynamoDB Local
 - Writing utility scripts to easily setup and teardown and debug DynamoDB data
 
+## Required tasks
+
+- Learn about Data Modelling (Single Table Design) for NoSQL.
+- Implement Schema Load Script
+- Implement Seed Script
+- Implement Scan Script
+- Implement Pattern Scripts for Read and List Conversations
+- Implement Update Cognito ID Script for Postgres Database
+- Implement (Pattern A) Listing Messages in Message Group into Application
+- Implement (Pattern B) Listing Messages Group into Application
+- Implement (Pattern C) Creating a Message for an existing Message Group into Application
+- Implement (Pattern D) Creating a Message for a new Message Group into Application
+- Implement (Pattern E) Updating a Message Group using DynamoDB Streams
 
 ## Todo Checklist
 
 ### Watched Week 5 - Data Modelling (Live Stream)
 
 https://www.youtube.com/watch?v=5oZHNOaL8Og&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=50
+
+DynamoDB Modeling
+https://lucid.app/lucidchart/8f58a19d-3821-4529-920f-5bb802d6c6a3/edit?invitationId=inv_e47bc316-9caa-4aee-940f-161e01e22715#
+
+Notes
+
+> No joins in DynamoDB (in NoSQL)
+> The quantity of tables depends on the design (in this case is a single table design)
+> Design = what data do we need, when do we need it, what's the velocity that we need it
+> Message groups = conversations
+> Identify use patterns
+> PartiQL: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ql-reference.html
+> DynamoDB primary keys = simple primary key o composite primary key
+
+Livestream DynamoDB Data Modelling Excel File
+https://docs.google.com/spreadsheets/d/1LrTC_y2X_YBEthFNlnwbo8TgxGlpHV3TCpM6XeVyiGg/edit#gid=0
+
+![](./assets/week-5/02.png)
+
+> DynamoDB — Introduction (AWS Developer Associate 2020) https://www.youtube.com/watch?v=Ih8Bxtt5Ekw&list=PLBfufR7vyJJ5WuCNg2em7SgdAfjduqnNq&index=75
+
+> GSI = Global Secondary Index
+
 
 ### Watched Ashish's Week 5 - DynamoDB Considerations
 
@@ -3239,7 +3275,21 @@ True or False, best practice dictates using Client side encryption with DynamoDB
 - TRUE (X)
 - FALSE
 
+## Links
 
+- [AWS Cloud Project Bootcamp – Week 5: Unofficial Homework Guide](https://www.linuxtek.ca/2023/03/19/aws-cloud-project-bootcamp-week-5-unofficial-homework-guide/)
+
+-[Andrew’s OmenKing Repository – Week 5 Notes](https://github.com/omenking/aws-bootcamp-cruddur-2023/blob/week-5/journal/week5.md)
+
+-[Livestream DynamoDB Modelling Diagram](https://lucid.app/lucidchart/8f58a19d-3821-4529-920f-5bb802d6c6a3/edit?viewport_loc=2163%2C508%2C2219%2C1161%2C0_0&invitationId=inv_e47bc316-9caa-4aee-940f-161e01e22715)
+
+-[Livestream DynamoDB Data Modelling Excel File](https://docs.google.com/spreadsheets/d/1LrTC_y2X_YBEthFNlnwbo8TgxGlpHV3TCpM6XeVyiGg/edit#gid=0)
+
+-[AWS DynamoDB Documentation](https://docs.aws.amazon.com/dynamodb/?icmpid=docs_homepage_featuredsvcs)
+
+-[Momento Serverless Cache Documentation](https://docs.momentohq.com/getting-started)
+
+-[Alex DeBrie – The DynamoDB Book – Boot Camp Discount in Student Portal](https://www.dynamodbbook.com/)
 
 
 
