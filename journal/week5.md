@@ -70,54 +70,12 @@ The Boundaries of DynamoDB
 
 https://www.youtube.com/watch?v=gFPljPNnK2Q&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
 
+
 ### Implement Schema Load Script
 
 https://www.youtube.com/watch?v=pIGi_9E_GwA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
 
-### Implement Seed Script
-
-https://www.youtube.com/watch?v=pIGi_9E_GwA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
-
-### Implement Scan Script
-
-https://www.youtube.com/watch?v=pIGi_9E_GwA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
-
-### Implement Pattern Scripts for Read and List Conversations
-
-https://www.youtube.com/watch?v=pIGi_9E_GwA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
-
-### Implement Update Cognito ID Script for Postgres Database
-
-https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
-
-### Implement (Pattern A) Listing Messages in Message Group into Application
-
-https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
-
-### Implement (Pattern B) Listing Messages Group into Application
-
-https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
-
-### Implement (Pattern B) Listing Messages Group into Application
-
-https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
-
-### Implement (Pattern C) Creating a Message for an existing Message Group into Application
-
-https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
-
-### Implement (Pattern D) Creating a Message for a new Message Group into Application
-
-https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
-
-### Implement (Pattern E) Updating a Message Group using DynamoDB Streams
-
-https://www.youtube.com/watch?v=zGnzM_YdMJU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=55
-
-
-## Walkthrough
-
-### Enable local DynamoDB container
+#### Enable local DynamoDB container
 
 This week we will be working on DynamoDB, so we need to reenable DynamoDB container in `docker-compose.yml` file
 
@@ -138,7 +96,7 @@ services:
       working_dir: /home/dynamodblocal
 ```
 
-### Restructure db bash scripts
+#### Restructure db bash scripts
 
 We will be adding scripts for DynamoDB, so for separating them from the ones already built for postgres, we will be adding a new folder. So we will restructure current scripts, moving the ones starting with db to a `db` folder, and the one starting with rds to a `rds` folder
 
@@ -160,7 +118,7 @@ We will be adding scripts for DynamoDB, so for separating them from the ones alr
       source  "$THEIA_WORKSPACE_ROOT/backend-flask/bin/rds/update-sg-rule"
 ```
 
-### Add DynamoDB bash scripts
+#### Add DynamoDB bash scripts
 
 We will add a new folder as a container for DynamoDB bash scripts
 
@@ -3301,4 +3259,47 @@ True or False, best practice dictates using Client side encryption with DynamoDB
 
 
 
+
+
+
+
+### Implement Seed Script
+
+https://www.youtube.com/watch?v=pIGi_9E_GwA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
+
+### Implement Scan Script
+
+https://www.youtube.com/watch?v=pIGi_9E_GwA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
+
+### Implement Pattern Scripts for Read and List Conversations
+
+https://www.youtube.com/watch?v=pIGi_9E_GwA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
+
+### Implement Update Cognito ID Script for Postgres Database
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+### Implement (Pattern A) Listing Messages in Message Group into Application
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+### Implement (Pattern B) Listing Messages Group into Application
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+### Implement (Pattern B) Listing Messages Group into Application
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+### Implement (Pattern C) Creating a Message for an existing Message Group into Application
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+### Implement (Pattern D) Creating a Message for a new Message Group into Application
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+### Implement (Pattern E) Updating a Message Group using DynamoDB Streams
+
+https://www.youtube.com/watch?v=zGnzM_YdMJU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=55
 
