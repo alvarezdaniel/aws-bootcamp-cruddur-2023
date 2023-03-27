@@ -38,6 +38,8 @@ https://www.youtube.com/watch?v=5oZHNOaL8Og&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgN
 DynamoDB Modeling
 https://lucid.app/lucidchart/8f58a19d-3821-4529-920f-5bb802d6c6a3/edit?invitationId=inv_e47bc316-9caa-4aee-940f-161e01e22715#
 
+![](./assets/week-5/DynamoDB%20Modelling.png)
+
 Notes
 
 > No joins in DynamoDB (in NoSQL)
@@ -151,7 +153,7 @@ Also, we will add a init task for Gitpod to execute pip install on workspace ini
 We need to run DynamoDB container and Postgres container for using these scripts
 
 ```sh
-docker compose  -f "docker-compose.yml" up -d --build db dynamodb-local 
+docker compose  -f "docker-compose.yml" up -d --build db dynamodb-local
 ```
 
 ```
@@ -329,6 +331,8 @@ Result
 +--------------------+
 ```
 
+![](./assets/week-5/03.png)
+
 
 #### drop
 
@@ -412,6 +416,13 @@ deleting table: cruddur-messages
     }
 }
 ```
+
+
+
+
+
+
+
 
 
 #### seed
@@ -1957,14 +1968,63 @@ We need to add the previous script to setup script initialization, so it can be 
 source "$bin_path/db/update_cognito_user_ids"
 ```
 
+> I had this error while running `setup` script: "import-im6.q16: unable to open X server `' @ error/import.c/ImportImageCommand/359."
+
+> Found the solution by checking Discord channel
+
+```sh
+#! /usr/bin/bash
+
+set -e # stop if it fails at any point
+
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="db-setup"
+printf "${CYAN}==== ${LABEL}${NO_COLOR}\n"
+
+bin_path="$(realpath .)/bin"
+
+source "$bin_path/db/drop"
+source "$bin_path/db/create"
+source "$bin_path/db/schema-load"
+source "$bin_path/db/seed"
+python "$bin_path/db/update_cognito_user_ids"
+```
+
 ```sh
 ./bin/db/setup
 ```
 
 Result
 ```
-```
+==== db-setup
+== db-drop
+DROP DATABASE
+== db-create
+CREATE DATABASE
+== db-schema-load
+/workspace/aws-bootcamp-cruddur-2023/backend-flask/db/schema.sql
+CREATE EXTENSION
+NOTICE:  table "users" does not exist, skipping
+DROP TABLE
+NOTICE:  table "activities" does not exist, skipping
+DROP TABLE
+CREATE TABLE
+CREATE TABLE
+== db-seed
+/workspace/aws-bootcamp-cruddur-2023/backend-flask/db/seed.sql
+INSERT 0 3
+INSERT 0 1
+== db-update-cognito-user-ids
+---- dalvarez d6f260c9-4367-4ca3-b4e0-aa8dfac3d9c9
+ SQL STATEMENT-[commit with returning]------
 
+    UPDATE public.users
+    SET cognito_user_id = %(sub)s
+    WHERE
+      users.handle = %(handle)s;
+   {'handle': 'dalvarez', 'sub': 'd6f260c9-4367-4ca3-b4e0-aa8dfac3d9c9'}
+```
 
 #### Implement ddb in '/api/message_groups' endpoint
 
