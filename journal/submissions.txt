@@ -83,4 +83,21 @@ In week 5, I was able to complete all the required assignments.
 
 - 
 
+docker compose  -f "docker-compose.yml" up -d --build db dynamodb-local
+
+cd backend-flask
+./bin/db/setup
+
+./bin/ddb/schema-load
+./bin/ddb/list-tables
+./bin/ddb/drop cruddur-messages
+
+./bin/ddb/seed
+
+./bin/ddb/scan
+
+./bin/ddb/get-conversation
+./bin/ddb/patterns/list-conversations
+
+
 ----------------------------------------------------------------------------------------------------------------------------------
