@@ -35,8 +35,10 @@
 
 https://www.youtube.com/watch?v=5oZHNOaL8Og&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=50
 
-DynamoDB Modeling
-https://lucid.app/lucidchart/8f58a19d-3821-4529-920f-5bb802d6c6a3/edit?invitationId=inv_e47bc316-9caa-4aee-940f-161e01e22715#
+[DynamoDB Modeling](https://lucid.app/lucidchart/8f58a19d-3821-4529-920f-5bb802d6c6a3/edit?invitationId=inv_e47bc316-9caa-4aee-940f-161e01e22715#)
+
+[Copy of DynamoDB Modelling](https://lucid.app/lucidchart/6a02b607-cf6f-45e6-85da-f48b6108d0b3/edit?viewport_loc=1796%2C544%2C2776%2C1306%2C0_0&invitationId=inv_f0655a4c-c2f2-4dc5-82ec-2d024d14d295)
+
 
 ![](./assets/week-5/DynamoDB%20Modelling.png)
 
@@ -67,6 +69,7 @@ The Boundaries of DynamoDB
 > you have to delete the old one
 > Key condition expressions for query only for RANGE, HASH is only equality
 > Don't create UUID for entity if you don't have an access pattern for it
+
 
 ### Watched Ashish's Week 5 - DynamoDB Considerations
 
@@ -418,16 +421,11 @@ deleting table: cruddur-messages
 ```
 
 
+### Implement Seed Script
 
+https://www.youtube.com/watch?v=pIGi_9E_GwA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
 
-
-
-
-
-
-#### seed
-
-This script will be used for inserting initial data into DynamoDB table
+This script will be used for inserting initial data into DynamoDB table (cruddur-messages)
 
 `./backend-flask/bin/ddb/seed`
 
@@ -817,7 +815,9 @@ get_user_uuids
 ```
 
 
-#### scan
+### Implement Scan Script
+
+https://www.youtube.com/watch?v=pIGi_9E_GwA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
 
 This script will be used for returning messages from DynamoDB table
 
@@ -3322,14 +3322,6 @@ True or False, best practice dictates using Client side encryption with DynamoDB
 
 
 
-
-### Implement Seed Script
-
-https://www.youtube.com/watch?v=pIGi_9E_GwA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
-
-### Implement Scan Script
-
-https://www.youtube.com/watch?v=pIGi_9E_GwA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
 
 ### Implement Pattern Scripts for Read and List Conversations
 
