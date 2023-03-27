@@ -1150,6 +1150,7 @@ We need to change also `db/seed.sql` file
 ```sql
 INSERT INTO public.users (display_name, handle, email, cognito_user_id)
 VALUES
+  ('Daniel Alvarez', 'dalvarez', 'alvarez.daniel@gmail.com', 'MOCK'),
   ('Andrew Brown', 'andrewbrown', 'andrewbrown@exampro.co', 'MOCK'),
   ('Andrew Bayko', 'bayko', 'bayko@exampro.co', 'MOCK');
 ```
