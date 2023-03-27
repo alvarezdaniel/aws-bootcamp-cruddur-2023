@@ -152,6 +152,16 @@ Also, we will add a init task for Gitpod to execute pip install on workspace ini
       exit
 ```
 
+
+In db drop script, we will need to check first if database exists before trying to drop it
+
+`./backend-flask/bin/db/drop`
+
+```sh
+psql $NO_DB_CONNECTION_URL -c "drop database IF EXISTS cruddur;"
+```
+
+
 We need to run DynamoDB container and Postgres container for using these scripts
 
 ```sh
@@ -1710,15 +1720,6 @@ my-uuid: f2ca874f-2e7b-490b-9539-9d1b3a6a246b
 ```
 
 
-### Update DB bash scripts
-
-In drop script, we will need to check first if database exists before trying to drop it
-
-`./backend-flask/bin/db/drop`
-
-```sh
-psql $NO_DB_CONNECTION_URL -c "drop database IF EXISTS cruddur;"
-```
 
 
 
