@@ -96,7 +96,7 @@ cd backend-flask
 
 ./bin/ddb/scan
 
-./bin/ddb/get-conversation
+./bin/ddb/patterns/get-conversation
 ./bin/ddb/patterns/list-conversations
 
 

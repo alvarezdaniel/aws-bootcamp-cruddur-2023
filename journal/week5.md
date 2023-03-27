@@ -1042,7 +1042,521 @@ for item in reversed_array:
 
 Result
 ```
-
+{
+  "ConsumedCapacity": {
+    "CapacityUnits": 1.5,
+    "TableName": "cruddur-messages"
+  },
+  "Count": 20,
+  "Items": [
+    {
+      "message": {
+        "S": "Definitely. I think his character is a great example of the show's ability to balance humor and heart, and to create memorable and beloved characters that fans will cherish for years to come."
+      },
+      "message_uuid": {
+        "S": "3c2f54ba-a78c-4542-8cad-20ad50b10e61"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:21:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Andrew Brown"
+      },
+      "user_handle": {
+        "S": "andrewbrown"
+      },
+      "user_uuid": {
+        "S": "1bfbcd4a-6ce3-4339-affd-30036f8dd7fb"
+      }
+    },
+    {
+      "message": {
+        "S": "And Zathras was just one example of that. He was a small but important part of the show's legacy, and he's still remembered fondly by fans today."
+      },
+      "message_uuid": {
+        "S": "9e1ed69c-c4bc-4e90-b35a-2cfcdf346572"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:20:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Daniel Alvarez"
+      },
+      "user_handle": {
+        "S": "dalvarez"
+      },
+      "user_uuid": {
+        "S": "f2ca874f-2e7b-490b-9539-9d1b3a6a246b"
+      }
+    },
+    {
+      "message": {
+        "S": "Yes, that's a good point. Babylon 5 was really great at creating a diverse and interesting cast of characters, with each one feeling like a fully-realized and distinct individual."
+      },
+      "message_uuid": {
+        "S": "d05bcfe9-1c24-4bf9-b436-57cfd0596feb"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:19:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Andrew Brown"
+      },
+      "user_handle": {
+        "S": "andrewbrown"
+      },
+      "user_uuid": {
+        "S": "1bfbcd4a-6ce3-4339-affd-30036f8dd7fb"
+      }
+    },
+    {
+      "message": {
+        "S": "I also thought that Zathras was a great example of the show's commitment to creating memorable and unique characters. Even characters that only appeared in a few episodes, like Zathras or Bester, were given distinct personalities and backstories."
+      },
+      "message_uuid": {
+        "S": "9e4898a8-fb0c-40df-86cc-8e01125ced11"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:18:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Daniel Alvarez"
+      },
+      "user_handle": {
+        "S": "dalvarez"
+      },
+      "user_uuid": {
+        "S": "f2ca874f-2e7b-490b-9539-9d1b3a6a246b"
+      }
+    },
+    {
+      "message": {
+        "S": "Yeah, that was a clever storytelling device that really added to the sci-fi elements of the show. And it was also a great showcase for actor Tim Choate, who played the character with so much charm and energy."
+      },
+      "message_uuid": {
+        "S": "06a12cea-9e9b-448f-9a13-df2c9e722958"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:17:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Andrew Brown"
+      },
+      "user_handle": {
+        "S": "andrewbrown"
+      },
+      "user_uuid": {
+        "S": "1bfbcd4a-6ce3-4339-affd-30036f8dd7fb"
+      }
+    },
+    {
+      "message": {
+        "S": "Definitely. It was a great way to integrate a seemingly minor character into the larger narrative. And it was also interesting to see the different versions of Zathras from different points in time."
+      },
+      "message_uuid": {
+        "S": "15ec6308-0622-4d08-b609-ba48b3b7fb9a"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:16:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Daniel Alvarez"
+      },
+      "user_handle": {
+        "S": "dalvarez"
+      },
+      "user_uuid": {
+        "S": "f2ca874f-2e7b-490b-9539-9d1b3a6a246b"
+      }
+    },
+    {
+      "message": {
+        "S": "And I appreciated the way the show used him as a sort of plot device, with his knowledge of time and space being instrumental in the resolution of some of the show's major storylines."
+      },
+      "message_uuid": {
+        "S": "8a7d6e7b-2d7a-45fb-9662-ce605694e405"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:15:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Andrew Brown"
+      },
+      "user_handle": {
+        "S": "andrewbrown"
+      },
+      "user_uuid": {
+        "S": "1bfbcd4a-6ce3-4339-affd-30036f8dd7fb"
+      }
+    },
+    {
+      "message": {
+        "S": "Yes, I thought he was a great addition to the show. He added some much-needed comic relief, but also had some important moments of character development."
+      },
+      "message_uuid": {
+        "S": "22d2868b-c1f2-4463-b30b-291e9e74a91d"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:14:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Daniel Alvarez"
+      },
+      "user_handle": {
+        "S": "dalvarez"
+      },
+      "user_uuid": {
+        "S": "f2ca874f-2e7b-490b-9539-9d1b3a6a246b"
+      }
+    },
+    {
+      "message": {
+        "S": "Zathras was a really unique and memorable character. He was quirky and eccentric, but also had a lot of heart and sincerity."
+      },
+      "message_uuid": {
+        "S": "31df8dd5-202a-4ec4-94d5-14171d839dee"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:13:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Andrew Brown"
+      },
+      "user_handle": {
+        "S": "andrewbrown"
+      },
+      "user_uuid": {
+        "S": "1bfbcd4a-6ce3-4339-affd-30036f8dd7fb"
+      }
+    },
+    {
+      "message": {
+        "S": "Another character I wanted to discuss is Zathras. What did you think of his character?"
+      },
+      "message_uuid": {
+        "S": "9e87cf7d-11a3-4427-876c-c9f6915ea12a"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:12:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Daniel Alvarez"
+      },
+      "user_handle": {
+        "S": "dalvarez"
+      },
+      "user_uuid": {
+        "S": "f2ca874f-2e7b-490b-9539-9d1b3a6a246b"
+      }
+    },
+    {
+      "message": {
+        "S": "Yes, it definitely had a big impact on the genre as a whole. And it's a great example of how innovative and groundbreaking sci-fi can be when it's done right."
+      },
+      "message_uuid": {
+        "S": "41360982-e888-47e3-aff2-5225690b2924"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:11:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Andrew Brown"
+      },
+      "user_handle": {
+        "S": "andrewbrown"
+      },
+      "user_uuid": {
+        "S": "1bfbcd4a-6ce3-4339-affd-30036f8dd7fb"
+      }
+    },
+    {
+      "message": {
+        "S": "Agreed. And it's also worth noting the way the show's use of visual effects influenced other sci-fi shows that came after it. Babylon 5 really set the bar for what was possible in terms of sci-fi visuals on TV."
+      },
+      "message_uuid": {
+        "S": "8692886e-c92a-4834-9705-865c0dfc5a82"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:10:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Daniel Alvarez"
+      },
+      "user_handle": {
+        "S": "dalvarez"
+      },
+      "user_uuid": {
+        "S": "f2ca874f-2e7b-490b-9539-9d1b3a6a246b"
+      }
+    },
+    {
+      "message": {
+        "S": "Definitely. And it's one of the reasons why the show has aged so well. Even today, the visual effects still hold up and look impressive, which is a rarity for a show that's almost 30 years old."
+      },
+      "message_uuid": {
+        "S": "eb130d4d-4c5f-4f7d-8c0a-068ed4b6c95c"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:09:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Andrew Brown"
+      },
+      "user_handle": {
+        "S": "andrewbrown"
+      },
+      "user_uuid": {
+        "S": "1bfbcd4a-6ce3-4339-affd-30036f8dd7fb"
+      }
+    },
+    {
+      "message": {
+        "S": "Yes, I agree. And it's impressive how they were able to accomplish all of this on a TV budget. The fact that the show was able to create such a rich and immersive sci-fi universe with limited resources is a testament to the talent and creativity of the production team."
+      },
+      "message_uuid": {
+        "S": "042d9465-b6f5-4922-bc76-a758e2393200"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:08:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Daniel Alvarez"
+      },
+      "user_handle": {
+        "S": "dalvarez"
+      },
+      "user_uuid": {
+        "S": "f2ca874f-2e7b-490b-9539-9d1b3a6a246b"
+      }
+    },
+    {
+      "message": {
+        "S": "And it's also worth noting the way the show's use of visual effects evolved over the course of the series. The effects in the first season were a bit rough around the edges, but by the end of the series, they had really refined and perfected the look and feel of the show."
+      },
+      "message_uuid": {
+        "S": "fed62816-9d3c-4ca5-b76c-3e0238a51fab"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:07:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Andrew Brown"
+      },
+      "user_handle": {
+        "S": "andrewbrown"
+      },
+      "user_uuid": {
+        "S": "1bfbcd4a-6ce3-4339-affd-30036f8dd7fb"
+      }
+    },
+    {
+      "message": {
+        "S": "Absolutely. The show had a great balance of practical effects and CGI, which helped to ground the sci-fi elements in a more tangible and realistic world."
+      },
+      "message_uuid": {
+        "S": "d283e5dc-9c1e-4303-b30a-19b2e2263493"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:06:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Daniel Alvarez"
+      },
+      "user_handle": {
+        "S": "dalvarez"
+      },
+      "user_uuid": {
+        "S": "f2ca874f-2e7b-490b-9539-9d1b3a6a246b"
+      }
+    },
+    {
+      "message": {
+        "S": "And I also appreciated the way the show integrated the visual effects with the live-action footage. It never felt like the effects were taking over or overshadowing the characters or the story."
+      },
+      "message_uuid": {
+        "S": "22021b11-fded-4346-8010-5ea94cfecde6"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:05:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Andrew Brown"
+      },
+      "user_handle": {
+        "S": "andrewbrown"
+      },
+      "user_uuid": {
+        "S": "1bfbcd4a-6ce3-4339-affd-30036f8dd7fb"
+      }
+    },
+    {
+      "message": {
+        "S": "Yes, I was really blown away by the level of detail and realism in the effects. The ships looked so sleek and futuristic, and the space battles were really intense and exciting."
+      },
+      "message_uuid": {
+        "S": "2a5f4b8a-b9db-4d2d-8dbb-f8d57f56e955"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:04:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Daniel Alvarez"
+      },
+      "user_handle": {
+        "S": "dalvarez"
+      },
+      "user_uuid": {
+        "S": "f2ca874f-2e7b-490b-9539-9d1b3a6a246b"
+      }
+    },
+    {
+      "message": {
+        "S": "I thought the special effects in Babylon 5 were really impressive, especially for a show that aired in the 90s. The use of CGI to create the spaceships and other sci-fi elements was really innovative for its time."
+      },
+      "message_uuid": {
+        "S": "f127a886-3668-46ea-a970-1edbb5cc8633"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:03:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Andrew Brown"
+      },
+      "user_handle": {
+        "S": "andrewbrown"
+      },
+      "user_uuid": {
+        "S": "1bfbcd4a-6ce3-4339-affd-30036f8dd7fb"
+      }
+    },
+    {
+      "message": {
+        "S": "One thing that really stands out about Babylon 5 is the quality of the special effects. What did you think about the show's use of CGI and other visual effects?"
+      },
+      "message_uuid": {
+        "S": "cc98598e-d84f-4207-bc53-c476a60ebcf3"
+      },
+      "pk": {
+        "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+      },
+      "sk": {
+        "S": "2023-03-27T22:02:53.787921+00:00"
+      },
+      "user_display_name": {
+        "S": "Daniel Alvarez"
+      },
+      "user_handle": {
+        "S": "dalvarez"
+      },
+      "user_uuid": {
+        "S": "f2ca874f-2e7b-490b-9539-9d1b3a6a246b"
+      }
+    }
+  ],
+  "LastEvaluatedKey": {
+    "pk": {
+      "S": "MSG#5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+    },
+    "sk": {
+      "S": "2023-03-27T22:02:53.787921+00:00"
+    }
+  },
+  "ResponseMetadata": {
+    "HTTPHeaders": {
+      "content-type": "application/x-amz-json-1.0",
+      "date": "Mon, 27 Mar 2023 20:39:40 GMT",
+      "server": "Jetty(9.4.48.v20220622)",
+      "transfer-encoding": "chunked",
+      "x-amz-crc32": "1853496125",
+      "x-amzn-requestid": "18982043-f23f-41dd-83b5-c4afeff6965f"
+    },
+    "HTTPStatusCode": 200,
+    "RequestId": "18982043-f23f-41dd-83b5-c4afeff6965f",
+    "RetryAttempts": 0
+  },
+  "ScannedCount": 20
+}
+{
+  "CapacityUnits": 1.5,
+  "TableName": "cruddur-messages"
+}
+dalvarez    2023-03-27 10:02 PM   One thing that really stands out about B...
+andrewbrown 2023-03-27 10:03 PM   I thought the special effects in Babylon...
+dalvarez    2023-03-27 10:04 PM   Yes, I was really blown away by the leve...
+andrewbrown 2023-03-27 10:05 PM   And I also appreciated the way the show ...
+dalvarez    2023-03-27 10:06 PM   Absolutely. The show had a great balance...
+andrewbrown 2023-03-27 10:07 PM   And it's also worth noting the way the s...
+dalvarez    2023-03-27 10:08 PM   Yes, I agree. And it's impressive how th...
+andrewbrown 2023-03-27 10:09 PM   Definitely. And it's one of the reasons ...
+dalvarez    2023-03-27 10:10 PM   Agreed. And it's also worth noting the w...
+andrewbrown 2023-03-27 10:11 PM   Yes, it definitely had a big impact on t...
+dalvarez    2023-03-27 10:12 PM   Another character I wanted to discuss is...
+andrewbrown 2023-03-27 10:13 PM   Zathras was a really unique and memorabl...
+dalvarez    2023-03-27 10:14 PM   Yes, I thought he was a great addition t...
+andrewbrown 2023-03-27 10:15 PM   And I appreciated the way the show used ...
+dalvarez    2023-03-27 10:16 PM   Definitely. It was a great way to integr...
+andrewbrown 2023-03-27 10:17 PM   Yeah, that was a clever storytelling dev...
+dalvarez    2023-03-27 10:18 PM   I also thought that Zathras was a great ...
+andrewbrown 2023-03-27 10:19 PM   Yes, that's a good point. Babylon 5 was ...
+dalvarez    2023-03-27 10:20 PM   And Zathras was just one example of that...
+andrewbrown 2023-03-27 10:21 PM   Definitely. I think his character is a g...
 ```
 
 
@@ -1059,6 +1573,7 @@ import boto3
 import sys
 import json
 import os
+import datetime
 
 current_path = os.path.dirname(os.path.abspath(__file__))
 parent_path = os.path.abspath(os.path.join(current_path, '..', '..', '..'))
@@ -1092,11 +1607,15 @@ def get_my_user_uuid():
 my_user_uuid = get_my_user_uuid()
 print(f"my-uuid: {my_user_uuid}")
 
+year = str(datetime.datetime.now().year)
+
 # define the query parameters
 query_params = {
   'TableName': table_name,
-  'KeyConditionExpression': 'pk = :pk',
+  'KeyConditionExpression': 'pk = :pk AND begins_with(sk,:year)',
+  'ScanIndexForward': False,
   'ExpressionAttributeValues': {
+    ':year': {'S': year },
     ':pk': {'S': f"GRP#{my_user_uuid}"}
   },
   'ReturnConsumedCapacity': 'TOTAL'
@@ -1140,8 +1659,8 @@ Result
     FROM users
     WHERE
       users.handle =%(handle)s
-   {'handle': 'andrewbrown'}
-my-uuid: 3a28a20f-964f-42fe-8356-79804e4f753d
+   {'handle': 'dalvarez'}
+my-uuid: f2ca874f-2e7b-490b-9539-9d1b3a6a246b
 {
   "ConsumedCapacity": {
     "CapacityUnits": 0.5,
@@ -1157,33 +1676,33 @@ my-uuid: 3a28a20f-964f-42fe-8356-79804e4f753d
         "S": "5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
       },
       "pk": {
-        "S": "GRP#3a28a20f-964f-42fe-8356-79804e4f753d"
+        "S": "GRP#f2ca874f-2e7b-490b-9539-9d1b3a6a246b"
       },
       "sk": {
-        "S": "2023-03-22T22:55:12.482495+00:00"
+        "S": "2023-03-27T20:38:53.787921+00:00"
       },
       "user_display_name": {
-        "S": "Andrew Bayko"
+        "S": "Andrew Brown"
       },
       "user_handle": {
-        "S": "bayko"
+        "S": "andrewbrown"
       },
       "user_uuid": {
-        "S": "59e8e5e9-288b-4422-80d1-66eadd0fa162"
+        "S": "1bfbcd4a-6ce3-4339-affd-30036f8dd7fb"
       }
     }
   ],
   "ResponseMetadata": {
     "HTTPHeaders": {
-      "content-length": "447",
+      "content-length": "453",
       "content-type": "application/x-amz-json-1.0",
-      "date": "Wed, 22 Mar 2023 23:10:55 GMT",
+      "date": "Mon, 27 Mar 2023 20:43:29 GMT",
       "server": "Jetty(9.4.48.v20220622)",
-      "x-amz-crc32": "2446654267",
-      "x-amzn-requestid": "cd6b5c30-4859-4c98-92c9-3aa342012e5a"
+      "x-amz-crc32": "3557143377",
+      "x-amzn-requestid": "0531a464-d824-4e4a-8346-2fff388349e6"
     },
     "HTTPStatusCode": 200,
-    "RequestId": "cd6b5c30-4859-4c98-92c9-3aa342012e5a",
+    "RequestId": "0531a464-d824-4e4a-8346-2fff388349e6",
     "RetryAttempts": 0
   },
   "ScannedCount": 1
