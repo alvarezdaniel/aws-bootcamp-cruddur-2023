@@ -87,6 +87,7 @@ docker compose  -f "docker-compose.yml" up -d --build db dynamodb-local
 
 cd backend-flask
 ./bin/db/setup
+./bin/db/drop
 
 ./bin/ddb/schema-load
 ./bin/ddb/list-tables
@@ -99,5 +100,7 @@ cd backend-flask
 ./bin/ddb/patterns/get-conversation
 ./bin/ddb/patterns/list-conversations
 
+./bin/cognito/list-users
+./bin/db/update_cognito_user_ids
 
 ----------------------------------------------------------------------------------------------------------------------------------
