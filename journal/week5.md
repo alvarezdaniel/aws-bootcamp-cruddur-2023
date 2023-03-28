@@ -974,6 +974,8 @@ Result
 
 ### Implement Pattern Scripts for Read and List Conversations
 
+https://www.youtube.com/watch?v=pIGi_9E_GwA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
+
 
 #### get-conversation
 
@@ -1719,12 +1721,9 @@ my-uuid: f2ca874f-2e7b-490b-9539-9d1b3a6a246b
 }
 ```
 
+### Implement Update Cognito ID Script for Postgres Database
 
-
-
-
-### Implement DynamoDB in cruddur
-
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
 
 #### Python library for accessing DynamoDB
 
@@ -1788,7 +1787,7 @@ class Ddb:
 
 > https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/dynamodb/client/query.html
 
-> Table name is hardcoded, but a prefix can be added to separating Production from Staging data
+> Table name is hardcoded, but a prefix can be added to separate Production from Staging information
 
  
 #### Change in list-conversations pattern
@@ -1828,7 +1827,7 @@ def data_message_groups():
     return model['data'], 200
 ```
 
-We are going to grab the corresponding user handle for the logged user in Cognito, so first we need to implement a way to retrieve current users in Cognito
+We are going to grab the corresponding user handle for the logged user in Cognito, so first we need to implement a way to retrieve stored users in Cognito
 
 
 #### Implement bash script to list users
@@ -1885,6 +1884,28 @@ gp env AWS_COGNITO_USER_POOL_ID="XXX"
 
 Result
 ```
+[
+  {
+    "Attributes": [
+      {
+        "Name": "sub",
+        "Value": "d6f260c9-4367-4ca3-b4e0-aa8dfac3d9c9"
+      },
+      {
+        "Name": "preferred_username",
+        "Value": "dalvarez"
+      }
+    ],
+    "Enabled": true,
+    "UserCreateDate": "2023-03-17 01:25:18.004000+00:00",
+    "UserLastModifiedDate": "2023-03-17 12:55:35.559000+00:00",
+    "UserStatus": "CONFIRMED",
+    "Username": "d6f260c9-4367-4ca3-b4e0-aa8dfac3d9c9"
+  }
+]
+{
+  "dalvarez": "d6f260c9-4367-4ca3-b4e0-aa8dfac3d9c9"
+}
 ```
 
 
@@ -1957,12 +1978,23 @@ for handle, sub in users.items():
 
 > We need to give execute permissions also to this script by executing `chmod u+x ./bin/db/update_cognito_user_ids`
 
+> postgres container must be running for this script to execute succesfully
+
 ```sh
 ./bin/db/update_cognito_user_ids
 ```
 
 Result
 ```
+== db-update-cognito-user-ids
+---- dalvarez d6f260c9-4367-4ca3-b4e0-aa8dfac3d9c9
+ SQL STATEMENT-[commit with returning]------
+
+    UPDATE public.users
+    SET cognito_user_id = %(sub)s
+    WHERE
+      users.handle = %(handle)s;
+   {'handle': 'dalvarez', 'sub': 'd6f260c9-4367-4ca3-b4e0-aa8dfac3d9c9'}
 ```
 
 
@@ -2034,9 +2066,17 @@ INSERT 0 1
    {'handle': 'dalvarez', 'sub': 'd6f260c9-4367-4ca3-b4e0-aa8dfac3d9c9'}
 ```
 
-#### Implement ddb in '/api/message_groups' endpoint
 
-Replace current implementation with the one accessing ddb
+### Implement (Pattern A) Listing Messages in Message Group into Application
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+![](./assets/week-5/04.png)
+
+
+#### Implement DynamoDB in '/api/message_groups' endpoint
+
+The first thing to do is replace current endpoint implementation with a new one accessing DynamoDB
 
 `./backend-flask/app.py`
 
@@ -2067,7 +2107,15 @@ def data_message_groups():
     return {}, 401
 ```
 
-We will need to change also `MessageGroups` implementation, replacing the hardcoded data with information from DynamoDB
+> The code will extract the access token from the request header, and validate it. 
+
+> In case it is invalid, a 401 error will be returned. 
+
+> In case it is valid, the sub attribute is extracted from the auth claims, and this value is passed to MessageGroups as cognito_user_id parameter
+
+#### Implement DynamoDB in MessageGroups class
+
+We will need to change also `MessageGroups.run()` implementation, replacing the hardcoded data with current information from DynamoDB
 
 `./backend-flask/services/message_groups.py`
 
@@ -2115,6 +2163,12 @@ class MessageGroups:
     return model
 ```
 
+> The function received the cognito_user_id parameter, and executes a query in postgres to return uuid value from cognito_user_id
+
+> Then, using the retrieved user uuid, executes list_message_groups function against DynamoDB to return messages belonging to that user
+
+#### Return uuid from cognito_user_id
+
 The new implementation requires a new sql query file to be created as well
 
 `./backend-flask/db/sql/users/uuid_from_cognito_user_id.sql`
@@ -2127,6 +2181,8 @@ WHERE
   users.cognito_user_id = %(cognito_user_id)s
 LIMIT 1
 ```
+
+#### Add Authorization token to MessageGroupsPage
 
 Another change we need to implement is in frontend code, in which we need to pass the token to the backend, as we already did in `HomeFeedPage.js`
 
@@ -2159,6 +2215,8 @@ In this case, we need to add it to `frontend-react-js/src/pages/MessageGroupsPag
 
 > We also comment out `import Cookies from 'js-cookie'` because we are not using cookies authentication any more
 
+#### Add Authorization token to MessageGroupPage
+
 We are going to make the same change in `frontend-react-js/src/pages/MessageGroupPage.js`
 
 ```js
@@ -2186,7 +2244,9 @@ We are going to make the same change in `frontend-react-js/src/pages/MessageGrou
   };  
 ```
 
-Another place we need to make the same change is in `frontend-react-js/src/components/MessageForm.js` (in this case there is already some headers passing to backend)
+#### Add Authorization token to MessageForm
+
+Another place we need to make the same change is in `frontend-react-js/src/components/MessageForm.js` (in this case there are already some headers passing to backend, so we will add only Authorization header)
 
 ```js
   const onsubmit = async (event) => {
@@ -2218,13 +2278,32 @@ Another place we need to make the same change is in `frontend-react-js/src/compo
   }
 ```
 
-Now we can check it from the application, trying to retrieve message groups using cruddur
+#### Test it in cruddur
 
-![](./assets/week-5/XXX)
+Now we can check it from the application, trying to click on Messages option in the left menu
 
-> Remember to run the script to update cognito_user_ids in db
+![](./assets/week-5/05.png)
+
+Log from backend container
+
+```
+[2023-Mar-28 20:57] 192.168.65.74 OPTIONS http /api/message_groups? 200 OK
+192.168.65.74 - - [28/Mar/2023 20:57:56] "OPTIONS /api/message_groups HTTP/1.1" 200 -
+authenticated
+{'sub': 'd6f260c9-4367-4ca3-b4e0-aa8dfac3d9c9', 'iss': 'https://cognito-idp.ca-central-1.amazonaws.com/ca-central-1_iGtdWLWJr', 'client_id': '4sgm78b7fr1mqff5oj2kkmqdr7', 'origin_jti': '453350fa-2c57-47c4-b402-6e7d9df31e3e', 'event_id': '854d6d20-2e79-436d-a93f-c2f54bb0d552', 'token_use': 'access', 'scope': 'aws.cognito.signin.user.admin', 'auth_time': 1680036877, 'exp': 1680040477, 'iat': 1680036877, 'jti': '79e099d9-fc11-4acf-a201-d0acd7640e5b', 'username': 'd6f260c9-4367-4ca3-b4e0-aa8dfac3d9c9'}
+[2023-Mar-28 20:57] 192.168.65.74 GET http /api/message_groups? 200 OK
+192.168.65.74 - - [28/Mar/2023 20:57:56] "GET /api/message_groups HTTP/1.1" 200 -
+```
+
+> Remember to run the script to update cognito_user_ids in db for having postgres users table updated with the corresponding cognito_user_id
 
 > Some thing I've learned from Andrew: Ctrl-P in Gitpod VS allows to search for a file 
+
+
+
+
+
+
 
 
 Just for simplicity and to make a better code, we will extract the code used for validating the token in a separate file
@@ -3173,6 +3252,29 @@ import botocore.exceptions
 
 After this, we can successfully create a direct message to a user
 
+
+### Implement (Pattern B) Listing Messages Group into Application
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+### Implement (Pattern B) Listing Messages Group into Application
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+### Implement (Pattern C) Creating a Message for an existing Message Group into Application
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+### Implement (Pattern D) Creating a Message for a new Message Group into Application
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+### Implement (Pattern E) Updating a Message Group using DynamoDB Streams
+
+https://www.youtube.com/watch?v=zGnzM_YdMJU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=55
+
+
+
 ### Setting DynamoDB stream to update message
 
 We are going to execute `./bin/ddb/schema-load prod` to create table in AWS DynamoDB
@@ -3325,42 +3427,3 @@ True or False, best practice dictates using Client side encryption with DynamoDB
 -[Momento Serverless Cache Documentation](https://docs.momentohq.com/getting-started)
 
 -[Alex DeBrie – The DynamoDB Book – Boot Camp Discount in Student Portal](https://www.dynamodbbook.com/)
-
-
-
-
-
-
-
-### Implement Pattern Scripts for Read and List Conversations
-
-https://www.youtube.com/watch?v=pIGi_9E_GwA&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=52
-
-### Implement Update Cognito ID Script for Postgres Database
-
-https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
-
-### Implement (Pattern A) Listing Messages in Message Group into Application
-
-https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
-
-### Implement (Pattern B) Listing Messages Group into Application
-
-https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
-
-### Implement (Pattern B) Listing Messages Group into Application
-
-https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
-
-### Implement (Pattern C) Creating a Message for an existing Message Group into Application
-
-https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
-
-### Implement (Pattern D) Creating a Message for a new Message Group into Application
-
-https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
-
-### Implement (Pattern E) Updating a Message Group using DynamoDB Streams
-
-https://www.youtube.com/watch?v=zGnzM_YdMJU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=55
-
