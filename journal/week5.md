@@ -2297,14 +2297,19 @@ authenticated
 
 > Remember to run the script to update cognito_user_ids in db for having postgres users table updated with the corresponding cognito_user_id
 
-> Some thing I've learned from Andrew: Ctrl-P in Gitpod VS allows to search for a file 
+> Something I've learned from Andrew: Ctrl-P in Gitpod VS allows to search for a file 
 
 
+### Implement (Pattern B) Listing Messages Group into Application
+
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
+After implementing the display for message groups, now we will be implementing displaying the actual messages contained in an specific message group
+
+![](./assets/week-5/06.png)
 
 
-
-
-
+#### Implement CheckAuth library
 
 Just for simplicity and to make a better code, we will extract the code used for validating the token in a separate file
 
@@ -2334,6 +2339,10 @@ const checkAuth = async (setUser) => {
 
 export default checkAuth;
 ```
+
+> This library implements checking authentication token using AWS Amplify, and in case of a successful auth, it returns the display name and handle of that user
+
+#### Implement CheckAuth in HomeFeedPage
 
 So, now we can remove this function (and Auth import) from `HomeFeedPage.js`
 
@@ -2373,6 +2382,8 @@ import checkAuth from '../lib/CheckAuth';
 
 checkAuth(setUser);
 ```
+
+#### Implement CheckAuth to other pages
 
 It's time to add CheckAuth library to the other pages
 
@@ -2418,7 +2429,21 @@ import checkAuth from '../lib/CheckAuth';
 checkAuth(setUser);
 ```
 
-Another change we need to implement in `MessageGroupPage.js` is in loadMessageGroupData function:
+#### Change param name in app.js
+
+Another required change is in `app.js` in route for MessageGroupPage, in which we should change handle and replace it with message_group_uuid
+
+```js
+  {
+    //path: "/messages/@:handle",
+    path: "/messages/:message_group_uuid",
+    element: <MessageGroupPage />
+  },
+```
+
+#### Change in MessageGroupPage
+
+In `MessageGroupPage.js` we need to implement some changes in loadMessageGroupData function
 
 ```js
   const loadMessageGroupData = async () => {
@@ -2446,6 +2471,8 @@ Another change we need to implement in `MessageGroupPage.js` is in loadMessageGr
 
 > We need to add Authorization header and change the backend_url, using the message_group_uuid instead of handle
 
+#### Add year filter in list_message_groups
+
 Also, in `ddb.py` we will add the filter for current year
 
 ```py
@@ -2464,11 +2491,14 @@ Also, in `ddb.py` we will add the filter for current year
     }
 ```
 
+#### Change param name in MessageGroupItem
+
 In `frontend-react-js/src/components/MessageGroupItem.js` we need to change param name
 
-```py
+```js
   const classes = () => {
     let classes = ["message_group_item"];
+    // if (params.handle == props.message_group.handle){
     if (params.message_group_uuid == props.message_group.uuid){
       classes.push('active')
     }
@@ -2478,6 +2508,8 @@ In `frontend-react-js/src/components/MessageGroupItem.js` we need to change para
   return (
     <Link className={classes()} to={`/messages/`+props.message_group.uuid}>
 ```
+
+#### Change endpoint implementation in app.py
 
 Now we need to change implementation for "/api/messages/@<string:handle>" endpoint in `app.py`, adding authentication and the correct parameters
 
@@ -2515,6 +2547,8 @@ def data_messages(message_group_uuid):
     app.logger.debug(e)
     return {}, 401
 ```
+
+#### Changes in Messages class
 
 This change requires changing also the implementation in `messages.py`, for using DynamoDB and not returning hardcoded data
 
@@ -2566,6 +2600,10 @@ class Messages:
     return model
 ```
 
+> uuid_from_cognito_user_id template sql is already available for using it
+
+#### Add new function in ddb library
+
 A new function should be implemented in `ddb.py` for listing the messages for a given message_group_uuid
 
 ```py
@@ -2598,6 +2636,15 @@ A new function should be implemented in `ddb.py` for listing the messages for a 
       })
     return results
 ```
+
+#### Test in cruddur
+
+
+
+
+
+
+#### 
 
 In `MessageForm.js` we need to change the way of passing parameters to backend (depending if we need to create a new message group or update an existing one)
 
@@ -3252,10 +3299,6 @@ import botocore.exceptions
 
 After this, we can successfully create a direct message to a user
 
-
-### Implement (Pattern B) Listing Messages Group into Application
-
-https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
 
 ### Implement (Pattern B) Listing Messages Group into Application
 
