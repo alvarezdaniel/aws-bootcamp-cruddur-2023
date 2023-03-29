@@ -5,6 +5,7 @@ docker compose  -f "docker-compose.yml" up -d
 cd backend-flask
 ./bin/db/setup
 ./bin/db/drop
+./bin/db/update_cognito_user_ids
 
 ./bin/ddb/schema-load
 ./bin/ddb/list-tables

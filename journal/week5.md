@@ -3040,6 +3040,7 @@ This conclude with the pattern in which we add a new message to an existing conv
 
 
 
+
 Now we need to make the corresponding changes to create a new fresh conversation.
 
 In frontend, in `app.js` we need to add a new path (and also we are updating the path for MessageGroupPage)
@@ -3212,7 +3213,7 @@ export default function MessageGroupNewItem(props) {
     <Link className='message_group_item active' to={`/messages/new/`+props.user.handle}>
       <div className='message_group_avatar'></div>
       <div className='message_content'>
-        <div classsName='message_group_meta'>
+        <div className='message_group_meta'>
           <div className='message_group_identity'>
             <div className='display_name'>{props.user.display_name}</div>
             <div className="handle">@{props.user.handle}</div>
