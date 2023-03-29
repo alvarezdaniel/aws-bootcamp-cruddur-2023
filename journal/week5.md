@@ -2295,6 +2295,12 @@ authenticated
 192.168.65.74 - - [28/Mar/2023 20:57:56] "GET /api/message_groups HTTP/1.1" 200 -
 ```
 
+Chrome network tab
+
+![](./assets/week-5/08.png)
+
+![](./assets/week-5/09.png)
+
 > Remember to run the script to update cognito_user_ids in db for having postgres users table updated with the corresponding cognito_user_id
 
 > Something I've learned from Andrew: Ctrl-P in Gitpod VS allows to search for a file 
@@ -2303,6 +2309,7 @@ authenticated
 ### Implement (Pattern B) Listing Messages Group into Application
 
 https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
+
 
 After implementing the display for message groups, now we will be implementing displaying the actual messages contained in an specific message group
 
@@ -2604,7 +2611,7 @@ class Messages:
 
 #### Add new function in ddb library
 
-A new function should be implemented in `ddb.py` for listing the messages for a given message_group_uuid
+A new function should be implemented in `ddb.py` for listing the messages for a given message_group_uuid (in reverse order)
 
 ```py
   def list_messages(client,message_group_uuid):
@@ -2637,14 +2644,50 @@ A new function should be implemented in `ddb.py` for listing the messages for a 
     return results
 ```
 
+#### Change in list-conversations
+
+The same 'reverse' logic should be applied to `./bin/ddb/get-conversation` script
+
+```py
+items = response['Items']
+#reversed_array = items[::-1]
+items.reverse()
+
+#for item in reversed_array:
+for item in items:
+  sender_handle = item['user_handle']['S']
+  message       = item['message']['S']
+  timestamp     = item['sk']['S']
+  dt_object = datetime.datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%S.%f%z')
+  formatted_datetime = dt_object.strftime('%Y-%m-%d %I:%M %p')
+  print(f'{sender_handle: <12}{formatted_datetime: <22}{message[:40]}...')
+```
+
 #### Test in cruddur
 
+Now we can check it from the application, trying to click on Messages option in the left menu
+
+![](./assets/week-5/10.png)
+
+Log from backend container
+
+```
+[2023-Mar-29 14:01] 192.168.65.74 GET http /api/messages/5ae290ed-55d1-47a0-bc6d-fe2bc2700399? 200 OK
+192.168.65.74 - - [29/Mar/2023 14:01:05] "GET /api/messages/5ae290ed-55d1-47a0-bc6d-fe2bc2700399 HTTP/1.1" 200 -
+```
+
+Chrome network tab
+
+![](./assets/week-5/11.png)
+
+![](./assets/week-5/12.png)
 
 
 
+### Implement (Pattern C) Creating a Message for an existing Message Group into Application
 
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
 
-#### 
 
 In `MessageForm.js` we need to change the way of passing parameters to backend (depending if we need to create a new message group or update an existing one)
 
@@ -3299,14 +3342,6 @@ import botocore.exceptions
 
 After this, we can successfully create a direct message to a user
 
-
-### Implement (Pattern B) Listing Messages Group into Application
-
-https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
-
-### Implement (Pattern C) Creating a Message for an existing Message Group into Application
-
-https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
 
 ### Implement (Pattern D) Creating a Message for a new Message Group into Application
 
