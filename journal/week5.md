@@ -2688,10 +2688,13 @@ Chrome network tab
 
 https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
 
+![](./assets/week-5/13.png)
+
+#### Change MessageForm depending on new/update message group
 
 In `MessageForm.js` we need to change the way of passing parameters to backend (depending if we need to create a new message group or update an existing one)
 
-```py
+```js
 //import { useParams } from 'react-router-dom';
 import { json, useParams } from 'react-router-dom';
 
@@ -2700,11 +2703,13 @@ import { json, useParams } from 'react-router-dom';
     try {
       const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/messages`
       console.log('onsubmit payload', message)
+      
+      // add
       let json = { 'message': message }
       if (params.handle) {
-        json.handle = params.handle
+        json.handle = params.handle // for create
       } else {
-        json.message_group_uuid = params.message_group_uuid
+        json.message_group_uuid = params.message_group_uuid // for update
       }
 
       const res = await fetch(backend_url, {
@@ -2723,6 +2728,8 @@ import { json, useParams } from 'react-router-dom';
       let data = await res.json();
       if (res.status === 200) {
         //props.setMessages(current => [...current,data]);
+        
+        // add
         console.log('data:',data)
         if (data.message_group_uuid) {
           console.log('redirect to message group')
@@ -2738,6 +2745,8 @@ import { json, useParams } from 'react-router-dom';
     }
   }
 ```
+
+#### Changes in backend endpoint /api/messages
 
 This change makes us review the backend endpoint "/api/messages" in `app.py` for creating messages
 
@@ -2790,6 +2799,10 @@ def data_create_message():
     app.logger.debug(e)
     return {}, 401
 ```
+
+> If message_group_uuid is None, we are going to create a new message group. If not, we are going to update the existing one.
+
+#### Changes in CreateMessage class
 
 Then we need to check `create_message.py`, for adding DynamoDB implementation instead of hardcoded one
 
@@ -2896,6 +2909,8 @@ class CreateMessage:
     return model
 ```
 
+#### Create new sql template
+
 These changes references a new template sql script file that we should be adding as well `create_message_users.sql`
 
 ```sql
@@ -2917,6 +2932,8 @@ WHERE
   OR 
   users.handle = %(user_receiver_handle)s
 ```
+
+#### Add new functions in ddb library
 
 Also we need some new functions in `ddb.py` for creating new message groups and new messages
 
@@ -3018,6 +3035,10 @@ Also we need some new functions in `ddb.py` for creating new message groups and 
 ```
 
 This conclude with the pattern in which we add a new message to an existing conversation. 
+
+#### Test in cruddur
+
+
 
 Now we need to make the corresponding changes to create a new fresh conversation.
 
