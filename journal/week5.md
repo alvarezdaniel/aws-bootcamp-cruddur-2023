@@ -3309,7 +3309,7 @@ Now we need to change something in `MessageForm.js`, for adding the redirect (we
       }
 ```
 
-### Uncomment section in create_message.py
+#### Uncomment section in create_message.py
 
 Now, in `create_message.py`, we can uncomment the section for creating a new message group
 
@@ -3405,6 +3405,9 @@ import botocore.exceptions
 
 #### Test in cruddur
 
+![](./assets/week-5/21.png)
+
+![](./assets/week-5/22.png)
 
 
 ### Implement (Pattern E) Updating a Message Group using DynamoDB Streams
