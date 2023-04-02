@@ -2073,7 +2073,6 @@ https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgN
 
 ![](./assets/week-5/04.png)
 
-
 #### Implement DynamoDB in '/api/message_groups' endpoint
 
 The first thing to do is replace current endpoint implementation with a new one accessing DynamoDB
@@ -3037,6 +3036,17 @@ Also we need some new functions in `ddb.py` for creating new message groups and 
 This conclude with the pattern in which we add a new message to an existing conversation. 
 
 #### Test in cruddur
+
+![](./assets/week-5/16.png)
+
+![](./assets/week-5/17.png)
+
+![](./assets/week-5/18.png)
+
+![](./assets/week-5/19.png)
+
+
+
 
 
 
