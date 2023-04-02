@@ -3046,12 +3046,18 @@ This conclude with the pattern in which we add a new message to an existing conv
 ![](./assets/week-5/19.png)
 
 
+### Implement (Pattern D) Creating a Message for a new Message Group into Application
 
+https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
 
-
-
+![](./assets/week-5/20.png)
 
 Now we need to make the corresponding changes to create a new fresh conversation.
+
+#### Implement new route in app.js
+
+For creating a new conversation we need a different kind of url: `/messages/new/handle`
+
 
 In frontend, in `app.js` we need to add a new path (and also we are updating the path for MessageGroupPage)
 
@@ -3060,7 +3066,7 @@ We also need to add the new import
 ```js
 import MessageGroupNewPage from './pages/MessageGroupNewPage';
 
-{
+  {
     path: "/messages/new/:handle",
     element: <MessageGroupNewPage />
   },
@@ -3069,6 +3075,8 @@ import MessageGroupNewPage from './pages/MessageGroupNewPage';
     element: <MessageGroupPage />
   },
 ```
+
+#### Add new page MessageGroupNewPage
 
 We are going to add this new page to `pages` folder as well (`MessageGroupNewPage.js`)
 
@@ -3157,7 +3165,9 @@ export default function MessageGroupPage() {
 }
 ```
 
-For testing it, we will need to add another user to our seed sql script (`seed.sql`)
+#### Add new user to sql seed script
+
+For being able to test it, we will need to add another user to our seed sql script (`seed.sql`)
 
 ```sql
 INSERT INTO public.users (display_name, handle, email, cognito_user_id)
@@ -3168,7 +3178,9 @@ VALUES
   ('Londo Mollari', 'londo', 'lmollari@centari.com', 'MOCK');
 ```
 
-> For the sake of testing it, we will insert this new user manually into db
+> Londo Mollari = https://en.wikipedia.org/wiki/Londo_Mollari
+
+#### Add new endpoint in backend `app.py`
 
 In `app.py` we will make some changes, such as adding the new endpoint for the new created page
 
@@ -3180,6 +3192,8 @@ def data_users_short(handle):
   data = UsersShort.run(handle)
   return data, 200
 ```
+
+#### Add new UsersShrt service
 
 We will need a new service for returning this data (`users_short.py`)
 
@@ -3197,6 +3211,8 @@ class UsersShort:
 
 > As we are grabbing public information we don't need to protect this endpoint
 
+#### Add new sql template file
+
 This new service will require a new sql template file, so we need to create it (`short.sql`)
 
 ```sql
@@ -3209,7 +3225,11 @@ WHERE
   users.handle = %(handle)s
 ```
 
+> This sql file should return user information based on 
+
 > Now the user short endpoint should work
+
+#### Add new frontend component for adding a new message
 
 We need to create a new component `MessageGroupNewItem.js`
 
@@ -3234,6 +3254,8 @@ export default function MessageGroupNewItem(props) {
   );
 }
 ```
+
+#### Update MessageGroupFeed component
 
 We also need to update `MessageGroupFeed.js` for adding this new component
 
@@ -3266,6 +3288,9 @@ export default function MessageGroupFeed(props) {
     </div>
   );
 }
+```
+
+#### Add redirect in MessageForm
 
 Now we need to change something in `MessageForm.js`, for adding the redirect (we have already done that change)
 
@@ -3284,6 +3309,8 @@ Now we need to change something in `MessageForm.js`, for adding the redirect (we
       }
 ```
 
+### Uncomment section in create_message.py
+
 Now, in `create_message.py`, we can uncomment the section for creating a new message group
 
 ```py
@@ -3299,6 +3326,8 @@ Now, in `create_message.py`, we can uncomment the section for creating a new mes
           other_user_handle=other_user['handle']
         )
 ```
+
+#### Create function create_message_group in ddb.py
 
 In `ddb.py` we need to create the function create_message_group
 
@@ -3372,12 +3401,11 @@ Also, we need to make sure to include this import
 import botocore.exceptions
 ```
 
-After this, we can successfully create a direct message to a user
+> After this, we can successfully create a direct message to a user
+
+#### Test in cruddur
 
 
-### Implement (Pattern D) Creating a Message for a new Message Group into Application
-
-https://www.youtube.com/watch?v=dWHOsXiAIBU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=54
 
 ### Implement (Pattern E) Updating a Message Group using DynamoDB Streams
 
