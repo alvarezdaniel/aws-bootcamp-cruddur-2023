@@ -79,8 +79,22 @@ In week 4, I was able to complete all the required assignments.
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
-In week 5, I was able to complete all the required assignments.
+In week 5, I was able to complete all the required assignments. It took me more effort than previous weeks, and I couldn't complete them on time, but I could finish it.
 
-- 
+- First, I've watched DynamoDB data modeling lecture to be aware of the different patterns we are implementing this week.
+- Then, I'm started implementing several script to interact with DynamoDB (using local container that I've enabled in my compose file).
+- I've also implemented some initialization tasks (install postgres client on gitpod startup and install backend python requirements file).
+- Implemented scripts: schema-load, list-tables, drop, seed, scan, get-conversation, list-conversations.
+- Implemented a change in db scripts for updating cognito_user_id based on Cognito information.
+- Implemented a script for listing cognito users.
+- Then I've started implementing DynamoDB in the application (five patterns for message management).
+- Pattern A: list messages groups
+- Pattern B: list messages in a message group
+- Pattern C: create a new message for an existing message group
+- Pattern D: create a new message for a new message group
+- Pattern E: update a message group using DynamoDB streams and Lambda
+- Implementing all these patterns was not an easy task, but I could complete it, verifying each step and taking screenshots for every operation.
+- No homework challenges to do, although this week was a challenge per se.
+- About knowledge challenge, I've completed security quiz successfully.
 
 ----------------------------------------------------------------------------------------------------------------------------------
