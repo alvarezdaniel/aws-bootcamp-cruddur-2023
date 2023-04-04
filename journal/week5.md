@@ -3414,25 +3414,59 @@ import botocore.exceptions
 
 https://www.youtube.com/watch?v=zGnzM_YdMJU&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=55
 
+![](./assets/week-5/23.png)
 
-
-### Setting DynamoDB stream to update message
+#### Create DynamoDB in AWS 
 
 We are going to execute `./bin/ddb/schema-load prod` to create table in AWS DynamoDB
 
 ```sh
-./bin/ddb/schema-load prod`
+./bin/ddb/schema-load prod
 ```
+
+Result
+```
+{'TableDescription': {'AttributeDefinitions': [{'AttributeName': 'pk', 'AttributeType': 'S'}, {'AttributeName': 'sk', 'AttributeType': 'S'}], 'TableName': 'cruddur-messages', 'KeySchema': [{'AttributeName': 'pk', 'KeyType': 'HASH'}, {'AttributeName': 'sk', 'KeyType': 'RANGE'}], 'TableStatus': 'CREATING', 'CreationDateTime': datetime.datetime(2023, 4, 4, 1, 42, 2, 605000, tzinfo=tzlocal()), 'ProvisionedThroughput': {'NumberOfDecreasesToday': 0, 'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5}, 'TableSizeBytes': 0, 'ItemCount': 0, 'TableArn': 'arn:aws:dynamodb:ca-central-1:052985194353:table/cruddur-messages', 'TableId': '6116448c-1cbe-47e8-8edd-c8f58f90d6fc', 'DeletionProtectionEnabled': False}, 'ResponseMetadata': {'RequestId': 'G3RFGQ716MEQDM2KU8312IQ7JNVV4KQNSO5AEMVJF66Q9ASUAAJG', 'HTTPStatusCode': 200, 'HTTPHeaders': {'server': 'Server', 'date': 'Tue, 04 Apr 2023 01:42:02 GMT', 'content-type': 'application/x-amz-json-1.0', 'content-length': '613', 'connection': 'keep-alive', 'x-amzn-requestid': 'G3RFGQ716MEQDM2KU8312IQ7JNVV4KQNSO5AEMVJF66Q9ASUAAJG', 'x-amz-crc32': '524668908'}, 'RetryAttempts': 0}}
+```
+
+![](./assets/week-5/24.png)
+
+The new table can be found in AWS console:
+
+![](./assets/week-5/25.png)
+
+> In case it says it already exists, delete it first from AWS console
+
+#### DynamoDB table stream must be enabled 
 
 After doing that we are going to turn on DynamoDB stream, by using AWS console
 
-![](./assets/week-5/XXX)
+![](./assets/week-5/26.png)
+
+![](./assets/week-5/27.png)
 
 > View type = New image
 
-We are going to create a Gateway endpoint, and there is no additional charge for using that
+![](./assets/week-5/28.png)
+
+#### Create Gateway endpoint
+
+Types of VPC endpoints: https://aws.amazon.com/blogs/architecture/reduce-cost-and-increase-security-with-amazon-vpc-endpoints/
+
+> There are three types of VPC endpoints: gateway load balancer endpoints, gateway endpoints, and interface endpoints. 
+
+> The second type of endpoint, a Gateway endpoint, allows you to provide access to Amazon Simple Storage Service (S3) and Amazon DynamoDB. You can configure resource policies on both the gateway endpoint and the AWS resource that the endpoint provides access to. A VPC endpoint policy is an AWS Identity and Access Management (AWS IAM) resource policy that you can attach to an endpoint. It is a separate policy for controlling access from the endpoint to the specified service. This enables granular access control and private network connectivity from within a VPC. For example, you could create a policy that restricts access to a specific DynamoDB table. This policy would only allow certain users or groups to access the table through a VPC endpoint.
+
+Gateway endpoints: https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html
+
+> There is no additional charge for using gateway endpoints.
+
+
+We are going to create a Gateway endpoint
 
 Let's go into AWS console, VPC, Endpoints, Create endpoint
+
+![](./assets/week-5/29.png)
 
 - Name tag = ddb-cruddur
 
@@ -3445,6 +3479,16 @@ Let's go into AWS console, VPC, Endpoints, Create endpoint
 - Route tables = check the existing one
 
 - Policy = Full access
+
+![](./assets/week-5/30.png)
+
+![](./assets/week-5/31.png)
+
+![](./assets/week-5/32.png)
+
+![](./assets/week-5/33.png)
+
+### Create Lambda in the VPC
 
 Once the endpoint is created, let's create the lambda in AWS console (save the code also in `journal/aws/lambdas/cruddur-messaging-stream.py`)
 
