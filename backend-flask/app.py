@@ -318,5 +318,10 @@ def data_users_short(handle):
   data = UsersShort.run(handle)
   return data, 200
 
+# Health-check endpoint
+@app.route('/api/health-check')
+def health_check():
+  return {'success': True}, 200
+
 if __name__ == "__main__":
   app.run(debug=True)
