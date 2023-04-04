@@ -22,3 +22,4 @@ cd backend-flask
 ./bin/db/update_cognito_user_ids
 ```
 
+./bin/ddb/schema-load prod
