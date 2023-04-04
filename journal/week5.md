@@ -3652,11 +3652,117 @@ response = ddb.create_table(
 print(response)
 ```
 
+We need to delete and recreate the table in DynamoDB
+
+![](./assets/week-5/41.png)
+
+![](./assets/week-5/42.png)
+
+```sh
+./bin/ddb/schema-load prod
+```
+
+Result
+
+```
+{'TableDescription': {'AttributeDefinitions': [{'AttributeName': 'message_group_uuid', 'AttributeType': 'S'}, {'AttributeName': 'pk', 'AttributeType': 'S'}, {'AttributeName': 'sk', 'AttributeType': 'S'}], 'TableName': 'cruddur-messages', 'KeySchema': [{'AttributeName': 'pk', 'KeyType': 'HASH'}, {'AttributeName': 'sk', 'KeyType': 'RANGE'}], 'TableStatus': 'CREATING', 'CreationDateTime': datetime.datetime(2023, 4, 4, 15, 45, 21, 462000, tzinfo=tzlocal()), 'ProvisionedThroughput': {'NumberOfDecreasesToday': 0, 'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5}, 'TableSizeBytes': 0, 'ItemCount': 0, 'TableArn': 'arn:aws:dynamodb:ca-central-1:052985194353:table/cruddur-messages', 'TableId': '2b037ffb-262f-4ba9-9405-01c070eb6ff7', 'GlobalSecondaryIndexes': [{'IndexName': 'message-group-sk-index', 'KeySchema': [{'AttributeName': 'message_group_uuid', 'KeyType': 'HASH'}, {'AttributeName': 'sk', 'KeyType': 'RANGE'}], 'Projection': {'ProjectionType': 'ALL'}, 'IndexStatus': 'CREATING', 'ProvisionedThroughput': {'NumberOfDecreasesToday': 0, 'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5}, 'IndexSizeBytes': 0, 'ItemCount': 0, 'IndexArn': 'arn:aws:dynamodb:ca-central-1:052985194353:table/cruddur-messages/index/message-group-sk-index'}], 'DeletionProtectionEnabled': False}, 'ResponseMetadata': {'RequestId': 'DK5NQ2E2K93CJEK3478AS8P20FVV4KQNSO5AEMVJF66Q9ASUAAJG', 'HTTPStatusCode': 200, 'HTTPHeaders': {'server': 'Server', 'date': 'Tue, 04 Apr 2023 15:45:21 GMT', 'content-type': 'application/x-amz-json-1.0', 'content-length': '1151', 'connection': 'keep-alive', 'x-amzn-requestid': 'DK5NQ2E2K93CJEK3478AS8P20FVV4KQNSO5AEMVJF66Q9ASUAAJG', 'x-amz-crc32': '2610237791'}, 'RetryAttempts': 0}}
+```
+
+![](./assets/week-5/43.png)
+
+![](./assets/week-5/44.png)
+
+#### Enable DynamoDB table stream again
+
+![](./assets/week-5/45.png)
+
+#### Add DynamoDB trigger to execute created lambda
+
+In cruddur-messages DynamoDB table, in DynamoDB stream details, a new trigger must be created, to execute cruddur-messaging-stream lambda every time an item is changed
+
+![](./assets/week-5/46.png)
+
+![](./assets/week-5/47.png)
+
+> Batch size must be set as 1, because we want the lambda to trigger individually in every changed item
+
+![](./assets/week-5/48.png)
+
+#### Use AWS DynamoDB instead of local container
+
+For using AWS DynamoDB in cruddur, we have to comment out AWS_ENDPOINT_URL environment variable in backend-flask container
+
+```yml
+version: "3.8"
+services:
+  backend-flask:
+    environment:
+      #AWS_ENDPOINT_URL: "http://dynamodb-local:8000"
+```
+
+#### Grant the lambda IAM role permission to update table items
+
+For lambda to work we need to grant right permissions
+
+We will edit `cruddur-messaging-stream-role-ha70186g` execution role, for adding the required permissions to the operations against DynamoDB
+
+![](./assets/week-5/49.png)
+
+We will create an inline policy for that
+
+![](./assets/week-5/50.png)
+
+- Service = DynamoDB
+
+- Actions = Query / DeleteItem / PutItem
+
+![](./assets/week-5/51.png)
+
+- Resources -> Index = arn:aws:dynamodb:ca-central-1:XXXXXXXXXXXX:table/cruddur-messages/index/message-group-sk-index
+
+![](./assets/week-5/52.png)
+
+- Resources -> Table = arn:aws:dynamodb:ca-central-1:XXXXXXXXXXXX:table/cruddur-messages
+
+![](./assets/week-5/53.png)
+
+> We can save the generated json file for the policy as well in `journal/aws/policies/cruddur-message-stream-policy.json`
 
 
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:PutItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:Query"
+            ],
+            "Resource": [
+                "arn:aws:dynamodb:ca-central-1:052985194353:table/cruddur-messages",
+                "arn:aws:dynamodb:ca-central-1:052985194353:table/cruddur-messages/index/message-group-sk-index"
+            ]
+        }
+    ]
+}
+```
 
+![](./assets/week-5/54.png)
 
+The new policy now is applied to the execution role
 
+![](./assets/week-5/55.png)
+
+And we can also check the permissions in the lambda configuration
+
+![](./assets/week-5/56.png)
+
+#### Test in cruddur
+
+Now we can check the changes by creating a new message in cruddur
 
 
 
