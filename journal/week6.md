@@ -155,6 +155,14 @@ except Exception as e:
   exit(1) # false
 ```
 
+If we run it with backend container not running:
+
+![](./assets/week-6/01.png)
+
+However, if we start backend container and run it again:
+
+![](./assets/week-6/02.png)
+
 
 
 
