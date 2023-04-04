@@ -163,6 +163,22 @@ However, if we start backend container and run it again:
 
 ![](./assets/week-6/02.png)
 
+#### Create CloudWatch log group
+
+We will need to create a new log group called cruddur
+
+```sh
+aws logs create-log-group --log-group-name "/cruddur/fargate-cluster"
+aws logs put-retention-policy --log-group-name "/cruddur/fargate-cluster" --retention-in-days 1
+```
+
+We are going to create the log group using Cloud Shell
+
+![](./assets/week-6/03.png)
+
+And now we can check it in AWS console
+
+![](./assets/week-6/04.png)
 
 
 
