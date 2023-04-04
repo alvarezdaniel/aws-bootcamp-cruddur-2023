@@ -3764,10 +3764,53 @@ And we can also check the permissions in the lambda configuration
 
 Now we can check the changes by creating a new message in cruddur
 
+Browse https://3000-alvarezdani-awsbootcamp-7b5zb2q02w5.ws-us93.gitpod.io/messages/new/bayko and create a new message
 
+![](./assets/week-5/57.png)
 
+Check check after this lambda execution logs in CloudWatch
 
+![](./assets/week-5/58.png)
 
+![](./assets/week-5/59.png)
+
+In the log we can see the content for the new message, and then the two corresponding DELETE and CREATE operations against DynamoDB
+
+![](./assets/week-5/60.png)
+
+#### Check DynamoDB messages using script
+
+If we execute scan script in AWS DynamoDB (by creating a new script)
+
+`./bin/ddb/scan-prod`
+
+```py
+#!/usr/bin/env python3
+
+import boto3
+
+attrs = {
+}
+ddb = boto3.resource('dynamodb',**attrs)
+table_name = 'cruddur-messages'
+
+table = ddb.Table(table_name)
+response = table.scan()
+
+items = response['Items']
+for item in items:
+  print(item)
+```
+
+Excute `./bin/ddb/scan-prod`
+
+Result
+
+```
+{'user_handle': 'dalvarez', 'user_uuid': '13e0cf75-9eb4-4944-83e7-d9f8b004a07e', 'user_display_name': 'Daniel Alvarez', 'sk': '2023-04-04T18:53:58.193454+00:00', 'message': 'New test message', 'pk': 'GRP#1d2a85ff-7010-4517-a875-254ccdf8bd02', 'message_group_uuid': '9d7b4d5f-27cd-4b75-9698-1aff8ec462e4'}
+{'user_handle': 'bayko', 'user_uuid': '1d2a85ff-7010-4517-a875-254ccdf8bd02', 'user_display_name': 'Andrew Bayko', 'sk': '2023-04-04T18:53:58.193454+00:00', 'message': 'New test message', 'pk': 'GRP#13e0cf75-9eb4-4944-83e7-d9f8b004a07e', 'message_group_uuid': '9d7b4d5f-27cd-4b75-9698-1aff8ec462e4'}
+{'user_handle': 'dalvarez', 'user_uuid': '13e0cf75-9eb4-4944-83e7-d9f8b004a07e', 'user_display_name': 'Daniel Alvarez', 'sk': '2023-04-04T18:53:58.193454+00:00', 'message': 'New test message', 'pk': 'MSG#9d7b4d5f-27cd-4b75-9698-1aff8ec462e4', 'message_uuid': '5b65d47d-70de-48ea-9fa0-903b287698f2'}
+```
 
 ## Knowledge Challenges
 

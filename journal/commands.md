@@ -3,6 +3,7 @@ https://gitpod.io/#https://github.com/alvarezdaniel/aws-bootcamp-cruddur-2023
 ```sh
 #docker compose  -f "docker-compose.yml" up -d --build db dynamodb-local
 docker compose  -f "docker-compose.yml" up -d
+docker compose  -f "docker-compose.yml" up -d --build backend-flask frontend-react-js db xray-daemon
 
 cd backend-flask
 ./bin/db/setup
@@ -25,3 +26,4 @@ cd backend-flask
 ```
 
 ./bin/ddb/schema-load prod
+./bin/ddb/list-tables prod
