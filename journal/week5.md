@@ -3498,13 +3498,17 @@ Once the endpoint is created, let's create the lambda in AWS console (save the c
 
 - Architecture  = x86_64
 
-> We need to grant the lambda IAM role permission to read the DynamoDB stream event
+- Permissions = Create a new role with basic Lambda permissions
 
-> AWSLambdaInvocation-DynamoDB
+- Advanced settings = Enable VPC (and select VPC, subnets, security groups)
 
+![](./assets/week-5/34.png)
 
+![](./assets/week-5/35.png)
 
+![](./assets/week-5/36.png)
 
+Now we can set the lambda code
 
 ```py
 import json
@@ -3558,6 +3562,100 @@ def lambda_handler(event, context):
       )
       print("CREATE ===>",response)
 ```
+
+![](./assets/week-5/37.png)
+
+We need to grant the lambda IAM role permission to read the DynamoDB stream event
+
+In Configuration, Permissions, we need to add a new policy (AWSLambdaInvocation-DynamoDB) to the Execution role
+
+![](./assets/week-5/38.png)
+
+![](./assets/week-5/39.png)
+
+![](./assets/week-5/40.png)
+
+### Add Secondary Index to DynamoDB table
+
+`backend-flask/bin/ddb/schema-load`
+
+We will add `message_group_uuid` attribute and the global secondary index using that attribute
+
+```py
+#!/usr/bin/env python3
+
+import boto3
+import sys
+
+attrs = {
+  'endpoint_url': 'http://localhost:8000'
+}
+
+if len(sys.argv) == 2:
+  if "prod" in sys.argv[1]:
+    attrs = {}
+
+ddb = boto3.client('dynamodb',**attrs)
+
+table_name = 'cruddur-messages'
+
+response = ddb.create_table(
+  TableName=table_name,
+  AttributeDefinitions=[
+    {
+      'AttributeName': 'message_group_uuid',
+      'AttributeType': 'S'
+    },
+    {
+      'AttributeName': 'pk',
+      'AttributeType': 'S'
+    },
+    {
+      'AttributeName': 'sk',
+      'AttributeType': 'S'
+    },
+  ],
+  KeySchema=[
+    {
+      'AttributeName': 'pk',
+      'KeyType': 'HASH'
+    },
+    {
+      'AttributeName': 'sk',
+      'KeyType': 'RANGE'
+    },
+  ],
+  GlobalSecondaryIndexes= [{
+    'IndexName':'message-group-sk-index',
+    'KeySchema':[{
+      'AttributeName': 'message_group_uuid',
+      'KeyType': 'HASH'
+    },{
+      'AttributeName': 'sk',
+      'KeyType': 'RANGE'
+    }],
+    'Projection': {
+      'ProjectionType': 'ALL'
+    },
+    'ProvisionedThroughput': {
+      'ReadCapacityUnits': 5,
+      'WriteCapacityUnits': 5
+    },
+  }],
+  BillingMode='PROVISIONED',
+  ProvisionedThroughput={
+      'ReadCapacityUnits': 5,
+      'WriteCapacityUnits': 5
+  }
+)
+
+print(response)
+```
+
+
+
+
+
 
 
 
