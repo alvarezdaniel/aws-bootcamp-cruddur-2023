@@ -180,6 +180,83 @@ And now we can check it in AWS console
 
 ![](./assets/week-6/04.png)
 
+#### Create ECS cluster
 
+> CloudScape Design System = https://cloudscape.design/
+
+We will create the ECS (Elastic Container Service) using AWS CLI, but these are the options for creating an ECS cluster using the UI
+
+- Cluster Name
+
+![](./assets/week-6/05.png)
+
+- Networking
+
+![](./assets/week-6/06.png)
+
+- Infrastructure (Fargate is always enabled)
+
+![](./assets/week-6/07.png)
+
+- Monitoring
+
+![](./assets/week-6/08.png)
+
+Creating an ECS cluster using the CLI is a lot easier
+
+```sh
+aws ecs create-cluster \
+--cluster-name cruddur \
+--service-connect-defaults namespace=cruddur
+```
+
+> https://docs.aws.amazon.com/cli/latest/reference/ecs/create-cluster.html
+
+> --service-connect-defaults: Use this parameter to set a default Service Connect namespace. After you set a default Service Connect namespace, any new services with Service Connect turned on that are created in the cluster are added as client services in the namespace. This setting only applies to new services that set the enabled parameter to true in the ServiceConnectConfiguration . You can set the namespace of each service individually in the ServiceConnectConfiguration to override this default parameter.
+
+> The created namespaces are included in AWS Cloud Map
+
+Result
+```json
+{
+    "cluster": {
+        "clusterArn": "arn:aws:ecs:ca-central-1:052985194353:cluster/cruddur",
+        "clusterName": "cruddur",
+        "status": "PROVISIONING",
+        "registeredContainerInstancesCount": 0,
+        "runningTasksCount": 0,
+        "pendingTasksCount": 0,
+        "activeServicesCount": 0,
+        "statistics": [],
+        "tags": [],
+        "settings": [
+            {
+                "name": "containerInsights",
+                "value": "disabled"
+            }
+        ],
+        "capacityProviders": [],
+        "defaultCapacityProviderStrategy": [],
+        "attachments": [
+            {
+                "id": "17d2afbd-9bf2-41a5-9072-de2ec6acecaf",
+                "type": "sc",
+                "status": "ATTACHING",
+                "details": []
+            }
+        ],
+        "attachmentsStatus": "UPDATE_IN_PROGRESS",
+        "serviceConnectDefaults": {
+            "namespace": "arn:aws:servicediscovery:ca-central-1:052985194353:namespace/ns-r6ttoc5oglocvdww"
+        }
+    }
+}
+```
+
+Now we can inspect the created cluster in AWS console
+
+![](./assets/week-6/09.png)
+
+> As there is no compute yet, it won't cost anything by now
 
 
