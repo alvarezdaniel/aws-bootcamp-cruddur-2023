@@ -28,3 +28,9 @@ cd backend-flask
 
 ./bin/ddb/schema-load prod
 ./bin/ddb/list-tables prod
+
+
+
+
+Week 6-7 - ECS Fargate (Part 1) 46.19
+
